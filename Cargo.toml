@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 massa-sc-runtime = { git = "https://github.com/massalabs/massa-sc-runtime", tag = "v0.8.2" }
-massa-models = { git = "https://github.com/massalabs/massa", package = "massa_models", tag = "TEST.16.0" }
-massa-signature = { git = "https://github.com/massalabs/massa", package = "massa_signature", tag = "TEST.16.0" }
+massa-models = { git = "https://github.com/massalabs/massa", package = "massa_models", branch = "gas_calibration" }
+massa-signature = { git = "https://github.com/massalabs/massa", package = "massa_signature", branch = "gas_calibration" }
+massa-execution-worker = { git = "https://github.com/massalabs/massa", package = "massa_execution_worker", branch = "gas_calibration", features = ["gas_calibration"] }
 rand = "0.8.5"
