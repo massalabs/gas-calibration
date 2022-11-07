@@ -5,11 +5,13 @@ use massa_models::{address::Address, datastore::Datastore};
 use massa_sc_runtime::run_main;
 use std::fs::File;
 
+use crate::calculation;
+
 pub fn execute_batch_sc(
     first_sc_index: u32,
     last_sc_index: u32,
     op_datastore: Datastore,
-) -> Duration {
+) -> (HashMap<String, u64>, Duration) {
     let mut bytecodes = Vec::new();
     for i in first_sc_index..last_sc_index {
         let filename = format!("./src/sc_generation/template/build/SC_{}.wasm", i);
@@ -28,9 +30,9 @@ pub fn execute_batch_sc(
     for bytecode in bytecodes {
         let start = std::time::Instant::now();
         run_main(&bytecode, u64::MAX, &interface).unwrap();
-        
         let end = std::time::Instant::now();
         total_execution_time += end - start;
+        total_execution_stats.extend(calculation::mock_results().into_iter());
     }
-    total_execution_time
+    (total_execution_stats, total_execution_time)
 }
