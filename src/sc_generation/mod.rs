@@ -4,6 +4,7 @@ use std::process::Command;
 
 use massa_models::address::Address;
 use massa_models::config::THREAD_COUNT;
+use massa_models::datastore::Datastore;
 use massa_signature::KeyPair;
 use rand::Rng;
 
@@ -45,11 +46,12 @@ fn generate_address() -> String {
     Address::from_public_key(&keypair.get_public_key()).to_string()
 }
 
-fn generate_calls(abis: Vec<Vec<String>>, limit_calls: u32) -> Vec<String> {
+fn generate_calls(abis: Vec<Vec<String>>, limit_calls: u32) -> (Vec<String>, Datastore) {
     let mut rng = rand::thread_rng();
 
     let nb_calls = rng.gen_range(0..limit_calls);
     let mut calls = Vec::new();
+    let mut op_datastore = Datastore::new();
     for _ in 0..nb_calls {
         let abi = abis[rng.gen_range(0..abis.len())].clone();
         let mut call = format!("env.{}", abi[0].clone());
@@ -59,7 +61,10 @@ fn generate_calls(abis: Vec<Vec<String>>, limit_calls: u32) -> Vec<String> {
                 break;
             }
             let mut splitted_params = abi[i].as_str().split(": ");
-            let arg = match (splitted_params.next().unwrap(), splitted_params.next().unwrap()) {
+            let arg = match (
+                splitted_params.next().unwrap(),
+                splitted_params.next().unwrap(),
+            ) {
                 ("to", "string") => format!("\"{}\"", generate_address()),
                 ("address" | "from", "string") => format!("\"{}\"", static_address()),
                 ("publicKey", "string") => format!("\"{}\"", static_public_key()),
@@ -73,7 +78,13 @@ fn generate_calls(abis: Vec<Vec<String>>, limit_calls: u32) -> Vec<String> {
                 ("validityEndThread", "u8") => rng.gen_range(0..THREAD_COUNT).to_string(),
                 (_, "u8") => rng.gen::<u8>().to_string(),
                 (_, "boolean") => rng.gen::<bool>().to_string(),
-                (_, "StaticArray<u8>") => format!("{:#?}", generate_u8_array(rng.gen_range(0..32))),
+                (_, "StaticArray<u8>") => {
+                    let key = generate_u8_array(rng.gen_range(0..32));
+                    if abi[0] == "getOpData" {
+                        op_datastore.insert(key.clone(), generate_u8_array(rng.gen_range(0..1000)));
+                    }
+                    format!("{:#?}", key)
+                }
                 _ => panic!("Unknown type"),
             };
             call.push_str(&arg);
@@ -86,27 +97,35 @@ fn generate_calls(abis: Vec<Vec<String>>, limit_calls: u32) -> Vec<String> {
         call.push(';');
         calls.push(call);
     }
-    calls
+    (calls, op_datastore)
 }
 
-pub fn generate_scs(nb_sc: u32, limit_calls: u32) {
+pub fn generate_scs(nb_sc: u32, limit_calls: u32) -> Option<Datastore> {
     let abis = abis::get_abis();
+    let mut op_datastore = Datastore::new();
     for i in 0..nb_sc {
-    let calls = generate_calls(abis.clone(), limit_calls);
-    println!("{:#?}", &calls);
-    let template_index = format!(
-        "import {{env}} from './env';
+        let (calls, op_datastore_call) = generate_calls(abis.clone(), limit_calls);
+        op_datastore.extend(op_datastore_call.into_iter());
+        println!("{:#?}", &calls);
+        let template_index = format!(
+            "import {{env}} from './env';
 
 export function main(): void {{
     {}
-}}", calls.join("\n")
-    );
-    let mut output = File::create("./src/sc_generation/template/index.ts").unwrap();
-    write!(output, "{}", template_index).unwrap();
-    Command::new("npm")
-        .arg("run")
-        .arg("build")
-        .env("SC_NAME", format!("SC_{}", i))
-        .current_dir("./src/sc_generation/template").spawn().unwrap().wait().unwrap();
+}}",
+            calls.join("\n")
+        );
+        let mut output = File::create("./src/sc_generation/template/index.ts").unwrap();
+        write!(output, "{}", template_index).unwrap();
+        Command::new("npm")
+            .arg("run")
+            .arg("build")
+            .env("SC_NAME", format!("SC_{}", i))
+            .current_dir("./src/sc_generation/template")
+            .spawn()
+            .unwrap()
+            .wait()
+            .unwrap();
     }
+    Some(op_datastore)
 }
