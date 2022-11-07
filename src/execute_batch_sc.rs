@@ -1,4 +1,4 @@
-use std::{io::Read, str::FromStr, time::Duration};
+use std::{io::Read, str::FromStr, time::Duration, collections::HashMap};
 
 use massa_execution_worker::InterfaceImpl;
 use massa_models::{address::Address, datastore::Datastore};
@@ -8,7 +8,7 @@ use std::fs::File;
 pub fn execute_batch_sc(
     first_sc_index: u32,
     last_sc_index: u32,
-    op_datastore: Option<Datastore>,
+    op_datastore: Datastore,
 ) -> Duration {
     let mut bytecodes = Vec::new();
     for i in first_sc_index..last_sc_index {
@@ -21,13 +21,16 @@ pub fn execute_batch_sc(
     }
     let interface = InterfaceImpl::new_default(
         Address::from_str("A12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M").unwrap(),
-        op_datastore,
+        Some(op_datastore),
     );
-    let start = std::time::Instant::now();
+    let mut total_execution_stats: HashMap<String, u64> = HashMap::default();
+    let mut total_execution_time = Duration::from_secs(0);
     for bytecode in bytecodes {
-        println!("Executing bytecode");
+        let start = std::time::Instant::now();
         run_main(&bytecode, u64::MAX, &interface).unwrap();
+        
+        let end = std::time::Instant::now();
+        total_execution_time += end - start;
     }
-    let end = std::time::Instant::now();
-    end - start
+    total_execution_time
 }

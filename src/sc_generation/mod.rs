@@ -1,11 +1,13 @@
 use std::fs::File;
 use std::io::Write;
 use std::process::Command;
+use std::str::FromStr;
 
 use massa_models::address::Address;
 use massa_models::config::THREAD_COUNT;
 use massa_models::datastore::Datastore;
 use massa_signature::KeyPair;
+use pbr::ProgressBar;
 use rand::Rng;
 
 mod abis;
@@ -29,8 +31,10 @@ fn generate_string(length: usize) -> String {
 }
 
 fn static_public_key() -> String {
+    let keypair = KeyPair::from_str("S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY").unwrap();
+    keypair.get_public_key().to_bs58_check()
     // Secret key: S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY
-    String::from("P12WKRCnYPKhVuwtk1mSEiMFSAPRfThR74bfhBEHAnT53JnBNj9T")
+    // Public key: P12WKRCnYPKhVuwtk1mSEiMFSAPRfThR74bfhBEHAnT53JnBNj9T
     // Address: A12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M
 }
 
@@ -46,14 +50,30 @@ fn generate_address() -> String {
     Address::from_public_key(&keypair.get_public_key()).to_string()
 }
 
-fn generate_calls(abis: Vec<Vec<String>>, limit_calls: u32) -> (Vec<String>, Datastore) {
+pub fn generate_op_datastore() -> Datastore {
+    let mut rng = rand::thread_rng();
+    let mut datastore : Datastore = Datastore::new();
+    let nb_entries = 100;
+    for _ in 0..nb_entries + 1 {
+        let key = generate_u8_array(rng.gen_range(1..32));
+        let value = generate_u8_array(rng.gen_range(1..100));
+        datastore.insert(key, value);
+    }
+    datastore
+}
+
+fn generate_calls(abis: Vec<Vec<String>>, limit_calls: u32, op_datastore: Datastore) -> Vec<String> {
     let mut rng = rand::thread_rng();
 
     let nb_calls = rng.gen_range(0..limit_calls);
     let mut calls = Vec::new();
-    let mut op_datastore = Datastore::new();
-    for _ in 0..nb_calls {
+    let mut saved_key = String::new();
+    let mut calls_to_add = Vec::new();
+    for index_call in 0..nb_calls {
         let abi = abis[rng.gen_range(0..abis.len())].clone();
+        if abi[0] == "call" {
+            continue;
+        }
         let mut call = format!("env.{}", abi[0].clone());
         call.push('(');
         for i in 1..abi.len() - 1 {
@@ -68,10 +88,29 @@ fn generate_calls(abis: Vec<Vec<String>>, limit_calls: u32) -> (Vec<String>, Dat
                 ("to", "string") => format!("\"{}\"", generate_address()),
                 ("address" | "from", "string") => format!("\"{}\"", static_address()),
                 ("publicKey", "string") => format!("\"{}\"", static_public_key()),
-                ("key", "string") => format!("\"{}\"", generate_string(rng.gen_range(0..32))),
+                ("key", "string") => {
+                    let mut key = generate_string(rng.gen_range(1..32));
+                    if abi[0] == "set" {
+                        saved_key = key.clone();
+                    }
+                    if abi[0] == "get" || abi[0] == "getOf" || abi[0] == "append" || abi[0] == "appendOf" || abi[0] == "del" || abi[0] == "deleteOf" {
+                        if saved_key.is_empty() {
+                            calls_to_add.push(("set", format!("\"{}\", \"{}\"", key, generate_string(rng.gen_range(1..1000))), index_call));
+                        } else {
+                            key = saved_key.clone();
+                            saved_key = String::new();
+                        }
+                    }
+                    format!("\"{}\"", key)
+                },
+                ("bytecode", "string") => format!("\"{}\"", base64::encode(generate_string(rng.gen_range(0..1000)))),
                 (_, "string") => format!("\"{}\"", generate_string(rng.gen_range(0..1000))),
-                ("amount", "u64") => rng.gen_range(1000..10000000).to_string(),
-                ("coins", "u64") => rng.gen_range(1000..10000000).to_string(),
+                ("amount", "u64") => rng.gen_range::<u64, _>(100_000_000..1_000_000_000).to_string(),
+                ("coins", "u64") => rng.gen_range::<u64, _>(100_000_000..1_000_000_000).to_string(),
+                ("maxGas", "u64") => rng.gen_range::<u64, _>(100_000..300_000).to_string(),
+                ("gasPrice", "u64") => rng.gen_range::<u64, _>(1..4).to_string(),
+                ("validityStartPeriod", "u64") => rng.gen_range::<u64, _>(10..100).to_string(),
+                ("validityEndPeriod", "u64") => rng.gen_range::<u64, _>(100..1000).to_string(),
                 (_, "u64") => rng.gen::<u64>().to_string(),
                 ("thread", "u8") => rng.gen_range(0..THREAD_COUNT).to_string(),
                 ("validityStartThread", "u8") => rng.gen_range(0..THREAD_COUNT).to_string(),
@@ -79,10 +118,8 @@ fn generate_calls(abis: Vec<Vec<String>>, limit_calls: u32) -> (Vec<String>, Dat
                 (_, "u8") => rng.gen::<u8>().to_string(),
                 (_, "boolean") => rng.gen::<bool>().to_string(),
                 (_, "StaticArray<u8>") => {
-                    let key = generate_u8_array(rng.gen_range(0..32));
-                    if abi[0] == "getOpData" {
-                        op_datastore.insert(key.clone(), generate_u8_array(rng.gen_range(0..1000)));
-                    }
+                    let key_index = rng.gen_range(0..100);
+                    let key = op_datastore.keys().collect::<Vec<&Vec<u8>>>()[key_index];
                     format!("{:#?}", key)
                 }
                 _ => panic!("Unknown type"),
@@ -97,16 +134,24 @@ fn generate_calls(abis: Vec<Vec<String>>, limit_calls: u32) -> (Vec<String>, Dat
         call.push(';');
         calls.push(call);
     }
-    (calls, op_datastore)
+
+    for (abi, key, index_call) in calls_to_add {
+        let call = format!("env.{}({});", abi, key);
+        if index_call == 0 {
+            calls.insert(0, call);
+        } else {
+            calls.insert(rng.gen_range::<usize, _>(0..index_call as usize), call);
+        }
+    }
+    calls
 }
 
-pub fn generate_scs(nb_sc: u32, limit_calls: u32) -> Option<Datastore> {
+pub fn generate_scs(nb_sc: u32, limit_calls: u32, op_datastore: Datastore){
     let abis = abis::get_abis();
-    let mut op_datastore = Datastore::new();
+    println!("Generating {} smart contracts", nb_sc);
+    let mut pb = ProgressBar::new(nb_sc as u64);
     for i in 0..nb_sc {
-        let (calls, op_datastore_call) = generate_calls(abis.clone(), limit_calls);
-        op_datastore.extend(op_datastore_call.into_iter());
-        println!("{:#?}", &calls);
+        let calls = generate_calls(abis.clone(), limit_calls, op_datastore.clone());
         let template_index = format!(
             "import {{env}} from './env';
 
@@ -122,10 +167,9 @@ export function main(): void {{
             .arg("build")
             .env("SC_NAME", format!("SC_{}", i))
             .current_dir("./src/sc_generation/template")
-            .spawn()
-            .unwrap()
-            .wait()
+            .output()
             .unwrap();
+        pb.inc();
     }
-    Some(op_datastore)
+    pb.finish_print(&format!("Generated {} smart contracts", nb_sc));
 }
