@@ -5,10 +5,10 @@ mod execute_batch_sc;
 mod sc_generation;
 
 fn main() {
-    let nb_scs = 100;
+    let nb_scs = 500;
     let batch_size = 10;
     let op_datastore = sc_generation::generate_op_datastore();
-    sc_generation::generate_scs(nb_scs, 100, op_datastore.clone());
+    sc_generation::generate_scs(nb_scs, 200, op_datastore.clone());
     let nb_batch = nb_scs / batch_size;
     let mut pb = ProgressBar::new(nb_batch as u64);
     println!("Executing {} batches", nb_batch);

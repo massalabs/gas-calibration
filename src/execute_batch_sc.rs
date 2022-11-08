@@ -5,8 +5,6 @@ use massa_models::{address::Address, datastore::Datastore};
 use massa_sc_runtime::run_main_gc;
 use std::fs::File;
 
-use crate::calculation::{self, mock_results};
-
 pub fn execute_batch_sc(
     first_sc_index: u32,
     last_sc_index: u32,
@@ -27,9 +25,12 @@ pub fn execute_batch_sc(
     );
     let mut total_execution_stats: HashMap<String, u64> = HashMap::default();
     let mut total_execution_time = Duration::from_secs(0);
+    println!("Execute batch");
     for bytecode in bytecodes {
         let start = std::time::Instant::now();
+        println!("Executing bytecode");
         let results = run_main_gc(&bytecode, u64::MAX, &interface).unwrap();
+        println!("results = {:#?}", results);
         let end = std::time::Instant::now();
         total_execution_time += end - start;
         total_execution_stats.extend(results.0);

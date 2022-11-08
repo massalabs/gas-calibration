@@ -56,7 +56,7 @@ pub fn generate_op_datastore() -> Datastore {
     let mut datastore: Datastore = Datastore::new();
     let nb_entries = 100;
     for _ in 0..nb_entries + 1 {
-        let key = generate_u8_array(rng.gen_range(1..32));
+        let key = generate_u8_array(rng.gen_range(5..32));
         let value = generate_u8_array(rng.gen_range(1..100));
         datastore.insert(key, value);
     }
@@ -94,11 +94,10 @@ fn generate_calls(
                 ("address" | "from", "string") => format!("\"{}\"", static_address()),
                 ("publicKey", "string") => format!("\"{}\"", static_public_key()),
                 ("key", "string") => {
-                    let mut key = generate_string(rng.gen_range(1..32));
+                    let mut key = generate_string(rng.gen_range(5..32));
                     if abi[0] == "set" {
                         saved_key = key.clone();
-                    }
-                    if abi[0] == "get"
+                    } else if abi[0] == "get"
                         || abi[0] == "getOf"
                         || abi[0] == "append"
                         || abi[0] == "appendOf"
@@ -161,9 +160,10 @@ fn generate_calls(
         calls.push(call);
     }
 
-    for (abi, key, index_call) in calls_to_add {
+    for (i, (abi, key, index_call)) in calls_to_add.iter().enumerate() {
         let call = format!("env.{}({});", abi, key);
-        if index_call == 0 {
+        let index_call = (*index_call + i as u32) / 2;
+        if index_call <= 0 {
             calls.insert(0, call);
         } else {
             calls.insert(rng.gen_range::<usize, _>(0..index_call as usize), call);
@@ -188,6 +188,8 @@ export function main(): void {{
         );
         let mut output = File::create("./src/sc_generation/template/index.ts").unwrap();
         write!(output, "{}", template_index).unwrap();
+        let mut temp = File::create(format!("./src/sc_generation/template/build/SC_{}.ts", i)).unwrap();
+        write!(temp, "{}", template_index).unwrap();
         Command::new("npm")
             .arg("run")
             .arg("build")

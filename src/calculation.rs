@@ -1,19 +1,12 @@
 use crate::sc_generation::abis;
-use linregress::{assert_almost_eq, FormulaRegressionBuilder, RegressionDataBuilder};
+use linregress::{FormulaRegressionBuilder, RegressionDataBuilder};
 use std::{collections::HashMap, time::Duration};
-
-pub fn mock_results() -> HashMap<String, u64> {
-    let mut results = HashMap::new();
-    results.insert("Abi:call:get".to_string(), 1);
-    results.insert("Abi:call:set".to_string(), 2);
-    results
-}
 
 fn initialize_data() -> Vec<(String, Vec<f64>)> {
     let mut data = vec![(String::from("time"), vec![])];
-    let abis = abis::get_abis();
+    let abis = abis::get_abis_full_name();
     for abi in abis {
-        data.push((format!("Abi:call:{}", abi[0].as_str()), vec![]));
+        data.push((format!("Abi:call:massa.{}", abi.as_str()), vec![]));
     }
     data
 }
@@ -31,8 +24,7 @@ pub fn calculate_times(results: Vec<(HashMap<String, u64>, Duration)>) -> Vec<Du
         formula.push_str(&format!(" {} +", key));
     }
     formula.pop();
-    println!("{:#?}", data);
-    println!("{}", formula);
+    println!("{:#?}", data[0]);
     let data = RegressionDataBuilder::new().build_from(data).unwrap();
     let model = FormulaRegressionBuilder::new()
         .data(&data)

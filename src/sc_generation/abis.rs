@@ -1,3 +1,26 @@
+pub fn get_abis_full_name() -> Vec<String> {
+    let abis_string = std::fs::read_to_string("./src/sc_generation/template/env.ts")
+    .expect("Should have been able to read the file");
+    abis_string
+    .lines()
+    .filter_map(|line| {
+        if line.starts_with("    @external(\"massa\", \"") {
+            let mut str = String::from(line.trim_start()
+                    .split("@external(\"massa\", \"")
+                    .last()
+                    .unwrap());
+            str.pop();
+            str.pop();
+            Some(
+                str
+            )
+        } else {
+            None
+        }
+    }).collect()
+
+}
+
 pub fn get_abis<'a>() -> Vec<Vec<String>> {
     let abis_string = std::fs::read_to_string("./src/sc_generation/template/env.ts")
         .expect("Should have been able to read the file");
