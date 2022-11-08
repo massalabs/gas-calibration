@@ -10,7 +10,7 @@ use massa_signature::KeyPair;
 use pbr::ProgressBar;
 use rand::Rng;
 
-mod abis;
+pub mod abis;
 
 fn generate_u8_array(length: usize) -> Vec<u8> {
     let mut rng = rand::thread_rng();
@@ -31,7 +31,8 @@ fn generate_string(length: usize) -> String {
 }
 
 fn static_public_key() -> String {
-    let keypair = KeyPair::from_str("S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY").unwrap();
+    let keypair =
+        KeyPair::from_str("S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY").unwrap();
     keypair.get_public_key().to_bs58_check()
     // Secret key: S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY
     // Public key: P12WKRCnYPKhVuwtk1mSEiMFSAPRfThR74bfhBEHAnT53JnBNj9T
@@ -52,7 +53,7 @@ fn generate_address() -> String {
 
 pub fn generate_op_datastore() -> Datastore {
     let mut rng = rand::thread_rng();
-    let mut datastore : Datastore = Datastore::new();
+    let mut datastore: Datastore = Datastore::new();
     let nb_entries = 100;
     for _ in 0..nb_entries + 1 {
         let key = generate_u8_array(rng.gen_range(1..32));
@@ -62,7 +63,11 @@ pub fn generate_op_datastore() -> Datastore {
     datastore
 }
 
-fn generate_calls(abis: Vec<Vec<String>>, limit_calls: u32, op_datastore: Datastore) -> Vec<String> {
+fn generate_calls(
+    abis: Vec<Vec<String>>,
+    limit_calls: u32,
+    op_datastore: Datastore,
+) -> Vec<String> {
     let mut rng = rand::thread_rng();
 
     let nb_calls = rng.gen_range(0..limit_calls);
@@ -93,20 +98,41 @@ fn generate_calls(abis: Vec<Vec<String>>, limit_calls: u32, op_datastore: Datast
                     if abi[0] == "set" {
                         saved_key = key.clone();
                     }
-                    if abi[0] == "get" || abi[0] == "getOf" || abi[0] == "append" || abi[0] == "appendOf" || abi[0] == "del" || abi[0] == "deleteOf" {
+                    if abi[0] == "get"
+                        || abi[0] == "getOf"
+                        || abi[0] == "append"
+                        || abi[0] == "appendOf"
+                        || abi[0] == "del"
+                        || abi[0] == "deleteOf"
+                    {
                         if saved_key.is_empty() {
-                            calls_to_add.push(("set", format!("\"{}\", \"{}\"", key, generate_string(rng.gen_range(1..1000))), index_call));
+                            calls_to_add.push((
+                                "set",
+                                format!(
+                                    "\"{}\", \"{}\"",
+                                    key,
+                                    generate_string(rng.gen_range(1..1000))
+                                ),
+                                index_call,
+                            ));
                         } else {
                             key = saved_key.clone();
                             saved_key = String::new();
                         }
                     }
                     format!("\"{}\"", key)
-                },
-                ("bytecode", "string") => format!("\"{}\"", base64::encode(generate_string(rng.gen_range(0..1000)))),
+                }
+                ("bytecode", "string") => format!(
+                    "\"{}\"",
+                    base64::encode(generate_string(rng.gen_range(0..1000)))
+                ),
                 (_, "string") => format!("\"{}\"", generate_string(rng.gen_range(0..1000))),
-                ("amount", "u64") => rng.gen_range::<u64, _>(100_000_000..1_000_000_000).to_string(),
-                ("coins", "u64") => rng.gen_range::<u64, _>(100_000_000..1_000_000_000).to_string(),
+                ("amount", "u64") => rng
+                    .gen_range::<u64, _>(100_000_000..1_000_000_000)
+                    .to_string(),
+                ("coins", "u64") => rng
+                    .gen_range::<u64, _>(100_000_000..1_000_000_000)
+                    .to_string(),
                 ("maxGas", "u64") => rng.gen_range::<u64, _>(100_000..300_000).to_string(),
                 ("gasPrice", "u64") => rng.gen_range::<u64, _>(1..4).to_string(),
                 ("validityStartPeriod", "u64") => rng.gen_range::<u64, _>(10..100).to_string(),
@@ -146,7 +172,7 @@ fn generate_calls(abis: Vec<Vec<String>>, limit_calls: u32, op_datastore: Datast
     calls
 }
 
-pub fn generate_scs(nb_sc: u32, limit_calls: u32, op_datastore: Datastore){
+pub fn generate_scs(nb_sc: u32, limit_calls: u32, op_datastore: Datastore) {
     let abis = abis::get_abis();
     println!("Generating {} smart contracts", nb_sc);
     let mut pb = ProgressBar::new(nb_sc as u64);

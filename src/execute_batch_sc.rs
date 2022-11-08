@@ -1,11 +1,11 @@
-use std::{io::Read, str::FromStr, time::Duration, collections::HashMap};
+use std::{collections::HashMap, io::Read, str::FromStr, time::Duration};
 
 use massa_execution_worker::InterfaceImpl;
 use massa_models::{address::Address, datastore::Datastore};
-use massa_sc_runtime::run_main;
+use massa_sc_runtime::run_main_gc;
 use std::fs::File;
 
-use crate::calculation;
+use crate::calculation::{self, mock_results};
 
 pub fn execute_batch_sc(
     first_sc_index: u32,
@@ -29,10 +29,10 @@ pub fn execute_batch_sc(
     let mut total_execution_time = Duration::from_secs(0);
     for bytecode in bytecodes {
         let start = std::time::Instant::now();
-        run_main(&bytecode, u64::MAX, &interface).unwrap();
+        //let results = run_main_gc(&bytecode, u64::MAX, &interface).unwrap();
         let end = std::time::Instant::now();
         total_execution_time += end - start;
-        total_execution_stats.extend(calculation::mock_results().into_iter());
+        total_execution_stats.extend(mock_results());
     }
     (total_execution_stats, total_execution_time)
 }

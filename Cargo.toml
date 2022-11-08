@@ -9,7 +9,7 @@ edition = "2021"
 base64 = "0.13"
 linregress = "0.5.0"
 pbr = { git = "https://github.com/a8m/pb" }
-massa-sc-runtime = { git = "https://github.com/massalabs/massa-sc-runtime", tag = "v0.8.2" }
+massa-sc-runtime = { git = "https://github.com/massalabs/massa-sc-runtime", branch = "feature/gas_calibration_middleware", features = ["gas_calibration"] }
 massa-models = { git = "https://github.com/massalabs/massa", package = "massa_models", branch = "gas_calibration" }
 massa-signature = { git = "https://github.com/massalabs/massa", package = "massa_signature", branch = "gas_calibration" }
 massa-execution-worker = { git = "https://github.com/massalabs/massa", package = "massa_execution_worker", branch = "gas_calibration", features = ["gas_calibration"] }
