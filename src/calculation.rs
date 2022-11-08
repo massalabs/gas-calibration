@@ -31,7 +31,7 @@ pub fn calculate_times(results: Vec<(HashMap<String, u64>, Duration)>) -> Vec<Du
         .formula(formula)
         .fit()
         .unwrap();
-    let parameters: Vec<_> = model.iter_parameter_pairs().collect();
+    let parameters: Vec<_> = model.iter_p_value_pairs().collect();
     println!("params {:#?}", parameters);
     Vec::new()
 }
