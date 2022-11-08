@@ -29,10 +29,10 @@ pub fn execute_batch_sc(
     let mut total_execution_time = Duration::from_secs(0);
     for bytecode in bytecodes {
         let start = std::time::Instant::now();
-        //let results = run_main_gc(&bytecode, u64::MAX, &interface).unwrap();
+        let results = run_main_gc(&bytecode, u64::MAX, &interface).unwrap();
         let end = std::time::Instant::now();
         total_execution_time += end - start;
-        total_execution_stats.extend(mock_results());
+        total_execution_stats.extend(results.0);
     }
     (total_execution_stats, total_execution_time)
 }

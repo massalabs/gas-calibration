@@ -1,2 +1,3 @@
 target/
 **/build/**
+src/sc_generation/template/index.ts

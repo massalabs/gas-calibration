@@ -70,7 +70,7 @@ fn generate_calls(
 ) -> Vec<String> {
     let mut rng = rand::thread_rng();
 
-    let nb_calls = rng.gen_range(0..limit_calls);
+    let nb_calls = rng.gen_range(limit_calls - 20..limit_calls);
     let mut calls = Vec::new();
     let mut saved_key = String::new();
     let mut calls_to_add = Vec::new();
