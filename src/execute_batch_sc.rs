@@ -25,15 +25,15 @@ pub fn execute_batch_sc(
     );
     let mut total_execution_stats: HashMap<String, u64> = HashMap::default();
     let mut total_execution_time = Duration::from_secs(0);
-    println!("Execute batch");
+    let bytecodes_len = bytecodes.len() as u64;
     for bytecode in bytecodes {
         let start = std::time::Instant::now();
-        println!("Executing bytecode");
-        let results = run_main_gc(&bytecode, u64::MAX, &interface).unwrap();
-        println!("results = {:#?}", results);
+        let mut results = run_main_gc(&bytecode, u64::MAX, &interface).unwrap();
         let end = std::time::Instant::now();
+        results.0.insert(String::from("Size"), bytecode.len() as u64);
         total_execution_time += end - start;
         total_execution_stats.extend(results.0);
     }
+    total_execution_stats.insert(String::from("NbLaunch"), bytecodes_len);
     (total_execution_stats, total_execution_time)
 }
