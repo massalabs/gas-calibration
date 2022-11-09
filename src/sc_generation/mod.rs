@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::Write;
+use std::io::{Write, Read};
 use std::process::Command;
 use std::str::FromStr;
 
@@ -51,6 +51,20 @@ fn generate_address() -> String {
     Address::from_public_key(&keypair.get_public_key()).to_string()
 }
 
+pub fn read_existing_op_datastore() -> Datastore {
+    let mut file = File::open("./src/sc_generation/template/op_datastore.json")
+        .expect("Failed to open op_datastore.json");
+    let mut op_datastore_json = String::new();
+    file.read_to_string(&mut op_datastore_json)
+        .expect("Failed to read op_datastore.json");
+    let datastore_vec: Vec<(Vec<u8>, Vec<u8>)> = serde_json::from_str(&op_datastore_json).unwrap();
+    let mut datastore = Datastore::new();
+    for (key, value) in datastore_vec {
+        datastore.insert(key, value);
+    }
+    datastore
+}
+
 pub fn generate_op_datastore() -> Datastore {
     let mut rng = rand::thread_rng();
     let mut datastore: Datastore = Datastore::new();
@@ -60,6 +74,8 @@ pub fn generate_op_datastore() -> Datastore {
         let value = generate_u8_array(rng.gen_range(1..100));
         datastore.insert(key, value);
     }
+    let mut output = File::create("./src/sc_generation/template/op_datastore.json").unwrap();
+    write!(output, "{}", serde_json::to_string(&datastore.clone().into_iter().collect::<Vec<(Vec<u8>, Vec<u8>)>>()).unwrap()).unwrap();
     datastore
 }
 
