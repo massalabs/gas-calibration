@@ -6,11 +6,14 @@ use std::{collections::HashMap, time::Duration};
 fn initialize_data() -> Vec<(String, Vec<f64>)> {
     let mut data = vec![
         (String::from("Time"), vec![]),
-        (String::from("Size"), vec![]),
-        (String::from("Launch"), vec![]),
+        //(String::from("Size"), vec![]),
+        //(String::from("Launch"), vec![]),
         ];
     let abis = abis::get_abis_full_name();
     for abi in abis {
+        if abi == "assembly_script_call" {
+            continue;
+        }
         data.push((format!("Abi:call:massa.{}", abi.as_str()), vec![]));
     }
     data
@@ -39,12 +42,18 @@ pub fn calculate_times(results: Vec<(HashMap<String, u64>, Duration)>) -> Vec<Du
         }
     }
     let values: Vec<Vec<f64>> = transpose(data[1..].iter().map(|elem| elem.1.clone()).collect());
+    println!("nb batches {}", values.len());
     let arr = Array2::from_shape_vec((values.len(), values[0].len()), values.into_iter().flatten().collect()).unwrap();
-    println!("arr: {:?}", arr);
+    for i in 0..5 {
+        let row = arr.row(i);
+        println!("row {}: {:?}", i, row);
+    }
     let times = Array1::from_shape_vec(data[0].1.len(), data[0].1.clone()).unwrap();
-
+    for i in 0..5 {
+        println!("time {}: {:?}", i, times[i]);
+    }
     let (alphas, _residual) = nnls(arr.view(), times.view());
-    let alphas = alphas.iter().enumerate().map(|elem| (data[elem.0 + 1].0.clone(), (*elem.1 / 1_000_000_000f64))).collect::<Vec<(String, f64)>>();
+    let alphas = alphas.iter().enumerate().map(|elem| (data[elem.0 + 1].0.clone(), *elem.1 )).collect::<Vec<(String, f64)>>();
     println!("alphas2: {:?}", alphas);
     Vec::new()
 }

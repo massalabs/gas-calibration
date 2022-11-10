@@ -9,6 +9,7 @@ use massa_models::datastore::Datastore;
 use massa_signature::KeyPair;
 use pbr::ProgressBar;
 use rand::Rng;
+use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 
 pub mod abis;
 
@@ -192,8 +193,10 @@ pub fn generate_scs(nb_sc: u32, limit_calls: u32, op_datastore: Datastore) {
     let abis = abis::get_abis();
     println!("Generating {} smart contracts", nb_sc);
     let mut pb = ProgressBar::new(nb_sc as u64);
-    for i in 0..nb_sc {
-        let calls = generate_calls(abis.clone(), limit_calls, op_datastore.clone());
+    (0..nb_sc).into_par_iter().for_each(|i| {
+        let op_datastore_clone = op_datastore.clone();
+        let abis_clone = abis.clone();
+        let calls = generate_calls(abis_clone, limit_calls, op_datastore_clone.clone());
         let template_index = format!(
             "import {{env}} from './env';
 
@@ -213,7 +216,7 @@ export function main(): void {{
             .current_dir("./src/sc_generation/template")
             .output()
             .unwrap();
-        pb.inc();
-    }
+        //pb.inc();
+    });
     pb.finish_print(&format!("Generated {} smart contracts", nb_sc));
 }

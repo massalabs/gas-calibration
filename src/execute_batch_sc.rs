@@ -15,7 +15,11 @@ pub fn execute_batch_sc(
     let mut bytecodes = Vec::new();
     for i in first_sc_index..last_sc_index {
         let filename = format!("./src/sc_generation/template/build/SC_{}.wasm", i);
-        let mut file = File::open(&filename).expect(&format!("Failed to open {}", filename));
+        let file = File::open(&filename);
+        if file.is_err() {
+            continue;
+        }
+        let mut file = file.unwrap();
         let mut bytecode = vec![];
         file.read_to_end(&mut bytecode)
             .expect(&format!("Failed to read {}", filename));
@@ -34,7 +38,10 @@ pub fn execute_batch_sc(
         let end = std::time::Instant::now();
         results.0.insert(String::from("Size"), bytecode.len() as u64);
         total_execution_time += end - start;
-        total_execution_stats.extend(results.0);
+        for (key, value) in results.0 {
+            let entry = total_execution_stats.entry(key).or_insert(0);
+            *entry += value;
+        }
         pb.inc();
     }
     total_execution_stats.insert(String::from("Launch"), bytecodes_len);

@@ -243,9 +243,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.0.75"
+version = "1.0.76"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "41ca34107f97baef6cfb231b32f36115781856b8f8208e8c580e0bcaea374842"
+checksum = "76a284da2e6fe2092f2353e51713435363112dfd60030e22add80be333fb928f"
 dependencies = [
  "jobserver",
 ]
@@ -793,6 +793,7 @@ dependencies = [
  "nnls",
  "pbr",
  "rand 0.8.5",
+ "rayon",
  "serde_json",
 ]
 
@@ -984,9 +985,9 @@ dependencies = [
 
 [[package]]
 name = "libm"
-version = "0.2.5"
+version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "292a948cd991e376cf75541fe5b97a1081d713c618b4f1b9500f8844e49eb565"
+checksum = "348108ab3fba42ec82ff6e9564fc4ca0247bdccdc68dd8af9764bbc79c3c8ffb"
 
 [[package]]
 name = "librocksdb-sys"
@@ -1072,7 +1073,7 @@ dependencies = [
 [[package]]
 name = "massa-sc-runtime"
 version = "0.6.9"
-source = "git+https://github.com/massalabs/massa-sc-runtime?branch=feature/gas_calibration_middleware#371850d109df1cb8c1d097af03f014f709dd1bca"
+source = "git+https://github.com/massalabs/massa-sc-runtime?branch=feature/gas_calibration_middleware#dd26c70be91bde3855d44f14bd833d2bee2f3b27"
 dependencies = [
  "anyhow",
  "as-ffi-bindings",
@@ -1096,7 +1097,7 @@ dependencies = [
 [[package]]
 name = "massa_async_pool"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=gas_calibration#7443045db1a8f6ea05c4e76b428779769c74d8c9"
+source = "git+https://github.com/massalabs/massa?branch=gas_calibration#5d9d284456c67d7a74c355b552a35d49e58370f4"
 dependencies = [
  "displaydoc",
  "futures",
@@ -1119,7 +1120,7 @@ dependencies = [
 [[package]]
 name = "massa_executed_ops"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=gas_calibration#7443045db1a8f6ea05c4e76b428779769c74d8c9"
+source = "git+https://github.com/massalabs/massa?branch=gas_calibration#5d9d284456c67d7a74c355b552a35d49e58370f4"
 dependencies = [
  "massa_hash",
  "massa_models",
@@ -1130,7 +1131,7 @@ dependencies = [
 [[package]]
 name = "massa_execution_exports"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=gas_calibration#7443045db1a8f6ea05c4e76b428779769c74d8c9"
+source = "git+https://github.com/massalabs/massa?branch=gas_calibration#5d9d284456c67d7a74c355b552a35d49e58370f4"
 dependencies = [
  "displaydoc",
  "massa_final_state",
@@ -1147,7 +1148,7 @@ dependencies = [
 [[package]]
 name = "massa_execution_worker"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=gas_calibration#7443045db1a8f6ea05c4e76b428779769c74d8c9"
+source = "git+https://github.com/massalabs/massa?branch=gas_calibration#5d9d284456c67d7a74c355b552a35d49e58370f4"
 dependencies = [
  "anyhow",
  "massa-sc-runtime",
@@ -1176,7 +1177,7 @@ dependencies = [
 [[package]]
 name = "massa_final_state"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=gas_calibration#7443045db1a8f6ea05c4e76b428779769c74d8c9"
+source = "git+https://github.com/massalabs/massa?branch=gas_calibration#5d9d284456c67d7a74c355b552a35d49e58370f4"
 dependencies = [
  "displaydoc",
  "massa_async_pool",
@@ -1194,7 +1195,7 @@ dependencies = [
 [[package]]
 name = "massa_hash"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=gas_calibration#7443045db1a8f6ea05c4e76b428779769c74d8c9"
+source = "git+https://github.com/massalabs/massa?branch=gas_calibration#5d9d284456c67d7a74c355b552a35d49e58370f4"
 dependencies = [
  "blake3",
  "bs58",
@@ -1208,7 +1209,7 @@ dependencies = [
 [[package]]
 name = "massa_ledger_exports"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=gas_calibration#7443045db1a8f6ea05c4e76b428779769c74d8c9"
+source = "git+https://github.com/massalabs/massa?branch=gas_calibration#5d9d284456c67d7a74c355b552a35d49e58370f4"
 dependencies = [
  "displaydoc",
  "massa_hash",
@@ -1224,7 +1225,7 @@ dependencies = [
 [[package]]
 name = "massa_ledger_worker"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=gas_calibration#7443045db1a8f6ea05c4e76b428779769c74d8c9"
+source = "git+https://github.com/massalabs/massa?branch=gas_calibration#5d9d284456c67d7a74c355b552a35d49e58370f4"
 dependencies = [
  "massa_hash",
  "massa_ledger_exports",
@@ -1239,7 +1240,7 @@ dependencies = [
 [[package]]
 name = "massa_logging"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=gas_calibration#7443045db1a8f6ea05c4e76b428779769c74d8c9"
+source = "git+https://github.com/massalabs/massa?branch=gas_calibration#5d9d284456c67d7a74c355b552a35d49e58370f4"
 dependencies = [
  "serde_json",
  "tracing",
@@ -1248,7 +1249,7 @@ dependencies = [
 [[package]]
 name = "massa_models"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=gas_calibration#7443045db1a8f6ea05c4e76b428779769c74d8c9"
+source = "git+https://github.com/massalabs/massa?branch=gas_calibration#5d9d284456c67d7a74c355b552a35d49e58370f4"
 dependencies = [
  "bitvec",
  "bs58",
@@ -1271,7 +1272,7 @@ dependencies = [
 [[package]]
 name = "massa_pos_exports"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=gas_calibration#7443045db1a8f6ea05c4e76b428779769c74d8c9"
+source = "git+https://github.com/massalabs/massa?branch=gas_calibration#5d9d284456c67d7a74c355b552a35d49e58370f4"
 dependencies = [
  "anyhow",
  "bitvec",
@@ -1295,7 +1296,7 @@ dependencies = [
 [[package]]
 name = "massa_pos_worker"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=gas_calibration#7443045db1a8f6ea05c4e76b428779769c74d8c9"
+source = "git+https://github.com/massalabs/massa?branch=gas_calibration#5d9d284456c67d7a74c355b552a35d49e58370f4"
 dependencies = [
  "bitvec",
  "massa_final_state",
@@ -1316,7 +1317,7 @@ dependencies = [
 [[package]]
 name = "massa_serialization"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=gas_calibration#7443045db1a8f6ea05c4e76b428779769c74d8c9"
+source = "git+https://github.com/massalabs/massa?branch=gas_calibration#5d9d284456c67d7a74c355b552a35d49e58370f4"
 dependencies = [
  "displaydoc",
  "nom",
@@ -1327,7 +1328,7 @@ dependencies = [
 [[package]]
 name = "massa_signature"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=gas_calibration#7443045db1a8f6ea05c4e76b428779769c74d8c9"
+source = "git+https://github.com/massalabs/massa?branch=gas_calibration#5d9d284456c67d7a74c355b552a35d49e58370f4"
 dependencies = [
  "bs58",
  "displaydoc",
@@ -1343,7 +1344,7 @@ dependencies = [
 [[package]]
 name = "massa_storage"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=gas_calibration#7443045db1a8f6ea05c4e76b428779769c74d8c9"
+source = "git+https://github.com/massalabs/massa?branch=gas_calibration#5d9d284456c67d7a74c355b552a35d49e58370f4"
 dependencies = [
  "massa_logging",
  "massa_models",
@@ -1355,7 +1356,7 @@ dependencies = [
 [[package]]
 name = "massa_time"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=gas_calibration#7443045db1a8f6ea05c4e76b428779769c74d8c9"
+source = "git+https://github.com/massalabs/massa?branch=gas_calibration#5d9d284456c67d7a74c355b552a35d49e58370f4"
 dependencies = [
  "displaydoc",
  "massa_serialization",
@@ -1382,9 +1383,9 @@ checksum = "2dffe52ecf27772e601905b7522cb4ef790d2cc203488bbd0e2fe85fcb74566d"
 
 [[package]]
 name = "memmap2"
-version = "0.5.7"
+version = "0.5.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95af15f345b17af2efc8ead6080fb8bc376f8cec1b35277b935637595fe77498"
+checksum = "4b182332558b18d807c4ce1ca8ca983b34c3ee32765e47b3f0f69b90355cc1dc"
 dependencies = [
  "libc",
 ]

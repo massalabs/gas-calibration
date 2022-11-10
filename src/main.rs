@@ -8,15 +8,15 @@ mod sc_generation;
 fn main() {
     let mut rng = rand::thread_rng();
     let nb_scs = 10000;
-    //let op_datastore = sc_generation::read_existing_op_datastore();
-    let op_datastore = sc_generation::generate_op_datastore();
-    sc_generation::generate_scs(nb_scs, 1000, op_datastore.clone());
+    let op_datastore = sc_generation::read_existing_op_datastore();
+    //let op_datastore = sc_generation::generate_op_datastore();
+    //sc_generation::generate_scs(nb_scs, 1000, op_datastore.clone());
     let mut pb = ProgressBar::new(nb_scs as u64);
     println!("Executing {} SCs", nb_scs);
     let mut full_stats = Vec::new();
     let mut executed = 0;
     while executed < nb_scs {
-        let nb_exec = rng.gen_range(1..100);
+        let nb_exec = rng.gen_range(1..40);
         println!("Executing {} SCs", nb_exec);
         let stats = execute_batch_sc::execute_batch_sc(
             executed,
