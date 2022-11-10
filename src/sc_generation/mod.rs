@@ -9,6 +9,7 @@ use massa_models::datastore::Datastore;
 use massa_signature::KeyPair;
 use pbr::ProgressBar;
 use rand::Rng;
+use rand::seq::SliceRandom;
 use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 
 pub mod abis;
@@ -89,6 +90,7 @@ fn generate_nb_each_call(max_nb: u64, max_call_index: u64) -> Vec<usize> {
             call_indexes.push(i as usize);
         }
     }
+    call_indexes.shuffle(&mut rng);
     call_indexes
 } 
 

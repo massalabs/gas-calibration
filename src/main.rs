@@ -8,9 +8,9 @@ mod sc_generation;
 fn main() {
     let mut rng = rand::thread_rng();
     let nb_scs = 1000;
-    let op_datastore = sc_generation::read_existing_op_datastore();
-    //let op_datastore = sc_generation::generate_op_datastore();
-    //sc_generation::generate_scs(nb_scs, 300, op_datastore.clone());
+    //let op_datastore = sc_generation::read_existing_op_datastore();
+    let op_datastore = sc_generation::generate_op_datastore();
+    sc_generation::generate_scs(nb_scs, 300, op_datastore.clone());
     let mut pb = ProgressBar::new(nb_scs as u64);
     println!("Executing {} SCs", nb_scs);
     let mut full_stats = Vec::new();
