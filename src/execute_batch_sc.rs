@@ -35,9 +35,9 @@ pub fn execute_batch_sc(
     for bytecode in bytecodes {
         let start = std::time::Instant::now();
         let mut results = run_main_gc(&bytecode, u64::MAX, &interface).unwrap();
-        let end = std::time::Instant::now();
+        let time_exec = start.elapsed();
         results.0.insert(String::from("Size"), bytecode.len() as u64);
-        total_execution_time += end - start;
+        total_execution_time += time_exec;
         for (key, value) in results.0 {
             let entry = total_execution_stats.entry(key).or_insert(0);
             *entry += value;

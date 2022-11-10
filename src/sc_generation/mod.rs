@@ -80,19 +80,31 @@ pub fn generate_op_datastore() -> Datastore {
     datastore
 }
 
+fn generate_nb_each_call(max_nb: u64, max_call_index: u64) -> Vec<usize> {
+    let mut rng = rand::thread_rng();
+    let mut call_indexes = Vec::new();
+    for i in 0..max_call_index {
+        let nb_this_call = rng.gen_range(0..max_nb);
+        for _ in 0..nb_this_call {
+            call_indexes.push(i as usize);
+        }
+    }
+    call_indexes
+} 
+
 fn generate_calls(
     abis: Vec<Vec<String>>,
-    limit_calls: u32,
+    limit_per_calls: u64,
     op_datastore: Datastore,
 ) -> Vec<String> {
     let mut rng = rand::thread_rng();
 
-    let nb_calls = rng.gen_range(0..limit_calls);
     let mut calls = Vec::new();
     let mut saved_key = String::new();
     let mut calls_to_add = Vec::new();
-    for index_call in 0..nb_calls {
-        let abi = abis[rng.gen_range(0..abis.len())].clone();
+    let call_indexes = generate_nb_each_call(limit_per_calls, abis.len() as u64);
+    for (index_call, abi_index) in call_indexes.iter().enumerate() {
+        let abi = abis[*abi_index].clone();
         if abi[0] == "call" {
             continue;
         }
@@ -179,7 +191,7 @@ fn generate_calls(
 
     for (i, (abi, key, index_call)) in calls_to_add.iter().enumerate() {
         let call = format!("env.{}({});", abi, key);
-        let index_call = (*index_call + i as u32) / 2;
+        let index_call = (*index_call + i as usize) / 2;
         if index_call <= 0 {
             calls.insert(0, call);
         } else {
@@ -189,14 +201,14 @@ fn generate_calls(
     calls
 }
 
-pub fn generate_scs(nb_sc: u32, limit_calls: u32, op_datastore: Datastore) {
+pub fn generate_scs(nb_sc: u32, limit_per_calls_per_sc: u64, op_datastore: Datastore) {
     let abis = abis::get_abis();
     println!("Generating {} smart contracts", nb_sc);
     let mut pb = ProgressBar::new(nb_sc as u64);
     (0..nb_sc).into_par_iter().for_each(|i| {
         let op_datastore_clone = op_datastore.clone();
         let abis_clone = abis.clone();
-        let calls = generate_calls(abis_clone, limit_calls, op_datastore_clone.clone());
+        let calls = generate_calls(abis_clone, limit_per_calls_per_sc, op_datastore_clone.clone());
         let template_index = format!(
             "import {{env}} from './env';
 

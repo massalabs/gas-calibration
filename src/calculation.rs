@@ -7,7 +7,7 @@ fn initialize_data() -> Vec<(String, Vec<f64>)> {
     let mut data = vec![
         (String::from("Time"), vec![]),
         //(String::from("Size"), vec![]),
-        //(String::from("Launch"), vec![]),
+        (String::from("Launch"), vec![]),
         ];
     let abis = abis::get_abis_full_name();
     for abi in abis {
