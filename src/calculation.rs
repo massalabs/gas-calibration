@@ -1,21 +1,18 @@
-use crate::sc_generation::abis;
 use nnls::nnls;
 use ndarray::{Array1, Array2};
-use std::{collections::HashMap, time::Duration};
+use std::{collections::HashMap, time::Duration, fs::File};
+use std::io::Write;
 
-fn initialize_data() -> Vec<(String, Vec<f64>)> {
+use crate::sc_generation;
+
+fn initialize_data(abi_index: usize) -> Vec<(String, Vec<f64>)> {
+    let abis = sc_generation::abis::get_abis_full_name();
     let mut data = vec![
         (String::from("Time"), vec![]),
-        //(String::from("Size"), vec![]),
+        (String::from("Size"), vec![]),
         (String::from("Launch"), vec![]),
         ];
-    let abis = abis::get_abis_full_name();
-    for abi in abis {
-        if abi == "assembly_script_call" {
-            continue;
-        }
-        data.push((format!("Abi:call:massa.{}", abi.as_str()), vec![]));
-    }
+    data.push((format!("Abi:call:massa.{}", abis[abi_index]), vec![]));
     data
 }
 
@@ -33,8 +30,20 @@ fn transpose<T>(v: Vec<Vec<T>>) -> Vec<Vec<T>> {
         .collect()
 }
 
-pub fn calculate_times(results: Vec<(HashMap<String, u64>, Duration)>) -> Vec<Duration> {
-    let mut data = initialize_data();
+pub fn compile_and_write_results(
+    results: HashMap<String, Vec<f64>>
+) -> Vec<(String, f64)> {
+    let mut final_results = Vec::new();
+    for (key, value) in results.iter() {
+        final_results.push((key.clone(), (value.iter().sum::<f64>() / value.len() as f64)));
+    }
+    let mut output = File::create("./gas_costs.json").unwrap();
+    write!(output, "{}", serde_json::to_string(&final_results).unwrap()).unwrap();
+    final_results
+}
+
+pub fn calculate_times(abi_index: usize, results: Vec<(HashMap<String, u64>, Duration)>) -> HashMap<String, f64> {
+    let mut data = initialize_data(abi_index);
     for (stats, time) in results {
         data[0].1.push(time.as_nanos() as f64);
         for (key, value) in data.iter_mut().skip(1) {
@@ -42,18 +51,9 @@ pub fn calculate_times(results: Vec<(HashMap<String, u64>, Duration)>) -> Vec<Du
         }
     }
     let values: Vec<Vec<f64>> = transpose(data[1..].iter().map(|elem| elem.1.clone()).collect());
-    println!("nb batches {}", values.len());
     let arr = Array2::from_shape_vec((values.len(), values[0].len()), values.into_iter().flatten().collect()).unwrap();
-    for i in 0..5 {
-        let row = arr.row(i);
-        println!("row {}: {:?}", i, row);
-    }
     let times = Array1::from_shape_vec(data[0].1.len(), data[0].1.clone()).unwrap();
-    for i in 0..5 {
-        println!("time {}: {:?}", i, times[i]);
-    }
     let (alphas, _residual) = nnls(arr.view(), times.view());
-    let alphas = alphas.iter().enumerate().map(|elem| (data[elem.0 + 1].0.clone(), *elem.1 )).collect::<Vec<(String, f64)>>();
-    println!("alphas2: {:?}", alphas);
-    Vec::new()
+    let alphas = alphas.iter().enumerate().map(|elem| (data[elem.0 + 1].0.clone(), (*elem.1 / 1_000_000_000f64) )).collect::<Vec<(String, f64)>>();
+    alphas.into_iter().collect()
 }

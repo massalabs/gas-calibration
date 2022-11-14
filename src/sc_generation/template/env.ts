@@ -4,8 +4,8 @@ export namespace env {
     export declare function print(message: string): void;
   
     // @ts-ignore
-    @external("massa", "assembly_script_call")
-    export declare function call(address: string, func: string, param: string, coins: u64): string;
+    //@external("massa", "assembly_script_call")
+    //export declare function call(address: string, func: string, param: string, coins: u64): string;
   
     // @ts-ignore
     @external("massa", "assembly_script_get_remaining_gas")

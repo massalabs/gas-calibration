@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "asc index.ts --target release --exportRuntime --runtime stub --outFile build/$SC_NAME.wasm",
+    "build": "asc build/$SC_NAME.ts --target release --exportRuntime --runtime stub --outFile build/$SC_NAME.wasm",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
