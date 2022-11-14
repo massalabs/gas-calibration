@@ -31,14 +31,22 @@ fn transpose<T>(v: Vec<Vec<T>>) -> Vec<Vec<T>> {
 }
 
 pub fn compile_and_write_results(
-    results: HashMap<String, Vec<f64>>
+    results: HashMap<String, Vec<f64>>,
+    max_gas: u32,
+    max_execution_time: Duration
 ) -> Vec<(String, f64)> {
     let mut final_results = Vec::new();
+    let mut gas_costs: Vec<(String, u32)> = Vec::new();
     for (key, value) in results.iter() {
         final_results.push((key.clone(), (value.iter().sum::<f64>() / value.len() as f64)));
     }
-    let mut output = File::create("./gas_costs.json").unwrap();
+    let mut output = File::create("./results/results.json").unwrap();
     write!(output, "{}", serde_json::to_string(&final_results).unwrap()).unwrap();
+    for (key, value) in final_results.iter() {
+        gas_costs.push((key.clone(), (max_gas as f64 / (max_execution_time.as_millis() as f64 / value)) as u32));
+    }
+    let mut output = File::create("./results/gas_costs.json").unwrap();
+    write!(output, "{}", serde_json::to_string(&gas_costs).unwrap()).unwrap();
     final_results
 }
 

@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, time::Duration};
 
 use rand::Rng;
 use clap::Parser;
@@ -46,5 +46,5 @@ fn main() {
         pb.inc();
     }
     pb.finish_print("Finished executing SCs");
-    compile_and_write_results(full_results);
+    compile_and_write_results(full_results, u32::MAX, Duration::from_millis(400));
 }
