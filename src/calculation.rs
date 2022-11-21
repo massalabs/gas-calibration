@@ -1,7 +1,8 @@
-use nnls::nnls;
 use ndarray::{Array1, Array2};
-use std::{collections::HashMap, time::Duration, fs::File};
+use nnls::nnls;
+use std::collections::BTreeMap;
 use std::io::Write;
+use std::{collections::HashMap, fs::File, time::Duration};
 
 use crate::sc_generation;
 
@@ -11,7 +12,7 @@ fn initialize_data(abi_index: usize) -> Vec<(String, Vec<f64>)> {
         (String::from("Time"), vec![]),
         (String::from("Size"), vec![]),
         (String::from("Launch"), vec![]),
-        ];
+    ];
     data.push((format!("Abi:call:massa.{}", abis[abi_index]), vec![]));
     data
 }
@@ -33,24 +34,30 @@ fn transpose<T>(v: Vec<Vec<T>>) -> Vec<Vec<T>> {
 pub fn compile_and_write_results(
     results: HashMap<String, Vec<f64>>,
     max_gas: u32,
-    max_execution_time: Duration
-) -> Vec<(String, f64)> {
-    let mut final_results = Vec::new();
-    let mut gas_costs: Vec<(String, u32)> = Vec::new();
+    max_execution_time: Duration,
+) -> BTreeMap<String, f64> {
+    let mut final_results: BTreeMap<String, f64> = BTreeMap::new();
+    let mut gas_costs: BTreeMap<String, u32> = BTreeMap::new();
     for (key, value) in results.iter() {
-        final_results.push((key.clone(), (value.iter().sum::<f64>() / value.len() as f64)));
+        final_results.insert(key.clone(), value.iter().sum::<f64>() / value.len() as f64);
     }
     let mut output = File::create("./results/results.json").unwrap();
     write!(output, "{}", serde_json::to_string(&final_results).unwrap()).unwrap();
     for (key, value) in final_results.iter() {
-        gas_costs.push((key.clone(), (max_gas as f64 / (max_execution_time.as_millis() as f64 / value)) as u32));
+        gas_costs.insert(
+            key.clone(),
+            (max_gas as f64 / (max_execution_time.as_millis() as f64 / value)) as u32,
+        );
     }
     let mut output = File::create("./results/gas_costs.json").unwrap();
     write!(output, "{}", serde_json::to_string(&gas_costs).unwrap()).unwrap();
     final_results
 }
 
-pub fn calculate_times(abi_index: usize, results: Vec<(HashMap<String, u64>, Duration)>) -> HashMap<String, f64> {
+pub fn calculate_times(
+    abi_index: usize,
+    results: Vec<(HashMap<String, u64>, Duration)>,
+) -> HashMap<String, f64> {
     let mut data = initialize_data(abi_index);
     for (stats, time) in results {
         data[0].1.push(time.as_nanos() as f64);
@@ -59,9 +66,17 @@ pub fn calculate_times(abi_index: usize, results: Vec<(HashMap<String, u64>, Dur
         }
     }
     let values: Vec<Vec<f64>> = transpose(data[1..].iter().map(|elem| elem.1.clone()).collect());
-    let arr = Array2::from_shape_vec((values.len(), values[0].len()), values.into_iter().flatten().collect()).unwrap();
+    let arr = Array2::from_shape_vec(
+        (values.len(), values[0].len()),
+        values.into_iter().flatten().collect(),
+    )
+    .unwrap();
     let times = Array1::from_shape_vec(data[0].1.len(), data[0].1.clone()).unwrap();
     let (alphas, _residual) = nnls(arr.view(), times.view());
-    let alphas = alphas.iter().enumerate().map(|elem| (data[elem.0 + 1].0.clone(), (*elem.1 / 1_000_000_000f64) )).collect::<Vec<(String, f64)>>();
+    let alphas = alphas
+        .iter()
+        .enumerate()
+        .map(|elem| (data[elem.0 + 1].0.clone(), (*elem.1 / 1_000_000_000f64)))
+        .collect::<Vec<(String, f64)>>();
     alphas.into_iter().collect()
 }

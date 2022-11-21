@@ -1,7 +1,7 @@
 use std::{collections::HashMap, time::Duration};
 
-use rand::Rng;
 use clap::Parser;
+use rand::Rng;
 
 use crate::calculation::compile_and_write_results;
 
@@ -33,7 +33,8 @@ fn main() {
             let nb_exec = rng.gen_range(1..6);
             let stats = execute_batch_sc::execute_batch_sc(
                 executed + (abi_index as u32 * nb_scs_by_abi),
-                std::cmp::min(nb_scs_by_abi, executed + nb_exec) + (abi_index as u32 * nb_scs_by_abi),
+                std::cmp::min(nb_scs_by_abi, executed + nb_exec)
+                    + (abi_index as u32 * nb_scs_by_abi),
                 op_datastore.clone(),
             );
             executed += nb_exec;
@@ -41,7 +42,10 @@ fn main() {
         }
         let results = calculation::calculate_times(abi_index, full_stats);
         for (key, value) in results.iter() {
-            full_results.entry(key.clone()).or_insert(Vec::new()).push(*value);
+            full_results
+                .entry(key.clone())
+                .or_insert(Vec::new())
+                .push(*value);
         }
         pb.inc();
     }

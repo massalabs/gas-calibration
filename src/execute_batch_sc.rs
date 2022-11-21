@@ -13,6 +13,7 @@ pub fn execute_batch_sc(
     let mut bytecodes = Vec::new();
     for i in first_sc_index..last_sc_index {
         let filename = format!("./src/sc_generation/template/build/SC_{}.wasm", i);
+        //let filename = format!("./src/sc_generation/template/test.wasm");
         let file = File::open(&filename);
         if file.is_err() {
             continue;
@@ -37,7 +38,9 @@ pub fn execute_batch_sc(
         for (_key, value) in results.timers {
             time_exec -= Duration::from_secs_f64(value);
         }
-        results.counters.insert(String::from("Size"), bytecode.len() as u64);
+        results
+            .counters
+            .insert(String::from("Size"), bytecode.len() as u64);
         total_execution_time += time_exec;
         for (key, value) in results.counters {
             let entry = total_execution_stats.entry(key).or_insert(0);

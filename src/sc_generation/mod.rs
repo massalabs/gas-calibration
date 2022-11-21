@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{Write, Read};
+use std::io::{Read, Write};
 use std::process::Command;
 use std::str::FromStr;
 
@@ -75,15 +75,22 @@ pub fn generate_op_datastore() -> Datastore {
         datastore.insert(key, value);
     }
     let mut output = File::create("./src/sc_generation/template/op_datastore.json").unwrap();
-    write!(output, "{}", serde_json::to_string(&datastore.clone().into_iter().collect::<Vec<(Vec<u8>, Vec<u8>)>>()).unwrap()).unwrap();
+    write!(
+        output,
+        "{}",
+        serde_json::to_string(
+            &datastore
+                .clone()
+                .into_iter()
+                .collect::<Vec<(Vec<u8>, Vec<u8>)>>()
+        )
+        .unwrap()
+    )
+    .unwrap();
     datastore
 }
 
-fn generate_calls(
-    abi: Vec<String>,
-    limit_per_calls: u64,
-    op_datastore: Datastore,
-) -> Vec<String> {
+fn generate_calls(abi: Vec<String>, limit_per_calls: u64, op_datastore: Datastore) -> Vec<String> {
     let mut rng = rand::thread_rng();
 
     let mut calls = Vec::new();
@@ -187,7 +194,11 @@ pub fn generate_scs(nb_sc_per_abi: u32, limit_per_calls_per_sc: u64, op_datastor
     for (index_abi, abi) in abis.iter().enumerate() {
         (0..nb_sc_per_abi).into_par_iter().for_each(|i| {
             let op_datastore_clone = op_datastore.clone();
-            let calls = generate_calls(abi.clone(), limit_per_calls_per_sc, op_datastore_clone.clone());
+            let calls = generate_calls(
+                abi.clone(),
+                limit_per_calls_per_sc,
+                op_datastore_clone.clone(),
+            );
             let template_index = format!(
                 "import {{env}} from '../env';
 
@@ -198,7 +209,11 @@ pub fn generate_scs(nb_sc_per_abi: u32, limit_per_calls_per_sc: u64, op_datastor
             );
             let mut output = File::create("./src/sc_generation/template/index.ts").unwrap();
             write!(output, "{}", template_index).unwrap();
-            let mut src = File::create(format!("./src/sc_generation/template/build/SC_{}.ts", (index_abi as u32 * nb_sc_per_abi) + i)).unwrap();
+            let mut src = File::create(format!(
+                "./src/sc_generation/template/build/SC_{}.ts",
+                (index_abi as u32 * nb_sc_per_abi) + i
+            ))
+            .unwrap();
             write!(src, "{}", template_index).unwrap();
         });
         pb.inc();
@@ -207,14 +222,19 @@ pub fn generate_scs(nb_sc_per_abi: u32, limit_per_calls_per_sc: u64, op_datastor
 }
 
 pub fn build_scs(nb_sc_per_abi: u32, abis: Vec<Vec<String>>) {
-    println!("building {} smart contracts...", nb_sc_per_abi * abis.len() as u32);
-    (0..(nb_sc_per_abi * abis.len() as u32)).into_par_iter().for_each(|i| {
-        Command::new("npm")
-            .arg("run")
-            .arg("build")
-            .env("SC_NAME", format!("SC_{}", i))
-            .current_dir("./src/sc_generation/template")
-            .output()
-            .expect("failed to execute process");
-    });
+    println!(
+        "building {} smart contracts...",
+        nb_sc_per_abi * abis.len() as u32
+    );
+    (0..(nb_sc_per_abi * abis.len() as u32))
+        .into_par_iter()
+        .for_each(|i| {
+            Command::new("npm")
+                .arg("run")
+                .arg("build")
+                .env("SC_NAME", format!("SC_{}", i))
+                .current_dir("./src/sc_generation/template")
+                .output()
+                .expect("failed to execute process");
+        });
 }
