@@ -31,22 +31,48 @@ fn transpose<T>(v: Vec<Vec<T>>) -> Vec<Vec<T>> {
         .collect()
 }
 
+fn mean(data: &[f64]) -> Option<f64> {
+    let sum = data.iter().sum::<f64>();
+    let count = data.len();
+
+    match count {
+        positive if positive > 0 => Some(sum / count as f64),
+        _ => None,
+    }
+}
+
+fn std_deviation(data: &[f64]) -> Option<f64> {
+    match (mean(data), data.len()) {
+        (Some(data_mean), count) if count > 0 => {
+            let variance = data.iter().map(|value| {
+                let diff = data_mean - (*value as f64);
+
+                diff * diff
+            }).sum::<f64>() / count as f64;
+
+            Some(variance.sqrt())
+        },
+        _ => None
+    }
+}
+
 pub fn compile_and_write_results(
     results: HashMap<String, Vec<f64>>,
     max_gas: u32,
     max_execution_time: Duration,
-) -> BTreeMap<String, f64> {
-    let mut final_results: BTreeMap<String, f64> = BTreeMap::new();
+) -> BTreeMap<String, (f64, usize, f64)> {
+    // Mean, number of element, standard deviation
+    let mut final_results: BTreeMap<String, (f64, usize, f64)> = BTreeMap::new();
     let mut gas_costs: BTreeMap<String, u32> = BTreeMap::new();
     for (key, value) in results.iter() {
-        final_results.insert(key.clone(), value.iter().sum::<f64>() / value.len() as f64);
+        final_results.insert(key.clone(), (value.iter().sum::<f64>() / value.len() as f64, value.len(), std_deviation(value).unwrap()));
     }
     let mut output = File::create("./results/results.json").unwrap();
     write!(output, "{}", serde_json::to_string(&final_results).unwrap()).unwrap();
     for (key, value) in final_results.iter() {
         gas_costs.insert(
             key.clone(),
-            (max_gas as f64 / (max_execution_time.as_millis() as f64 / value)) as u32,
+            (max_gas as f64 / (max_execution_time.as_millis() as f64 / value.0)) as u32,
         );
     }
     let mut output = File::create("./results/gas_costs.json").unwrap();
