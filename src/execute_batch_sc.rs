@@ -23,8 +23,11 @@ pub fn execute_batch_sc(
         let mut bytecode = vec![];
         file.read_to_end(&mut bytecode)
             .expect(&format!("Failed to read {}", filename));
-            //TODO: Change here
-        let preparation_bytecode = if let Ok(mut file) = File::open(format!("./src/sc_generation/template/build/SC_preparation_{}.wasm", i)) {
+        //TODO: Change here
+        let preparation_bytecode = if let Ok(mut file) = File::open(format!(
+            "./src/sc_generation/template/build/SC_preparation_{}.wasm",
+            i
+        )) {
             let mut bytecode = vec![];
             file.read_to_end(&mut bytecode)
                 .expect(&format!("Failed to read {}", filename));
@@ -43,7 +46,7 @@ pub fn execute_batch_sc(
             Some(op_datastore.clone()),
         );
         if let Some(preparation_bytecode) = preparation_bytecode {
-            run_main_gc(&preparation_bytecode, u64::MAX, &interface).unwrap();   
+            run_main_gc(&preparation_bytecode, u64::MAX, &interface).unwrap();
         }
         let start = std::time::Instant::now();
         let mut results = run_main_gc(&bytecode, u64::MAX, &interface).unwrap();

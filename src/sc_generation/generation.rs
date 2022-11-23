@@ -1,6 +1,6 @@
-use std::{str::FromStr, fs::File};
+use std::{fs::File, str::FromStr};
 
-use massa_models::{address::Address, datastore::Datastore, config::THREAD_COUNT};
+use massa_models::{address::Address, config::THREAD_COUNT, datastore::Datastore};
 use massa_signature::KeyPair;
 use rand::Rng;
 use std::io::Write;
@@ -70,7 +70,11 @@ pub fn generate_op_datastore() -> Datastore {
 }
 
 // Return type: preparation calls, calls
-pub fn generate_calls(abi: Vec<String>, limit_per_calls: u64, op_datastore: Datastore) -> (Vec<String>, Vec<String>) {
+pub fn generate_calls(
+    abi: Vec<String>,
+    limit_per_calls: u64,
+    op_datastore: Datastore,
+) -> (Vec<String>, Vec<String>) {
     let mut rng = rand::thread_rng();
 
     let mut calls = Vec::new();

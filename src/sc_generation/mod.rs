@@ -24,8 +24,6 @@ pub fn read_existing_op_datastore() -> Datastore {
     datastore
 }
 
-
-
 fn write_sc(calls: Vec<String>, file_name: String) {
     let template_index = format!(
         "import {{env}} from '../env';
@@ -58,10 +56,15 @@ pub fn generate_scs(nb_sc_per_abi: u32, limit_per_calls_per_sc: u64, op_datastor
                 op_datastore_clone.clone(),
             );
             if !preparation_calls.is_empty() {
-                write_sc(preparation_calls, format!("preparation_{}", ((index_abi as u32 * nb_sc_per_abi) + i).to_string()));
+                write_sc(
+                    preparation_calls,
+                    format!(
+                        "preparation_{}",
+                        ((index_abi as u32 * nb_sc_per_abi) + i).to_string()
+                    ),
+                );
             }
             write_sc(calls, ((index_abi as u32 * nb_sc_per_abi) + i).to_string());
-            
         });
         pb.inc();
     }
@@ -77,12 +80,12 @@ pub fn build_scs(nb_sc_per_abi: u32, abis: Vec<Vec<String>>) {
         .into_par_iter()
         .for_each(|i| {
             Command::new("npm")
-            .arg("run")
-            .arg("build")
-            .env("SC_NAME", format!("SC_preparation_{}", i))
-            .current_dir("./src/sc_generation/template")
-            .output()
-            .expect("failed to execute process");
+                .arg("run")
+                .arg("build")
+                .env("SC_NAME", format!("SC_preparation_{}", i))
+                .current_dir("./src/sc_generation/template")
+                .output()
+                .expect("failed to execute process");
             Command::new("npm")
                 .arg("run")
                 .arg("build")

@@ -4,19 +4,6 @@ use std::collections::BTreeMap;
 use std::io::Write;
 use std::{collections::HashMap, fs::File, time::Duration};
 
-use crate::sc_generation;
-
-fn initialize_data(abi_index: usize) -> Vec<(String, Vec<f64>)> {
-    let abis = sc_generation::abis::get_abis_full_name();
-    let mut data = vec![
-        (String::from("Time"), vec![]),
-        (String::from("Size"), vec![]),
-        (String::from("Launch"), vec![]),
-    ];
-    data.push((format!("Abi:call:massa.{}", abis[abi_index]), vec![]));
-    data
-}
-
 fn transpose<T>(v: Vec<Vec<T>>) -> Vec<Vec<T>> {
     assert!(!v.is_empty());
     let len = v[0].len();
@@ -44,15 +31,19 @@ fn mean(data: &[f64]) -> Option<f64> {
 fn std_deviation(data: &[f64]) -> Option<f64> {
     match (mean(data), data.len()) {
         (Some(data_mean), count) if count > 0 => {
-            let variance = data.iter().map(|value| {
-                let diff = data_mean - (*value as f64);
+            let variance = data
+                .iter()
+                .map(|value| {
+                    let diff = data_mean - (*value as f64);
 
-                diff * diff
-            }).sum::<f64>() / count as f64;
+                    diff * diff
+                })
+                .sum::<f64>()
+                / count as f64;
 
             Some(variance.sqrt())
-        },
-        _ => None
+        }
+        _ => None,
     }
 }
 
@@ -65,10 +56,22 @@ pub fn compile_and_write_results(
     let mut final_results: BTreeMap<String, (f64, usize, f64)> = BTreeMap::new();
     let mut gas_costs: BTreeMap<String, u32> = BTreeMap::new();
     for (key, value) in results.iter() {
-        final_results.insert(key.clone(), (value.iter().sum::<f64>() / value.len() as f64, value.len(), std_deviation(value).unwrap()));
+        final_results.insert(
+            key.clone(),
+            (
+                value.iter().sum::<f64>() / value.len() as f64,
+                value.len(),
+                std_deviation(value).unwrap(),
+            ),
+        );
     }
     let mut output = File::create("./results/results.json").unwrap();
-    write!(output, "{}", serde_json::to_string_pretty(&final_results).unwrap()).unwrap();
+    write!(
+        output,
+        "{}",
+        serde_json::to_string_pretty(&final_results).unwrap()
+    )
+    .unwrap();
     for (key, value) in final_results.iter() {
         gas_costs.insert(
             key.clone(),
@@ -76,21 +79,31 @@ pub fn compile_and_write_results(
         );
     }
     let mut output = File::create("./results/gas_costs.json").unwrap();
-    write!(output, "{}", serde_json::to_string_pretty(&gas_costs).unwrap()).unwrap();
+    write!(
+        output,
+        "{}",
+        serde_json::to_string_pretty(&gas_costs).unwrap()
+    )
+    .unwrap();
     final_results
 }
 
-pub fn calculate_times(
-    abi_index: usize,
-    results: Vec<(HashMap<String, u64>, Duration)>,
-) -> HashMap<String, f64> {
-    let mut data = initialize_data(abi_index);
+pub fn calculate_times(results: Vec<(HashMap<String, u64>, Duration)>) -> HashMap<String, f64> {
+    let mut data: Vec<(String, Vec<f64>)> = Vec::new();
+    data.push((String::from("Time"), Vec::new()));
     for (stats, time) in results {
         data[0].1.push(time.as_nanos() as f64);
-        for (key, value) in data.iter_mut().skip(1) {
-            value.push(*stats.get(key).unwrap_or(&0) as f64);
+        for (key, value) in stats {
+            if let Some(pos) = data.iter().position(|(k, _)| k == &key) {
+                data.get_mut(pos).unwrap().1.push(value as f64);
+            } else {
+                data.push((key, vec![value as f64]));
+            }
         }
     }
+    data.retain(|(_, value)| value.iter().any(|n| *n != 0.0));
+
+    println!("data: {:?}", data);
     let values: Vec<Vec<f64>> = transpose(data[1..].iter().map(|elem| elem.1.clone()).collect());
     let arr = Array2::from_shape_vec(
         (values.len(), values[0].len()),
@@ -104,5 +117,6 @@ pub fn calculate_times(
         .enumerate()
         .map(|elem| (data[elem.0 + 1].0.clone(), (*elem.1 / 1_000_000_000f64)))
         .collect::<Vec<(String, f64)>>();
+    println!("alphas: {:?}", alphas);
     alphas.into_iter().collect()
 }
