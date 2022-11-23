@@ -18,7 +18,7 @@ fn main() {
     let op_datastore = if args.skip_generation_scs {
         sc_generation::read_existing_op_datastore()
     } else {
-        let datastore = sc_generation::generate_op_datastore();
+        let datastore = sc_generation::generation::generate_op_datastore();
         sc_generation::generate_scs(nb_scs_by_abi, 300, datastore.clone());
         sc_generation::build_scs(nb_scs_by_abi, abis.clone());
         datastore

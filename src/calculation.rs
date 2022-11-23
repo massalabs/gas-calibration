@@ -68,7 +68,7 @@ pub fn compile_and_write_results(
         final_results.insert(key.clone(), (value.iter().sum::<f64>() / value.len() as f64, value.len(), std_deviation(value).unwrap()));
     }
     let mut output = File::create("./results/results.json").unwrap();
-    write!(output, "{}", serde_json::to_string(&final_results).unwrap()).unwrap();
+    write!(output, "{}", serde_json::to_string_pretty(&final_results).unwrap()).unwrap();
     for (key, value) in final_results.iter() {
         gas_costs.insert(
             key.clone(),
@@ -76,7 +76,7 @@ pub fn compile_and_write_results(
         );
     }
     let mut output = File::create("./results/gas_costs.json").unwrap();
-    write!(output, "{}", serde_json::to_string(&gas_costs).unwrap()).unwrap();
+    write!(output, "{}", serde_json::to_string_pretty(&gas_costs).unwrap()).unwrap();
     final_results
 }
 
