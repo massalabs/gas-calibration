@@ -50,6 +50,7 @@ pub fn execute_batch_sc(
         }
         let start = std::time::Instant::now();
         let mut results = run_main_gc(&bytecode, u64::MAX, &interface).unwrap();
+        //println!("Results: {:?}", results);
         let mut time_exec = start.elapsed();
         for (_key, value) in results.timers {
             time_exec -= Duration::from_secs_f64(value);

@@ -30,8 +30,9 @@ fn main() {
     for (abi_index, _) in abis.iter().enumerate() {
         let mut full_stats = Vec::new();
         let mut executed = 0;
+        //let mut nb_batches = 0;
         while executed < nb_scs_by_abi {
-            let nb_exec = rng.gen_range(1..3);
+            let nb_exec = rng.gen_range(1..6);
             let stats = execute_batch_sc::execute_batch_sc(
                 executed + (abi_index as u32 * nb_scs_by_abi),
                 std::cmp::min(nb_scs_by_abi, executed + nb_exec)
@@ -40,7 +41,9 @@ fn main() {
             );
             executed += nb_exec;
             full_stats.push(stats);
+            //nb_batches += 1;
         }
+        //println!("{} batches executed", nb_batches);
         let results = calculation::calculate_times(full_stats);
         for (key, value) in results.iter() {
             full_results

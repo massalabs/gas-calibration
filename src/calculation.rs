@@ -88,12 +88,22 @@ pub fn compile_and_write_results(
     final_results
 }
 
+fn is_filtered(key: &str) -> bool {
+    match key {
+        "Wasm:GlobalSet" | "Wasm:GlobalGet" | "Wasm:I32Add" | "Wasm:I32Xor" | "Wasm:I32And" | "Wasm:I32Const" | "Wasm:I32Sub" => true,
+        _ => false,
+    }
+}
+
 pub fn calculate_times(results: Vec<(HashMap<String, u64>, Duration)>) -> HashMap<String, f64> {
     let mut data: Vec<(String, Vec<f64>)> = Vec::new();
     data.push((String::from("Time"), Vec::new()));
     for (stats, time) in results {
         data[0].1.push(time.as_nanos() as f64);
         for (key, value) in stats {
+            if is_filtered(&key) {
+                continue;
+            }
             if let Some(pos) = data.iter().position(|(k, _)| k == &key) {
                 data.get_mut(pos).unwrap().1.push(value as f64);
             } else {
