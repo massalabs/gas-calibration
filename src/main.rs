@@ -26,8 +26,8 @@ fn main() {
     println!("Executing {} SCs per abis", nb_scs_by_abi);
     let mut pb = pbr::ProgressBar::new(abis.len() as u64);
     let mut full_results: HashMap<String, Vec<f64>> = HashMap::new();
-    //let abi_index = 0;
-    for (abi_index, _) in abis.iter().enumerate() {
+    let abi_index = 0;
+    //for (abi_index, _) in abis.iter().enumerate() {
         let mut full_stats = Vec::new();
         let mut executed = 0;
         //let mut nb_batches = 0;
@@ -44,7 +44,7 @@ fn main() {
             //nb_batches += 1;
         }
         //println!("{} batches executed", nb_batches);
-        let results = calculation::calculate_times(full_stats);
+        let results = calculation::calculate_times(full_stats, true);
         for (key, value) in results.iter() {
             full_results
                 .entry(key.clone())
@@ -52,7 +52,7 @@ fn main() {
                 .push(*value);
         }
         pb.inc();
-    }
+    //}
     pb.finish_print("Finished executing SCs");
-    compile_and_write_results(full_results, u32::MAX, Duration::from_millis(400));
+    compile_and_write_results(full_results, u32::MAX, Duration::from_millis(300));
 }
