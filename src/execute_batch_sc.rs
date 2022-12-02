@@ -46,10 +46,10 @@ pub fn execute_batch_sc(
             Some(op_datastore.clone()),
         );
         if let Some(preparation_bytecode) = preparation_bytecode {
-            run_main_gc(&preparation_bytecode, u64::MAX, &interface).unwrap();
+            run_main_gc(&preparation_bytecode, u64::MAX, &interface, &[]).unwrap();
         }
         let start = std::time::Instant::now();
-        let mut results = run_main_gc(&bytecode, u64::MAX, &interface).unwrap();
+        let mut results = run_main_gc(&bytecode, u64::MAX, &interface, &[]).unwrap();
         //println!("Results: {:?}", results);
         let mut time_exec = start.elapsed();
         for (_key, value) in results.timers {

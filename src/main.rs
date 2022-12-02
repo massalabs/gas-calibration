@@ -27,7 +27,7 @@ fn main() {
     let mut pb = pbr::ProgressBar::new(abis.len() as u64);
     let mut full_results: HashMap<String, Vec<f64>> = HashMap::new();
     let abi_index = 0;
-    //for (abi_index, _) in abis.iter().enumerate() {
+    for (abi_index, _) in abis.iter().enumerate() {
         let mut full_stats = Vec::new();
         let mut executed = 0;
         //let mut nb_batches = 0;
@@ -52,7 +52,7 @@ fn main() {
                 .push(*value);
         }
         pb.inc();
-    //}
+    }
     pb.finish_print("Finished executing SCs");
     compile_and_write_results(full_results, u32::MAX, Duration::from_millis(300));
 }

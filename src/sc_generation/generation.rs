@@ -49,9 +49,21 @@ pub fn generate_op_datastore() -> Datastore {
     let mut datastore: Datastore = Datastore::new();
     let nb_entries = 100;
     for _ in 0..nb_entries + 1 {
-        let key = generate_u8_array(rng.gen_range(5..32));
-        let value = generate_u8_array(rng.gen_range(1..100));
-        datastore.insert(key, value);
+        unsafe {
+            let key = generate_string(rng.gen_range(5..32))
+                .encode_utf16()
+                .collect::<Vec<u16>>()
+                .align_to::<u8>()
+                .1
+                .to_vec();
+            let value = generate_string(rng.gen_range(5..100))
+                .encode_utf16()
+                .collect::<Vec<u16>>()
+                .align_to::<u8>()
+                .1
+                .to_vec();
+            datastore.insert(key, value);
+        }
     }
     let mut output = File::create("./src/sc_generation/template/op_datastore.json").unwrap();
     write!(
@@ -97,7 +109,7 @@ pub fn generate_calls(
                 ("to", "string") => format!("\"{}\"", generate_address()),
                 ("address" | "from", "string") => format!("\"{}\"", static_address()),
                 ("publicKey", "string") => format!("\"{}\"", static_public_key()),
-                ("key", "string") => {
+                ("key", "StaticArray<u8>") => {
                     let mut key = generate_string(rng.gen_range(5..32));
                     if abi[0] == "set" {
                         saved_key = key.clone();
@@ -112,7 +124,7 @@ pub fn generate_calls(
                             preparation_calls.push((
                                 "set",
                                 format!(
-                                    "\"{}\", \"{}\"",
+                                    "toBytes(\"{}\"), to_bytes(\"{}\")",
                                     key,
                                     generate_string(rng.gen_range(1..1000))
                                 ),
@@ -130,6 +142,9 @@ pub fn generate_calls(
                     base64::encode(generate_string(rng.gen_range(0..1000)))
                 ),
                 (_, "string") => format!("\"{}\"", generate_string(rng.gen_range(0..1000))),
+                (_, "StaticArray<u8>") => {
+                    format!("toBytes(\"{}\")", generate_string(rng.gen_range(0..1000)))
+                }
                 ("amount", "u64") => rng
                     .gen_range::<u64, _>(100_000_000..1_000_000_000)
                     .to_string(),
@@ -146,12 +161,9 @@ pub fn generate_calls(
                 ("validityEndThread", "u8") => rng.gen_range(0..THREAD_COUNT).to_string(),
                 (_, "u8") => rng.gen::<u8>().to_string(),
                 (_, "boolean") => rng.gen::<bool>().to_string(),
-                (_, "StaticArray<u8>") => {
-                    let key_index = rng.gen_range(0..100);
-                    let key = op_datastore.keys().collect::<Vec<&Vec<u8>>>()[key_index];
-                    format!("{:#?}", key)
+                (a, b) => {
+                    panic!("Unknown type: {} {}", a, b);
                 }
-                _ => panic!("Unknown type"),
             };
             call.push_str(&arg);
             call.push(',');

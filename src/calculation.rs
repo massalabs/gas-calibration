@@ -88,7 +88,10 @@ pub fn compile_and_write_results(
     final_results
 }
 
-pub fn calculate_times(results: Vec<(HashMap<String, u64>, Duration)>, abi_mode: bool) -> HashMap<String, f64> {
+pub fn calculate_times(
+    results: Vec<(HashMap<String, u64>, Duration)>,
+    abi_mode: bool,
+) -> HashMap<String, f64> {
     let mut data: Vec<(String, Vec<f64>)> = Vec::new();
     data.push((String::from("Time"), Vec::new()));
     for (stats, time) in results {
@@ -106,7 +109,6 @@ pub fn calculate_times(results: Vec<(HashMap<String, u64>, Duration)>, abi_mode:
     }
     data.retain(|(_, value)| value.iter().any(|n| *n != 0.0));
 
-    println!("data: {:?}", data);
     let values: Vec<Vec<f64>> = transpose(data[1..].iter().map(|elem| elem.1.clone()).collect());
     let arr = Array2::from_shape_vec(
         (values.len(), values[0].len()),
