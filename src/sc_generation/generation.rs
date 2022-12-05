@@ -122,7 +122,16 @@ pub fn generate_calls(
                             .unwrap()
                             .0
                             .clone();
-                        format!("toBytes(\"{}\")", std::str::from_utf8(&key).unwrap())
+                        let key: Vec<u16> = key
+                            .chunks_exact(2)
+                            .into_iter()
+                            .map(|a| u16::from_ne_bytes([a[0], a[1]]))
+                            .collect();
+                        let key = key.as_slice();
+                        format!(
+                            "toBytes(\"{}\")",
+                            String::from_utf16_lossy(&key)
+                        )
                     } else {
                         // Storage things
                         let mut key = generate_string(rng.gen_range(5..32));
@@ -157,7 +166,7 @@ pub fn generate_calls(
                     "\"{}\"",
                     base64::encode(generate_string(rng.gen_range(0..1000)))
                 ),
-                (_, "string") => format!("\"{}\"", generate_string(rng.gen_range(0..1000))),
+                (_, "string") => format!("\"{}\"", generate_string(rng.gen_range(0..255))),
                 (_, "StaticArray<u8>") => {
                     format!("toBytes(\"{}\")", generate_string(rng.gen_range(0..1000)))
                 }
@@ -168,7 +177,7 @@ pub fn generate_calls(
                     .gen_range::<u64, _>(100_000_000..1_000_000_000)
                     .to_string(),
                 ("maxGas", "u64") => rng.gen_range::<u64, _>(100_000..300_000).to_string(),
-                ("gasPrice", "u64") => rng.gen_range::<u64, _>(1..4).to_string(),
+                ("rawFee", "u64") => rng.gen_range::<u64, _>(1..4).to_string(),
                 ("validityStartPeriod", "u64") => rng.gen_range::<u64, _>(10..100).to_string(),
                 ("validityEndPeriod", "u64") => rng.gen_range::<u64, _>(100..1000).to_string(),
                 (_, "u64") => rng.gen::<u64>().to_string(),

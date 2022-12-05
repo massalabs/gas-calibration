@@ -51,6 +51,7 @@ pub fn compile_and_write_results(
     results: HashMap<String, Vec<f64>>,
     max_gas: u32,
     max_execution_time: Duration,
+    abi_mode: bool
 ) -> BTreeMap<String, (f64, usize, f64)> {
     // Mean, number of element, standard deviation
     let mut final_results: BTreeMap<String, (f64, usize, f64)> = BTreeMap::new();
@@ -65,7 +66,12 @@ pub fn compile_and_write_results(
             ),
         );
     }
-    let mut output = File::create("./results/results.json").unwrap();
+    let result_filename = if abi_mode {
+        format!("./results/abi_results.json")
+    } else {
+        format!("./results/wasm_results.json")
+    };
+    let mut output = File::create(result_filename).unwrap();
     write!(
         output,
         "{}",
@@ -78,7 +84,12 @@ pub fn compile_and_write_results(
             (max_gas as f64 / (max_execution_time.as_millis() as f64 / value.0)) as u32,
         );
     }
-    let mut output = File::create("./results/gas_costs.json").unwrap();
+    let output_filename = if abi_mode {
+        format!("./results/abi_gas_costs.json")
+    } else {
+        format!("./results/wasm_gas_costs.json")
+    };
+    let mut output = File::create(output_filename).unwrap();
     write!(
         output,
         "{}",
