@@ -122,7 +122,7 @@ pub fn generate_calls(
                             .unwrap()
                             .0
                             .clone();
-                        format!("\"toBytes({})\"", std::str::from_utf8(&key).unwrap())
+                        format!("toBytes(\"{}\")", std::str::from_utf8(&key).unwrap())
                     } else {
                         // Storage things
                         let mut key = generate_string(rng.gen_range(5..32));
@@ -139,7 +139,7 @@ pub fn generate_calls(
                                 preparation_calls.push((
                                     "set",
                                     format!(
-                                        "toBytes(\"{}\"), to_bytes(\"{}\")",
+                                        "toBytes(\"{}\"), toBytes(\"{}\")",
                                         key,
                                         generate_string(rng.gen_range(1..1000))
                                     ),
@@ -150,7 +150,7 @@ pub fn generate_calls(
                                 saved_key = String::new();
                             }
                         }
-                        format!("\"toBytes({})\"", key)
+                        format!("toBytes(\"{}\")", key)
                     }
                 }
                 ("bytecode", "string") => format!(

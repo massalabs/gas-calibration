@@ -29,6 +29,7 @@ pub fn read_existing_op_datastore() -> Datastore {
 fn write_sc(calls: Vec<String>, file_name: String) {
     let template_index = format!(
         "import {{env}} from '../env';
+        import {{ toBytes, fromBytes }} from '../helpers';
 
 export function main(): void {{
 {}
@@ -75,20 +76,22 @@ pub fn build_scs(nb_sc_per_abi: u32, abis: Vec<Vec<String>>) {
     (0..(nb_sc_per_abi * abis.len() as u32))
         .into_par_iter()
         .for_each(|i| {
-            Command::new("npm")
+            let output = Command::new("npm")
                 .arg("run")
                 .arg("build")
                 .env("SC_NAME", format!("SC_preparation_{}", i))
                 .current_dir("./src/sc_generation/template")
                 .output()
                 .expect("failed to execute process");
-            Command::new("npm")
+            //std::io::stderr().write_all(&output.stderr).unwrap();
+                let output = Command::new("npm")
                 .arg("run")
                 .arg("build")
                 .env("SC_NAME", format!("SC_{}", i))
                 .current_dir("./src/sc_generation/template")
                 .output()
                 .expect("failed to execute process");
+            std::io::stderr().write_all(&output.stderr).unwrap();
         });
 }
 
