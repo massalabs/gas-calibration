@@ -108,7 +108,6 @@ pub fn calculate_times(
         }
     }
     data.retain(|(_, value)| value.iter().any(|n| *n != 0.0));
-
     let values: Vec<Vec<f64>> = transpose(data[1..].iter().map(|elem| elem.1.clone()).collect());
     let arr = Array2::from_shape_vec(
         (values.len(), values[0].len()),

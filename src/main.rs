@@ -1,4 +1,7 @@
-use std::{collections::HashMap, time::Duration};
+use std::{
+    collections::{BTreeMap, HashMap},
+    time::Duration,
+};
 
 use clap::Parser;
 use rand::Rng;
@@ -14,6 +17,7 @@ fn main() {
     let args = args::Args::parse();
     let mut rng = rand::thread_rng();
     let nb_scs_by_abi: u32 = 100;
+    let nb_wasm_scs = 500;
     let abis = sc_generation::abis::get_abis();
     let op_datastore = if args.skip_generation_scs {
         sc_generation::read_existing_op_datastore()
@@ -21,6 +25,8 @@ fn main() {
         let datastore = sc_generation::generation::generate_op_datastore();
         sc_generation::generate_scs(nb_scs_by_abi, 300, datastore.clone());
         sc_generation::build_scs(nb_scs_by_abi, abis.clone());
+        sc_generation::generate_wasm_scs(nb_wasm_scs, 300);
+        sc_generation::build_wasm_scs(nb_wasm_scs);
         datastore
     };
     println!("Executing {} SCs per abis", nb_scs_by_abi);

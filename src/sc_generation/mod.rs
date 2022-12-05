@@ -7,6 +7,8 @@ use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 
 use crate::sc_generation::generation::generate_calls;
 
+use self::generation::generate_instruction;
+
 pub mod abis;
 pub mod generation;
 
@@ -94,4 +96,24 @@ pub fn build_scs(nb_sc_per_abi: u32, abis: Vec<Vec<String>>) {
                 .output()
                 .expect("failed to execute process");
         });
+}
+
+pub fn generate_wasm_scs(nb_contracts: u32, max_calls_per_contract: u64) {
+    (0..nb_contracts).into_par_iter().for_each(|i| {
+        let calls = generate_instruction(max_calls_per_contract);
+        write_sc(calls, format!("wasm_{}", i));
+    });
+}
+
+pub fn build_wasm_scs(nb_contracts: u32) {
+    println!("building {} wasm smart contracts...", nb_contracts);
+    (0..nb_contracts).into_par_iter().for_each(|i| {
+        Command::new("npm")
+            .arg("run")
+            .arg("build")
+            .env("SC_NAME", format!("SC_wasm_{}", i))
+            .current_dir("./src/sc_generation/template")
+            .output()
+            .expect("failed to execute process");
+    });
 }
