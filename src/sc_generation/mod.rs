@@ -52,18 +52,12 @@ pub fn generate_scs(nb_sc_per_abi: u32, limit_per_calls_per_sc: u64, op_datastor
     for (index_abi, abi) in abis.iter().enumerate() {
         (0..nb_sc_per_abi).into_par_iter().for_each(|i| {
             let op_datastore_clone = op_datastore.clone();
-            let (preparation_calls, calls) = generate_calls(
-                abi.clone(),
-                limit_per_calls_per_sc,
-                op_datastore_clone.clone(),
-            );
+            let (preparation_calls, calls) =
+                generate_calls(abi.clone(), limit_per_calls_per_sc, op_datastore_clone);
             if !preparation_calls.is_empty() {
                 write_sc(
                     preparation_calls,
-                    format!(
-                        "preparation_{}",
-                        ((index_abi as u32 * nb_sc_per_abi) + i).to_string()
-                    ),
+                    format!("preparation_{}", ((index_abi as u32 * nb_sc_per_abi) + i)),
                 );
             }
             write_sc(calls, ((index_abi as u32 * nb_sc_per_abi) + i).to_string());

@@ -9,11 +9,16 @@ pub fn execute_batch_sc(
     first_sc_index: u32,
     last_sc_index: u32,
     op_datastore: Datastore,
+    abi_mode: bool,
 ) -> (HashMap<String, u64>, Duration) {
     // Optional preparation SC and SC
     let mut bytecodes: Vec<(Option<Vec<u8>>, Vec<u8>)> = Vec::new();
     for i in first_sc_index..last_sc_index {
-        let filename = format!("./src/sc_generation/template/build/SC_{}.wasm", i);
+        let filename = if abi_mode {
+            format!("./src/sc_generation/template/build/SC_{}.wasm", i)
+        } else {
+            format!("./src/sc_generation/template/build/SC_wasm_{}.wasm", i)
+        };
         //let filename = format!("./src/sc_generation/template/test.wasm");
         let file = File::open(&filename);
         if file.is_err() {
@@ -22,7 +27,7 @@ pub fn execute_batch_sc(
         let mut file = file.unwrap();
         let mut bytecode = vec![];
         file.read_to_end(&mut bytecode)
-            .expect(&format!("Failed to read {}", filename));
+            .unwrap_or_else(|_| panic!("Failed to read {}", filename));
         //TODO: Change here
         let preparation_bytecode = if let Ok(mut file) = File::open(format!(
             "./src/sc_generation/template/build/SC_preparation_{}.wasm",
@@ -30,7 +35,7 @@ pub fn execute_batch_sc(
         )) {
             let mut bytecode = vec![];
             file.read_to_end(&mut bytecode)
-                .expect(&format!("Failed to read {}", filename));
+                .unwrap_or_else(|_| panic!("Failed to read {}", filename));
             Some(bytecode)
         } else {
             None

@@ -5,7 +5,7 @@ use massa_signature::KeyPair;
 use rand::Rng;
 use std::io::Write;
 
-fn generate_u8_array(length: usize) -> Vec<u8> {
+fn _generate_u8_array(length: usize) -> Vec<u8> {
     let mut rng = rand::thread_rng();
     let mut array = Vec::new();
     for _ in 0..length {
@@ -18,7 +18,7 @@ fn generate_string(length: usize) -> String {
     let mut rng = rand::thread_rng();
     let mut string = String::new();
     for _ in 0..length {
-        string.push(rng.gen_range('a'..'z'));
+        string.push(rng.gen_range('a'..='z'));
     }
     string
 }
@@ -98,7 +98,7 @@ pub fn generate_calls(
         let mut call = format!("env.{}", abi[0].clone());
         call.push('(');
         for i in 1..abi.len() - 1 {
-            if abi[i] == "" {
+            if abi[i].is_empty() {
                 break;
             }
             let mut splitted_params = abi[i].as_str().split(": ");
@@ -110,32 +110,48 @@ pub fn generate_calls(
                 ("address" | "from", "string") => format!("\"{}\"", static_address()),
                 ("publicKey", "string") => format!("\"{}\"", static_public_key()),
                 ("key", "StaticArray<u8>") => {
-                    let mut key = generate_string(rng.gen_range(5..32));
-                    if abi[0] == "set" {
-                        saved_key = key.clone();
-                    } else if abi[0] == "get"
-                        || abi[0] == "getOf"
-                        || abi[0] == "append"
-                        || abi[0] == "appendOf"
-                        || abi[0] == "del"
-                        || abi[0] == "deleteOf"
-                    {
-                        if saved_key.is_empty() {
-                            preparation_calls.push((
-                                "set",
-                                format!(
-                                    "toBytes(\"{}\"), to_bytes(\"{}\")",
-                                    key,
-                                    generate_string(rng.gen_range(1..1000))
-                                ),
-                                index_call,
-                            ));
-                        } else {
-                            key = saved_key.clone();
-                            saved_key = String::new();
+                    if abi[0] == "getOpData" || abi[0] == "hasOpKey" {
+                        let index_key = rng.gen_range(0..op_datastore.len());
+                        //op things
+                        // Get key at index_key in datastore
+                        let key = op_datastore
+                            .clone()
+                            .into_iter()
+                            .collect::<Vec<(Vec<u8>, Vec<u8>)>>()
+                            .get(index_key)
+                            .unwrap()
+                            .0
+                            .clone();
+                        format!("\"toBytes({})\"", std::str::from_utf8(&key).unwrap())
+                    } else {
+                        // Storage things
+                        let mut key = generate_string(rng.gen_range(5..32));
+                        if abi[0] == "set" {
+                            saved_key = key.clone();
+                        } else if abi[0] == "get"
+                            || abi[0] == "getOf"
+                            || abi[0] == "append"
+                            || abi[0] == "appendOf"
+                            || abi[0] == "del"
+                            || abi[0] == "deleteOf"
+                        {
+                            if saved_key.is_empty() {
+                                preparation_calls.push((
+                                    "set",
+                                    format!(
+                                        "toBytes(\"{}\"), to_bytes(\"{}\")",
+                                        key,
+                                        generate_string(rng.gen_range(1..1000))
+                                    ),
+                                    index_call,
+                                ));
+                            } else {
+                                key = saved_key.clone();
+                                saved_key = String::new();
+                            }
                         }
+                        format!("\"toBytes({})\"", key)
                     }
-                    format!("\"{}\"", key)
                 }
                 ("bytecode", "string") => format!(
                     "\"{}\"",
@@ -193,13 +209,45 @@ pub fn generate_instruction(limit_per_calls: u64) -> Vec<String> {
         let left_operand = rng.gen_range(1..i32::MAX);
         let right_operand = rng.gen_range(1..i32::MAX);
         let instruction = match rng.gen_range(0..4) {
-            0 => format!("{} + {}", left_operand, right_operand),
-            1 => format!("{} - {}", left_operand, right_operand),
-            2 => format!("{} * {}", left_operand, right_operand),
-            3 => format!("{} / {}", left_operand, right_operand),
+            0 => format!(
+                "let a{} = {};\n let b{} = {};\n env.print((a{} + b{}).toString());",
+                left_operand,
+                left_operand,
+                right_operand,
+                right_operand,
+                left_operand,
+                right_operand
+            ),
+            1 => format!(
+                "let a{} = {};\n let b{} = {};\n env.print((a{} - b{}).toString())",
+                left_operand,
+                left_operand,
+                right_operand,
+                right_operand,
+                left_operand,
+                right_operand
+            ),
+            2 => format!(
+                "let a{} = {};\n let b{} = {};\n env.print((a{} * b{}).toString())",
+                left_operand,
+                left_operand,
+                right_operand,
+                right_operand,
+                left_operand,
+                right_operand
+            ),
+            3 => format!(
+                "let a{} = {};\n let b{} = {};\n env.print((a{} / b{}).toString())",
+                left_operand,
+                left_operand,
+                right_operand,
+                right_operand,
+                left_operand,
+                right_operand
+            ),
             _ => panic!("Unknown instruction"),
         };
         instructions.push(instruction);
     }
-    return instructions;
+    instructions
 }

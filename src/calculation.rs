@@ -34,7 +34,7 @@ fn std_deviation(data: &[f64]) -> Option<f64> {
             let variance = data
                 .iter()
                 .map(|value| {
-                    let diff = data_mean - (*value as f64);
+                    let diff = data_mean - *value;
 
                     diff * diff
                 })
@@ -100,6 +100,9 @@ pub fn calculate_times(
             if abi_mode && key.contains("Wasm:") {
                 continue;
             }
+            if !abi_mode && key.contains("Abi:") {
+                continue;
+            }
             if let Some(pos) = data.iter().position(|(k, _)| k == &key) {
                 data.get_mut(pos).unwrap().1.push(value as f64);
             } else {
@@ -108,6 +111,10 @@ pub fn calculate_times(
         }
     }
     data.retain(|(_, value)| value.iter().any(|n| *n != 0.0));
+    println!("Data: {:?}", data);
+    if data.is_empty() {
+        return HashMap::new();
+    }
     let values: Vec<Vec<f64>> = transpose(data[1..].iter().map(|elem| elem.1.clone()).collect());
     let arr = Array2::from_shape_vec(
         (values.len(), values[0].len()),

@@ -1,4 +1,4 @@
-pub fn get_abis_full_name() -> Vec<String> {
+pub fn _get_abis_full_name() -> Vec<String> {
     let abis_string = std::fs::read_to_string("./src/sc_generation/template/env.ts")
         .expect("Should have been able to read the file");
     abis_string
@@ -21,7 +21,7 @@ pub fn get_abis_full_name() -> Vec<String> {
         .collect()
 }
 
-pub fn get_abis<'a>() -> Vec<Vec<String>> {
+pub fn get_abis() -> Vec<Vec<String>> {
     let abis_string = std::fs::read_to_string("./src/sc_generation/template/env.ts")
         .expect("Should have been able to read the file");
     abis_string
