@@ -16,7 +16,7 @@ pub fn execute_abi_scs(
     let mut pb = pbr::ProgressBar::new(abis.len() as u64);
     //let abi_index = 0;
     for (abi_index, _) in abis.iter().enumerate() {
-        // if abi_index < 35 {
+        // if abi_index != 25 {
         //     pb.inc();
         //     continue;
         // }
@@ -37,11 +37,6 @@ pub fn execute_abi_scs(
             full_stats.push(stats);
             //nb_batches += 1;
         }
-        // Remove values with 0 in full_stats
-        let full_stats = full_stats
-            .into_iter()
-            .map(|(x, d)| (x.into_iter().filter(|(k, v)| v != &0 && !k.contains("Wasm:")).collect(), d))
-            .collect();
         //println!("{} batches executed", nb_batches);
         println!("Full stats for abi {}: {:?}", abi_index, full_stats);
         let results = calculation::calculate_times(full_stats, true);
@@ -71,11 +66,11 @@ pub fn execute_wasm_scs(full_results: &mut HashMap<String, Vec<f64>>, nb_contrac
         full_stats.push(stats);
         pb.add(nb_exec as u64);
     }
-            // Remove values with 0 in full_stats
-            let full_stats = full_stats
-            .into_iter()
-            .map(|(x, d)| (x.into_iter().filter(|(_k, v)| v != &0).collect(), d))
-            .collect();
+    // Remove values with 0 in full_stats
+    let full_stats = full_stats
+        .into_iter()
+        .map(|(x, d)| (x.into_iter().filter(|(_k, v)| v != &0).collect(), d))
+        .collect();
     let results = calculation::calculate_times(full_stats, false);
     for (key, value) in results.iter() {
         full_results.entry(key.clone()).or_default().push(*value);

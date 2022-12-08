@@ -4,6 +4,8 @@ use std::collections::BTreeMap;
 use std::io::Write;
 use std::{collections::HashMap, fs::File, time::Duration};
 
+use crate::sc_generation::abis::{self, get_abis_full_name};
+
 fn transpose<T>(v: Vec<Vec<T>>) -> Vec<Vec<T>> {
     assert!(!v.is_empty());
     let len = v[0].len();
@@ -51,7 +53,7 @@ pub fn compile_and_write_results(
     results: HashMap<String, Vec<f64>>,
     max_gas: u32,
     max_execution_time: Duration,
-    abi_mode: bool
+    abi_mode: bool,
 ) -> BTreeMap<String, (f64, usize, f64)> {
     // Mean, number of element, standard deviation
     let mut final_results: BTreeMap<String, (f64, usize, f64)> = BTreeMap::new();
@@ -99,16 +101,43 @@ pub fn compile_and_write_results(
     final_results
 }
 
+fn is_param_size(key: &str) -> bool {
+    key.split(':').last().unwrap().parse::<usize>().is_ok()
+}
+
+fn _is_constant(key: &str, abi_names: &Vec<String>, abis: &Vec<Vec<String>>) -> bool {
+    let mut filtered = false;
+    for (idx, abi_name) in abi_names.iter().enumerate() {
+        let abi_name = format!("{}:", abi_name);
+        if key.contains(&abi_name) {
+            let full_abi = abis.get(idx).unwrap();
+            if let Ok(param_idx) = key.split(':').last().unwrap().parse::<usize>() {
+                let param = full_abi.get(param_idx + 1).unwrap();
+                let param_type = param.split(": ").collect::<Vec<&str>>()[0];
+                if param_type == "address" {
+                    filtered = true;
+                    break;
+                }
+                break;
+            }
+            break;
+        }
+    }
+    filtered
+}
+
 pub fn calculate_times(
     results: Vec<(HashMap<String, u64>, Duration)>,
     abi_mode: bool,
 ) -> HashMap<String, f64> {
+    let _abi_names = get_abis_full_name();
+    let _abis = abis::get_abis();
     let mut data: Vec<(String, Vec<f64>)> = Vec::new();
     data.push((String::from("Time"), Vec::new()));
     for (stats, time) in results {
         data[0].1.push(time.as_nanos() as f64);
         for (key, value) in stats {
-            if abi_mode && key.contains("Wasm:") {
+            if abi_mode && (key.contains("Wasm:") || is_param_size(&key)) {
                 continue;
             }
             if !abi_mode && key.contains("Abi:") {
@@ -121,7 +150,7 @@ pub fn calculate_times(
             }
         }
     }
-    data.retain(|(_, value)| value.iter().any(|n| *n != 0.0));
+    //data.retain(|(_, value)| value.iter().any(|n| *n != 0.0));
     println!("Data: {:?}", data);
     if data.is_empty() {
         return HashMap::new();

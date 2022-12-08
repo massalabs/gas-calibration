@@ -54,15 +54,16 @@ pub fn execute_batch_sc(
             run_main_gc(&preparation_bytecode, u64::MAX, &interface, &[]).unwrap();
         }
         let start = std::time::Instant::now();
-        let mut results = run_main_gc(&bytecode, u64::MAX, &interface, &[]).unwrap();
+        let results = run_main_gc(&bytecode, u64::MAX, &interface, &[]).unwrap();
         //println!("Results: {:?}", results);
         let mut time_exec = start.elapsed();
         for (_key, value) in results.timers {
             time_exec -= Duration::from_secs_f64(value);
         }
-        results
-            .counters
-            .insert(String::from("Size"), bytecode.len() as u64);
+        // Size ignored for now because we saw that it doesn't change a lot
+        // results
+        //     .counters
+        //     .insert(String::from("Size"), bytecode.len() as u64);
         total_execution_time += time_exec;
         for (key, value) in results.counters {
             let entry = total_execution_stats.entry(key).or_insert(0);

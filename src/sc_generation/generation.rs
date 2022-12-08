@@ -128,10 +128,7 @@ pub fn generate_calls(
                             .map(|a| u16::from_ne_bytes([a[0], a[1]]))
                             .collect();
                         let key = key.as_slice();
-                        format!(
-                            "toBytes(\"{}\")",
-                            String::from_utf16_lossy(&key)
-                        )
+                        format!("toBytes(\"{}\")", String::from_utf16_lossy(&key))
                     } else {
                         // Storage things
                         let mut key = generate_string(rng.gen_range(5..32));
