@@ -209,10 +209,23 @@ pub fn generate_calls(
 pub fn generate_instruction(limit_per_calls: u64) -> Vec<String> {
     let mut rng = rand::thread_rng();
     let nb_calls = rng.gen_range(0..limit_per_calls);
+    let nb_local_init = rng.gen_range(0..limit_per_calls / 10);
     let mut instructions = Vec::new();
 
-    let operations = vec!["i32.add", "i32.sub", "i32.mul", "i32.div_s"];
+    let operations = vec![
+        "i32.add",
+        "i32.sub",
+        "i32.mul",
+        "i32.div_s",
+        "local.get",
+        "local.set",
+    ];
     let mut nb_drop = 0;
+    let mut local_initialized = vec![];
+    for i in 0..nb_local_init {
+        let local_init = format!("(local ${} i32)", i);
+        instructions.push(local_init);
+    }
     for _ in 0..nb_calls {
         let left_operand = rng.gen_range(1..i32::MAX);
         let right_operand = rng.gen_range(1..i32::MAX);
@@ -221,23 +234,60 @@ pub fn generate_instruction(limit_per_calls: u64) -> Vec<String> {
         } else {
             false
         };
-        let instruction = match (rng.gen_range(0..4), nb_drop, gen_first_operand) {
-            (idx, 0, _) => {
+        let instruction = match (
+            rng.gen_range(0..operations.len()),
+            nb_drop,
+            gen_first_operand,
+        ) {
+            (idx, 0, _) if idx < 4 => {
                 nb_drop += 1;
                 format!(
                     "i32.const {}\ni32.const {} \n{}",
                     left_operand, right_operand, operations[idx]
                 )
             }
-            (idx, _, false) => {
+            (idx, _, false) if idx < 4 => {
                 format!("i32.const {} \n{}", right_operand, operations[idx])
             }
-            (idx, _, true) => {
+            (idx, _, true) if idx < 4 => {
                 nb_drop += 1;
                 format!(
                     "i32.const {}\ni32.const {} \n{}",
                     left_operand, right_operand, operations[idx]
                 )
+            }
+            (4, _, _) => {
+                if local_initialized.is_empty() {
+                    continue;
+                } else {
+                    nb_drop += 1;
+                    let local = rng.gen_range(0..local_initialized.len());
+                    format!("{} ${}", operations[4], local)
+                }
+            }
+            (5, _, _) => {
+                if nb_local_init == 0 {
+                    continue;
+                }
+                if local_initialized.len() < nb_local_init as usize {
+                    local_initialized.push(true);
+                    format!(
+                        "i32.const {}\n{} ${}",
+                        left_operand,
+                        operations[5],
+                        local_initialized.len() - 1
+                    )
+                } else {
+                    format!(
+                        "i32.const {}\n{} ${}",
+                        left_operand,
+                        operations[5],
+                        rng.gen_range(0..local_initialized.len())
+                    )
+                }
+            }
+            _ => {
+                panic!("Unknown operation");
             }
         };
         instructions.push(instruction);

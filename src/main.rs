@@ -13,10 +13,10 @@ mod sc_generation;
 fn main() {
     let args = args::Args::parse();
     let nb_scs_by_abi: u32 = 100;
-    let nb_wasm_scs = 200;
+    let nb_wasm_scs = 500;
     let abis = sc_generation::abis::get_abis();
     let op_datastore = if args.skip_generation_scs {
-        //sc_generation::generate_wasm_scs(nb_wasm_scs, 100);
+        //sc_generation::generate_wasm_scs(nb_wasm_scs, 300);
         sc_generation::read_existing_op_datastore()
     } else {
         let datastore = sc_generation::generation::generate_op_datastore();
