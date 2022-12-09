@@ -101,6 +101,10 @@ pub fn compile_and_write_results(
     final_results
 }
 
+fn is_wasm_filter(key: &str) -> bool {
+    key == "Wasm:Drop"
+}
+
 fn is_param_size(key: &str) -> bool {
     key.split(':').last().unwrap().parse::<usize>().is_ok()
 }
@@ -140,7 +144,7 @@ pub fn calculate_times(
             if abi_mode && (key.contains("Wasm:") || is_param_size(&key)) {
                 continue;
             }
-            if !abi_mode && key.contains("Abi:") {
+            if !abi_mode && (key.contains("Abi:") || is_wasm_filter(&key)) {
                 continue;
             }
             if let Some(pos) = data.iter().position(|(k, _)| k == &key) {

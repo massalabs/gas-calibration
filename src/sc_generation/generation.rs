@@ -211,49 +211,41 @@ pub fn generate_instruction(limit_per_calls: u64) -> Vec<String> {
     let nb_calls = rng.gen_range(0..limit_per_calls);
     let mut instructions = Vec::new();
 
+    let operations = vec!["i32.add", "i32.sub", "i32.mul", "i32.div_s"];
+    let mut nb_drop = 0;
     for _ in 0..nb_calls {
         let left_operand = rng.gen_range(1..i32::MAX);
         let right_operand = rng.gen_range(1..i32::MAX);
-        let instruction = match rng.gen_range(0..4) {
-            0 => format!(
-                "let a{} = {};\n let b{} = {};\n env.print((a{} + b{}).toString());",
-                left_operand,
-                left_operand,
-                right_operand,
-                right_operand,
-                left_operand,
-                right_operand
-            ),
-            1 => format!(
-                "let a{} = {};\n let b{} = {};\n env.print((a{} - b{}).toString())",
-                left_operand,
-                left_operand,
-                right_operand,
-                right_operand,
-                left_operand,
-                right_operand
-            ),
-            2 => format!(
-                "let a{} = {};\n let b{} = {};\n env.print((a{} * b{}).toString())",
-                left_operand,
-                left_operand,
-                right_operand,
-                right_operand,
-                left_operand,
-                right_operand
-            ),
-            3 => format!(
-                "let a{} = {};\n let b{} = {};\n env.print((a{} / b{}).toString())",
-                left_operand,
-                left_operand,
-                right_operand,
-                right_operand,
-                left_operand,
-                right_operand
-            ),
+        let gen_first_operand = if rng.gen_range(0..2) == 1 {
+            true
+        } else {
+            false
+        };
+        let instruction = match (rng.gen_range(0..4), nb_drop, gen_first_operand) {
+            (idx, 0, _) => {
+                nb_drop += 1;
+                format!(
+                    "i32.const {}\ni32.const {} \n{}",
+                    left_operand, right_operand, operations[idx]
+                )
+            }
+            (idx, _, false) => {
+                format!("i32.const {} \n{}", right_operand, operations[idx])
+            }
+            (idx, _, true) => {
+                nb_drop += 1;
+                format!(
+                    "i32.const {}\ni32.const {} \n{}",
+                    left_operand, right_operand, operations[idx]
+                )
+            }
             _ => panic!("Unknown instruction"),
         };
         instructions.push(instruction);
+    }
+
+    for _ in 0..nb_drop {
+        instructions.push("drop".to_string());
     }
     instructions
 }

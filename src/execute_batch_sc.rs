@@ -17,7 +17,7 @@ pub fn execute_batch_sc(
         let filename = if abi_mode {
             format!("./src/sc_generation/template/build/SC_{}.wasm", i)
         } else {
-            format!("./src/sc_generation/template/build/SC_wasm_{}.wasm", i)
+            format!("./src/sc_generation/template/build/WAT_{}.wat", i)
         };
         //let filename = format!("./src/sc_generation/template/test.wasm");
         let file = File::open(&filename);
