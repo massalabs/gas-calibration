@@ -239,7 +239,6 @@ pub fn generate_instruction(limit_per_calls: u64) -> Vec<String> {
                     left_operand, right_operand, operations[idx]
                 )
             }
-            _ => panic!("Unknown instruction"),
         };
         instructions.push(instruction);
     }

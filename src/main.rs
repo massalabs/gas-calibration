@@ -25,9 +25,9 @@ fn main() {
         sc_generation::generate_wasm_scs(nb_wasm_scs, 300);
         datastore
     };
-    //let mut full_results: HashMap<String, Vec<f64>> = HashMap::new();
-    //execution::execute_abi_scs(&mut full_results, nb_scs_by_abi, op_datastore);
-    //compile_and_write_results(full_results, u32::MAX, Duration::from_millis(300), true);
+    let mut full_results: HashMap<String, Vec<f64>> = HashMap::new();
+    execution::execute_abi_scs(&mut full_results, nb_scs_by_abi, op_datastore);
+    compile_and_write_results(full_results, u32::MAX, Duration::from_millis(300), true);
     let mut full_results: HashMap<String, Vec<f64>> = HashMap::new();
     execution::execute_wasm_scs(&mut full_results, nb_wasm_scs);
     compile_and_write_results(full_results, u32::MAX, Duration::from_millis(300), false);

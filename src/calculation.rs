@@ -101,8 +101,8 @@ pub fn compile_and_write_results(
     final_results
 }
 
-fn is_wasm_filter(key: &str) -> bool {
-    key == "Wasm:Drop"
+fn is_wasm_filter(_key: &str) -> bool {
+    false
 }
 
 fn is_param_size(key: &str) -> bool {
@@ -138,7 +138,7 @@ pub fn calculate_times(
     let _abis = abis::get_abis();
     let mut data: Vec<(String, Vec<f64>)> = Vec::new();
     data.push((String::from("Time"), Vec::new()));
-    for (stats, time) in results {
+    for (idx, (stats, time)) in results.iter().enumerate() {
         data[0].1.push(time.as_nanos() as f64);
         for (key, value) in stats {
             if abi_mode && (key.contains("Wasm:") || is_param_size(&key)) {
@@ -147,15 +147,21 @@ pub fn calculate_times(
             if !abi_mode && (key.contains("Abi:") || is_wasm_filter(&key)) {
                 continue;
             }
-            if let Some(pos) = data.iter().position(|(k, _)| k == &key) {
-                data.get_mut(pos).unwrap().1.push(value as f64);
+            if let Some(pos) = data.iter().position(|(k, _)| k == key) {
+                data.get_mut(pos).unwrap().1.push(*value as f64);
             } else {
-                data.push((key, vec![value as f64]));
+                let mut values = vec![0.0; idx];
+                values.push(*value as f64);
+                data.push((key.to_owned(), values));
+            }
+        }
+        for d in data.iter_mut().skip(1) {
+            if d.1.len() == idx {
+                d.1.push(0.0);
             }
         }
     }
     //data.retain(|(_, value)| value.iter().any(|n| *n != 0.0));
-    println!("Data: {:?}", data);
     if data.is_empty() {
         return HashMap::new();
     }
@@ -172,6 +178,5 @@ pub fn calculate_times(
         .enumerate()
         .map(|elem| (data[elem.0 + 1].0.clone(), (*elem.1 / 1_000_000_000f64)))
         .collect::<Vec<(String, f64)>>();
-    println!("alphas: {:?}", alphas);
     alphas.into_iter().collect()
 }
