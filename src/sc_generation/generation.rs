@@ -48,7 +48,7 @@ pub fn generate_op_datastore() -> Datastore {
     let mut rng = rand::thread_rng();
     let mut datastore: Datastore = Datastore::new();
     let nb_entries = 100;
-    for _ in 0..nb_entries + 1 {
+    for _ in 0..nb_entries {
         unsafe {
             let key = generate_string(rng.gen_range(5..32))
                 .encode_utf16()
@@ -65,6 +65,22 @@ pub fn generate_op_datastore() -> Datastore {
             datastore.insert(key, value);
         }
     }
+    unsafe {
+        let key = String::from("empty_main_sc")
+            .encode_utf16()
+            .collect::<Vec<u16>>()
+            .align_to::<u8>()
+            .1
+            .to_vec();
+        match std::fs::read("./src/sc_generation/template/empty_main_sc.wasm") {
+            Ok(bytes) => {
+                datastore.insert(key, bytes);
+            }
+            Err(e) => {
+                panic!("{}", e);
+            }
+        }
+    };
     let mut output = File::create("./src/sc_generation/template/op_datastore.json").unwrap();
     write!(
         output,
@@ -81,6 +97,33 @@ pub fn generate_op_datastore() -> Datastore {
     datastore
 }
 
+fn generate_abi_call(
+    address_sc: &str,
+    calls: &mut Vec<String>,
+    preparation_calls: &mut Vec<(&'static str, std::string::String)>,
+    call_already_prep: &mut bool,
+) {
+    let mut call = String::from("env.call(");
+
+    if !*call_already_prep {
+        preparation_calls.push((
+            "setBytecodeOf",
+            format!(
+                "\"{}\", env.getOpData(toBytes(\"empty_main_sc\"))",
+                address_sc
+            ),
+        ));
+        preparation_calls.push(("transferCoins", format!("\"{}\", 10_000_000_000", address_sc)));
+        *call_already_prep = true;
+    }
+
+    call.push_str(&format!(
+        "\"{}\", \"main\", new StaticArray<u8>(0), 0);",
+        address_sc
+    ));
+    calls.push(call);
+}
+
 // Return type: preparation calls, calls
 pub fn generate_calls(
     abi: Vec<String>,
@@ -88,13 +131,18 @@ pub fn generate_calls(
     op_datastore: Datastore,
 ) -> (Vec<String>, Vec<String>) {
     let mut rng = rand::thread_rng();
-
     let mut calls = Vec::new();
     let mut saved_key = String::new();
     let mut preparation_calls = Vec::new();
+    let address_sc = static_address();
 
     let nb_calls = rng.gen_range(0..limit_per_calls);
-    for index_call in 0..nb_calls {
+    let mut call_already_prep = false;
+    for _ in 0..nb_calls {
+        if abi[0] == "call" {
+            generate_abi_call(&address_sc, &mut calls, &mut preparation_calls, &mut call_already_prep);
+            continue;
+        }
         let mut call = format!("env.{}", abi[0].clone());
         call.push('(');
         for i in 1..abi.len() - 1 {
@@ -149,7 +197,6 @@ pub fn generate_calls(
                                         key,
                                         generate_string(rng.gen_range(1..1000))
                                     ),
-                                    index_call,
                                 ));
                             } else {
                                 key = saved_key.clone();
@@ -199,7 +246,7 @@ pub fn generate_calls(
     }
 
     let mut final_preparation_calls = Vec::new();
-    for (_i, (abi, key, _index_call)) in preparation_calls.iter().enumerate() {
+    for (abi, key) in preparation_calls {
         let call = format!("env.{}({});", abi, key);
         final_preparation_calls.insert(0, call);
     }

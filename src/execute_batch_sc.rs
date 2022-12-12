@@ -51,7 +51,7 @@ pub fn execute_batch_sc(
             Some(op_datastore.clone()),
         );
         if let Some(preparation_bytecode) = preparation_bytecode {
-            run_main_gc(&preparation_bytecode, u64::MAX, &interface, &[]).unwrap();
+            let results = run_main_gc(&preparation_bytecode, u64::MAX, &interface, &[]).unwrap();
         }
         let start = std::time::Instant::now();
         let results = run_main_gc(&bytecode, u64::MAX, &interface, &[]).unwrap();
