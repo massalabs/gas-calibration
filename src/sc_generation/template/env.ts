@@ -4,10 +4,6 @@ export namespace env {
     export declare function print(message: string): void;
 
   // @ts-ignore
-  //@external("massa", "assembly_script_call")
-  //export declare function call(address: string, func: string, param: StaticArray<u8>, coins: u64): StaticArray<u8>;
-
-  // @ts-ignore
   @external("massa", "assembly_script_get_remaining_gas")
     export declare function remainingGas(): u64;
 
@@ -146,4 +142,8 @@ export namespace env {
   // @ts-ignore
   @external("massa", "assembly_script_get_op_data")
     export declare function getOpData(key: StaticArray<u8>): StaticArray<u8>;
+
+  // @ts-ignore
+  @external("massa", "assembly_script_call")
+    export declare function call(address: string, func: string, param: StaticArray<u8>, coins: u64): StaticArray<u8>;
 }
