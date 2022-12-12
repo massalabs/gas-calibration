@@ -101,8 +101,8 @@ pub fn compile_and_write_results(
     final_results
 }
 
-fn is_wasm_filter(_key: &str) -> bool {
-    false
+fn is_wasm_filter(key: &str) -> bool {
+    key == "Wasm:End"
 }
 
 fn is_param_size(key: &str) -> bool {
@@ -161,10 +161,11 @@ pub fn calculate_times(
             }
         }
     }
-    //data.retain(|(_, value)| value.iter().any(|n| *n != 0.0));
+
     if data.is_empty() {
         return HashMap::new();
     }
+    println!("Data: {:?}", data);
     let values: Vec<Vec<f64>> = transpose(data[1..].iter().map(|elem| elem.1.clone()).collect());
     let arr = Array2::from_shape_vec(
         (values.len(), values[0].len()),

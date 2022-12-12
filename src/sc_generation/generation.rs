@@ -206,11 +206,12 @@ pub fn generate_calls(
     (final_preparation_calls, calls)
 }
 
-pub fn generate_instruction(limit_per_calls: u64) -> Vec<String> {
+pub fn generate_instruction(limit_per_calls: u64) -> (Vec<String>, Vec<String>) {
     let mut rng = rand::thread_rng();
     let nb_calls = rng.gen_range(0..limit_per_calls);
-    let nb_local_init = rng.gen_range(0..limit_per_calls / 10);
+    let nb_init = rng.gen_range(0..limit_per_calls / 10);
     let mut instructions = Vec::new();
+    let mut setup_instructions = Vec::new();
 
     let operations = vec![
         "i32.add",
@@ -219,12 +220,21 @@ pub fn generate_instruction(limit_per_calls: u64) -> Vec<String> {
         "i32.div_s",
         "local.get",
         "local.set",
+        "global.get",
+        "global.set",
+        "if",
     ];
     let mut nb_drop = 0;
     let mut local_initialized = vec![];
-    for i in 0..nb_local_init {
+    for i in 0..nb_init {
         let local_init = format!("(local ${} i32)", i);
         instructions.push(local_init);
+        let global_init = format!(
+            "(global ${} (mut i32) (i32.const {}))",
+            i,
+            rng.gen_range(0..i32::MAX)
+        );
+        setup_instructions.push(global_init.clone());
     }
     for _ in 0..nb_calls {
         let left_operand = rng.gen_range(1..i32::MAX);
@@ -266,10 +276,10 @@ pub fn generate_instruction(limit_per_calls: u64) -> Vec<String> {
                 }
             }
             (5, _, _) => {
-                if nb_local_init == 0 {
+                if nb_init == 0 {
                     continue;
                 }
-                if local_initialized.len() < nb_local_init as usize {
+                if local_initialized.len() < nb_init as usize {
                     local_initialized.push(true);
                     format!(
                         "i32.const {}\n{} ${}",
@@ -286,6 +296,42 @@ pub fn generate_instruction(limit_per_calls: u64) -> Vec<String> {
                     )
                 }
             }
+            (6, _, _) => {
+                if setup_instructions.is_empty() {
+                    continue;
+                }
+                nb_drop += 1;
+                format!(
+                    "{} ${}",
+                    operations[6],
+                    rng.gen_range(0..setup_instructions.len())
+                )
+            }
+            (7, _, _) => {
+                if setup_instructions.is_empty() {
+                    continue;
+                }
+                format!(
+                    "i32.const {}\n{} ${}",
+                    rng.gen_range(0..i32::MAX),
+                    operations[7],
+                    rng.gen_range(0..setup_instructions.len())
+                )
+            }
+            (8, _, _) => {
+                format!(
+                    "
+                i32.const {}\n
+                ({}\n
+                    (then\n
+                    )\n
+                    (else\n
+                    )\n
+                  )",
+                    rng.gen_range(0..i32::MAX),
+                    operations[8]
+                )
+            }
             _ => {
                 panic!("Unknown operation");
             }
@@ -296,5 +342,5 @@ pub fn generate_instruction(limit_per_calls: u64) -> Vec<String> {
     for _ in 0..nb_drop {
         instructions.push("drop".to_string());
     }
-    instructions
+    (setup_instructions, instructions)
 }

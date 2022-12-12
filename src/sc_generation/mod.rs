@@ -46,14 +46,16 @@ export function main(): void {{
     write!(src, "{}", template_index).unwrap();
 }
 
-fn write_wat(calls: Vec<String>, file_name: String) {
+fn write_wat(setup_calls: Vec<String>, calls: Vec<String>, file_name: String) {
     let template_index = format!(
         "(module
             (memory $0 1)
             (export \"memory\" (memory $0))
+            {}
             (func (export \"main\") (result)
 {}
         ))",
+        setup_calls.join("\n"),
         calls.join("\n")
     );
     let mut src = File::create(format!(
@@ -120,7 +122,7 @@ pub fn build_scs(nb_sc_per_abi: u32, abis: Vec<Vec<String>>) {
 
 pub fn generate_wasm_scs(nb_contracts: u32, max_calls_per_contract: u64) {
     (0..nb_contracts).into_par_iter().for_each(|i| {
-        let calls = generate_instruction(max_calls_per_contract);
-        write_wat(calls, format!("{}", i));
+        let (setup_calls, calls) = generate_instruction(max_calls_per_contract);
+        write_wat(setup_calls, calls, format!("{}", i));
     });
 }
