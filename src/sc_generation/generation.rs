@@ -210,6 +210,8 @@ pub fn generate_calls(
                     "\"{}\"",
                     base64::encode(generate_string(rng.gen_range(0..1000)))
                 ),
+                ("filter_address", "string") => format!("\"\""),
+                ("filter_key", "StaticArray<u8>") => format!("new StaticArray<u8>(0)"),
                 (_, "string") => format!("\"{}\"", generate_string(rng.gen_range(0..255))),
                 (_, "StaticArray<u8>") => {
                     format!("toBytes(\"{}\")", generate_string(rng.gen_range(0..1000)))

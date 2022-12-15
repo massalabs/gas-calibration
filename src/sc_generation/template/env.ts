@@ -113,7 +113,7 @@ export namespace env {
 
   // @ts-ignore
   @external("massa", "assembly_script_send_message")
-    export declare function sendMessage(address: string, handler: string, validityStartPeriod: u64, validityStartThread: u8, validityEndPeriod: u64, validityEndThread: u8, maxGas: u64, rawFee: u64, coins: u64, data: StaticArray<u8>): void;
+    export declare function sendMessage(address: string, handler: string, validityStartPeriod: u64, validityStartThread: u8, validityEndPeriod: u64, validityEndThread: u8, maxGas: u64, rawFee: u64, coins: u64, data: StaticArray<u8>, filter_address: string, filter_key: StaticArray<u8>): void;
 
   // @ts-ignore
   @external("massa", "assembly_script_get_current_period")
