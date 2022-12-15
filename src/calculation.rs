@@ -165,7 +165,7 @@ pub fn calculate_times(
     if data.is_empty() {
         return HashMap::new();
     }
-    println!("Data: {:?}", data);
+
     let values: Vec<Vec<f64>> = transpose(data[1..].iter().map(|elem| elem.1.clone()).collect());
     let arr = Array2::from_shape_vec(
         (values.len(), values[0].len()),

@@ -38,7 +38,7 @@ pub fn execute_abi_scs(
             //nb_batches += 1;
         }
         //println!("{} batches executed", nb_batches);
-        println!("Full stats for abi {}: {:?}", abi_index, full_stats);
+        //println!("Full stats for abi {}: {:?}", abi_index, full_stats);
         let results = calculation::calculate_times(full_stats, true);
         for (key, value) in results.iter() {
             full_results.entry(key.clone()).or_default().push(*value);
