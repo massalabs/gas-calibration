@@ -1,3 +1,6 @@
 target/
-**/build/**
+**/results/**.json
+**/build/**.wasm
+**/build/**.ts
+**/build/**.wat
 **/index.ts/**

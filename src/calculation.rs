@@ -82,7 +82,11 @@ pub fn compile_and_write_results(
     .unwrap();
     for (key, value) in final_results.iter() {
         gas_costs.insert(
-            key.clone(),
+            if abi_mode {
+                String::from(key.trim_matches("Abi:call:massa."))
+            } else {
+                key.clone()
+            },
             (max_gas as f64 / (max_execution_time.as_millis() as f64 / value.0)) as u32,
         );
     }
