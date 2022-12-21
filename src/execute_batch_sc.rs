@@ -2,7 +2,7 @@ use std::{collections::HashMap, io::Read, str::FromStr, time::Duration};
 
 use massa_execution_worker::InterfaceImpl;
 use massa_models::{address::Address, datastore::Datastore};
-use massa_sc_runtime::run_main_gc;
+use massa_sc_runtime::{run_main_gc, GasCosts};
 use std::fs::File;
 
 pub fn execute_batch_sc(
@@ -51,10 +51,18 @@ pub fn execute_batch_sc(
             Some(op_datastore.clone()),
         );
         if let Some(preparation_bytecode) = preparation_bytecode {
-            run_main_gc(&preparation_bytecode, u64::MAX, &interface, &[]).unwrap();
+            run_main_gc(
+                &preparation_bytecode,
+                u64::MAX,
+                &interface,
+                &[],
+                GasCosts::default(),
+            )
+            .unwrap();
         }
         let start = std::time::Instant::now();
-        let results = run_main_gc(&bytecode, u64::MAX, &interface, &[]).unwrap();
+        let results =
+            run_main_gc(&bytecode, u64::MAX, &interface, &[], GasCosts::default()).unwrap();
         //println!("Results: {:?}", results);
         let mut time_exec = start.elapsed();
         for (_key, value) in results.timers {

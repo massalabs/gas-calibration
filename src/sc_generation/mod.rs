@@ -72,9 +72,9 @@ pub fn generate_scs(nb_sc_per_abi: u32, limit_per_calls_per_sc: u64, op_datastor
     let mut pb = pbr::ProgressBar::new(abis.len() as u64);
     for (index_abi, abi) in abis.iter().enumerate() {
         (0..nb_sc_per_abi).into_par_iter().for_each(|i| {
-            // if index_abi < 35 || index_abi > 37 {
-            //     return;
-            // }
+            if index_abi < 1 || index_abi > 7 {
+                return;
+            }
             let op_datastore_clone = op_datastore.clone();
             let (preparation_calls, calls) =
                 generate_calls(abi.clone(), limit_per_calls_per_sc, op_datastore_clone);
@@ -99,16 +99,17 @@ pub fn build_scs(nb_sc_per_abi: u32, abis: Vec<Vec<String>>) {
     (0..(nb_sc_per_abi * abis.len() as u32))
         .into_par_iter()
         .for_each(|i| {
-            // if i < 35 * nb_sc_per_abi || i > 37 * nb_sc_per_abi {
-            //     return;
-            // }
-            Command::new("npm")
+            if i < 1 * nb_sc_per_abi || i > 7 * nb_sc_per_abi {
+                return;
+            }
+            let output1 = Command::new("npm")
                 .arg("run")
                 .arg("build")
                 .env("SC_NAME", format!("SC_preparation_{}", i))
                 .current_dir("./src/sc_generation/template")
                 .output()
                 .expect("failed to execute process");
+            //std::io::stderr().write_all(&output1.stderr).unwrap();
             let output = Command::new("npm")
                 .arg("run")
                 .arg("build")

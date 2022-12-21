@@ -83,7 +83,7 @@ pub fn compile_and_write_results(
     for (key, value) in final_results.iter() {
         gas_costs.insert(
             if abi_mode {
-                String::from(key.trim_matches("Abi:call:massa."))
+                String::from(key).replace("Abi:call:massa.", "")
             } else {
                 key.clone()
             },

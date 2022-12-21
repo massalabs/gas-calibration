@@ -26,7 +26,7 @@ fn generate_string(length: usize) -> String {
 fn static_public_key() -> String {
     let keypair =
         KeyPair::from_str("S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY").unwrap();
-    keypair.get_public_key().to_bs58_check()
+    keypair.get_public_key().to_string()
     // Secret key: S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY
     // Public key: P12WKRCnYPKhVuwtk1mSEiMFSAPRfThR74bfhBEHAnT53JnBNj9T
     // Address: A12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M
@@ -113,7 +113,10 @@ fn generate_abi_call(
                 address_sc
             ),
         ));
-        preparation_calls.push(("transferCoins", format!("\"{}\", 10_000_000_000", address_sc)));
+        preparation_calls.push((
+            "transferCoins",
+            format!("\"{}\", 10_000_000_000", address_sc),
+        ));
         *call_already_prep = true;
     }
 
@@ -121,6 +124,41 @@ fn generate_abi_call(
         "\"{}\", \"main\", new StaticArray<u8>(0), 0);",
         address_sc
     ));
+    calls.push(call);
+}
+
+fn generate_abi_local_call(
+    address_sc: &str,
+    calls: &mut Vec<String>,
+    preparation_calls: &mut Vec<(&'static str, std::string::String)>,
+    call_already_prep: &mut bool,
+) {
+    let mut call = String::from("env.localCall(");
+
+    if !*call_already_prep {
+        preparation_calls.push((
+            "setBytecodeOf",
+            format!(
+                "\"{}\", env.getOpData(toBytes(\"empty_main_sc\"))",
+                address_sc
+            ),
+        ));
+        preparation_calls.push((
+            "transferCoins",
+            format!("\"{}\", 10_000_000_000", address_sc),
+        ));
+        *call_already_prep = true;
+    }
+
+    call.push_str(&format!(
+        "\"{}\", \"main\", new StaticArray<u8>(0));",
+        address_sc
+    ));
+    calls.push(call);
+}
+
+fn generate_abi_local_execution(calls: &mut Vec<String>) {
+    let mut call = String::from("env.localExecution(env.getOpData(toBytes(\"empty_main_sc\")), \"main\", new StaticArray<u8>(0));");
     calls.push(call);
 }
 
@@ -139,9 +177,28 @@ pub fn generate_calls(
     let nb_calls = rng.gen_range(0..limit_per_calls);
     let mut call_already_prep = false;
     for _ in 0..nb_calls {
-        if abi[0] == "call" {
-            generate_abi_call(&address_sc, &mut calls, &mut preparation_calls, &mut call_already_prep);
-            continue;
+        // Special cases
+        match abi[0].as_str() {
+            "call" => {
+                generate_abi_call(
+                    &address_sc,
+                    &mut calls,
+                    &mut preparation_calls,
+                    &mut call_already_prep,
+                );
+                continue;
+            }
+            "localCall" => {
+                generate_abi_local_call(
+                    &address_sc,
+                    &mut calls,
+                    &mut preparation_calls,
+                    &mut call_already_prep,
+                );
+                continue;
+            }
+            "localExecution" => generate_abi_local_execution(&mut calls),
+            _ => {}
         }
         let mut call = format!("env.{}", abi[0].clone());
         call.push('(');
@@ -206,10 +263,7 @@ pub fn generate_calls(
                         format!("toBytes(\"{}\")", key)
                     }
                 }
-                ("bytecode", "string") => format!(
-                    "\"{}\"",
-                    base64::encode(generate_string(rng.gen_range(0..1000)))
-                ),
+                ("func", "string") => format!("\"{}\"", generate_string(rng.gen_range(0..255))),
                 ("filter_address", "string") => format!("\"\""),
                 ("filter_key", "StaticArray<u8>") => format!("new StaticArray<u8>(0)"),
                 (_, "string") => format!("\"{}\"", generate_string(rng.gen_range(0..255))),
