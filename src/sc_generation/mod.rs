@@ -72,9 +72,9 @@ pub fn generate_scs(nb_sc_per_abi: u32, limit_per_calls_per_sc: u64, op_datastor
     let mut pb = pbr::ProgressBar::new(abis.len() as u64);
     for (index_abi, abi) in abis.iter().enumerate() {
         (0..nb_sc_per_abi).into_par_iter().for_each(|i| {
-            if index_abi < 6 || index_abi > 7 {
-                return;
-            }
+            // if index_abi < 6 || index_abi > 7 {
+            //     return;
+            // }
             let op_datastore_clone = op_datastore.clone();
             let (preparation_calls, calls) =
                 generate_calls(abi.clone(), limit_per_calls_per_sc, op_datastore_clone);
@@ -99,9 +99,9 @@ pub fn build_scs(nb_sc_per_abi: u32, abis: Vec<Vec<String>>) {
     (0..(nb_sc_per_abi * abis.len() as u32))
         .into_par_iter()
         .for_each(|i| {
-            if i < 6 * nb_sc_per_abi || i > 7 * nb_sc_per_abi {
-                return;
-            }
+            // if i < 6 * nb_sc_per_abi || i > 7 * nb_sc_per_abi {
+            //     return;
+            // }
             let output1 = Command::new("npm")
                 .arg("run")
                 .arg("build")
