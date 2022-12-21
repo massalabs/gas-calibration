@@ -16,7 +16,7 @@ pub fn execute_abi_scs(
     let mut pb = pbr::ProgressBar::new(abis.len() as u64);
     //let abi_index = 0;
     for (abi_index, _) in abis.iter().enumerate() {
-        if abi_index < 1 || abi_index > 7 {
+        if abi_index < 3 || abi_index > 7 {
             pb.inc();
             continue;
         }
@@ -25,7 +25,7 @@ pub fn execute_abi_scs(
         //let mut nb_batches = 0;
         while executed < nb_scs_by_abi {
             let nb_exec = rng.gen_range(1..6);
-            println!("Executing {} SCs", nb_exec);
+            //println!("Executing {} SCs", nb_exec);
             let stats = execute_batch_sc::execute_batch_sc(
                 executed + (abi_index as u32 * nb_scs_by_abi),
                 std::cmp::min(nb_scs_by_abi, executed + nb_exec)

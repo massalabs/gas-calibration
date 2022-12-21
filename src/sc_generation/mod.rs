@@ -72,7 +72,7 @@ pub fn generate_scs(nb_sc_per_abi: u32, limit_per_calls_per_sc: u64, op_datastor
     let mut pb = pbr::ProgressBar::new(abis.len() as u64);
     for (index_abi, abi) in abis.iter().enumerate() {
         (0..nb_sc_per_abi).into_par_iter().for_each(|i| {
-            if index_abi < 1 || index_abi > 7 {
+            if index_abi < 3 || index_abi > 7 {
                 return;
             }
             let op_datastore_clone = op_datastore.clone();
@@ -99,7 +99,7 @@ pub fn build_scs(nb_sc_per_abi: u32, abis: Vec<Vec<String>>) {
     (0..(nb_sc_per_abi * abis.len() as u32))
         .into_par_iter()
         .for_each(|i| {
-            if i < 1 * nb_sc_per_abi || i > 7 * nb_sc_per_abi {
+            if i < 3 * nb_sc_per_abi || i > 7 * nb_sc_per_abi {
                 return;
             }
             let output1 = Command::new("npm")

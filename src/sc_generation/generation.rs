@@ -197,7 +197,10 @@ pub fn generate_calls(
                 );
                 continue;
             }
-            "localExecution" => generate_abi_local_execution(&mut calls),
+            "localExecution" => {
+                generate_abi_local_execution(&mut calls);
+                continue;
+            },
             _ => {}
         }
         let mut call = format!("env.{}", abi[0].clone());
