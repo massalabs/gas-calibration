@@ -16,7 +16,7 @@ pub fn execute_abi_scs(
     let mut pb = pbr::ProgressBar::new(abis.len() as u64);
     //let abi_index = 0;
     for (abi_index, _) in abis.iter().enumerate() {
-        if abi_index < 3 || abi_index > 7 {
+        if abi_index < 6 || abi_index > 7 {
             pb.inc();
             continue;
         }

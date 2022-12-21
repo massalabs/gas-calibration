@@ -162,6 +162,36 @@ fn generate_abi_local_execution(calls: &mut Vec<String>) {
     calls.push(call);
 }
 
+fn generate_abi_function_exists(
+    address_sc: &str,
+    calls: &mut Vec<String>,
+    preparation_calls: &mut Vec<(&'static str, std::string::String)>,
+    call_already_prep: &mut bool,
+) {
+    let mut call = String::from("env.functionExists(");
+
+    if !*call_already_prep {
+        preparation_calls.push((
+            "setBytecodeOf",
+            format!(
+                "\"{}\", env.getOpData(toBytes(\"empty_main_sc\"))",
+                address_sc
+            ),
+        ));
+        preparation_calls.push((
+            "transferCoins",
+            format!("\"{}\", 10_000_000_000", address_sc),
+        ));
+        *call_already_prep = true;
+    }
+
+    call.push_str(&format!(
+        "\"{}\", \"{}\");",
+        address_sc, generate_string(10)
+    ));
+    calls.push(call);
+}
+
 // Return type: preparation calls, calls
 pub fn generate_calls(
     abi: Vec<String>,
@@ -201,6 +231,9 @@ pub fn generate_calls(
                 generate_abi_local_execution(&mut calls);
                 continue;
             },
+            "functionExists" => {
+                generate_abi_function_exists(&address_sc, &mut calls, &mut preparation_calls, &mut call_already_prep)
+            }
             _ => {}
         }
         let mut call = format!("env.{}", abi[0].clone());
