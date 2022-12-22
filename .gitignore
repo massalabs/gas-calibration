@@ -1,6 +1,8 @@
 target/
+**/node_modules/**
 **/results/**.json
 **/build/**.wasm
 **/build/**.ts
 **/build/**.wat
-**/index.ts/**
+**/index.ts
+**/op_datastore.json

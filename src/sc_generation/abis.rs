@@ -1,30 +1,7 @@
-pub fn get_abis_full_name() -> Vec<String> {
-    let abis_string = std::fs::read_to_string("./src/sc_generation/template/env.ts")
-        .expect("Should have been able to read the file");
-    abis_string
-        .lines()
-        .filter_map(|line| {
-            if line.starts_with("  @external(\"massa\", \"") {
-                let mut str = String::from(
-                    line.trim_start()
-                        .split("@external(\"massa\", \"")
-                        .last()
-                        .unwrap(),
-                );
-                str.pop();
-                str.pop();
-                Some(str)
-            } else {
-                None
-            }
-        })
-        .collect()
-}
-
 pub fn get_abis() -> Vec<Vec<String>> {
     let abis_string = std::fs::read_to_string("./src/sc_generation/template/env.ts")
         .expect("Should have been able to read the file");
-    abis_string
+    let mut abis: Vec<Vec<String>> = abis_string
         .lines()
         .filter_map(|line| {
             if line.starts_with("    export declare function") {
@@ -51,5 +28,8 @@ pub fn get_abis() -> Vec<Vec<String>> {
             abi.push(function_array[2].clone());
             abi
         })
-        .collect()
+        .collect();
+    abis.push(vec![String::from("seed")]);
+    abis.push(vec![String::from("Date.now")]);
+    abis
 }

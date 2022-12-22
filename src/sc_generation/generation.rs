@@ -187,7 +187,8 @@ fn generate_abi_function_exists(
 
     call.push_str(&format!(
         "\"{}\", \"{}\");",
-        address_sc, generate_string(10)
+        address_sc,
+        generate_string(10)
     ));
     calls.push(call);
 }
@@ -230,9 +231,23 @@ pub fn generate_calls(
             "localExecution" => {
                 generate_abi_local_execution(&mut calls);
                 continue;
-            },
+            }
             "functionExists" => {
-                generate_abi_function_exists(&address_sc, &mut calls, &mut preparation_calls, &mut call_already_prep)
+                generate_abi_function_exists(
+                    &address_sc,
+                    &mut calls,
+                    &mut preparation_calls,
+                    &mut call_already_prep,
+                );
+                continue;
+            }
+            "seed" => {
+                calls.push("seed();".to_string());
+                continue;
+            }
+            "Date.now" => {
+                calls.push("Date.now();".to_string());
+                continue;
             }
             _ => {}
         }

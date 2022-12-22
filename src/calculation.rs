@@ -4,8 +4,6 @@ use std::collections::BTreeMap;
 use std::io::Write;
 use std::{collections::HashMap, fs::File, time::Duration};
 
-use crate::sc_generation::abis::{self, get_abis_full_name};
-
 fn transpose<T>(v: Vec<Vec<T>>) -> Vec<Vec<T>> {
     assert!(!v.is_empty());
     let len = v[0].len();
@@ -138,8 +136,6 @@ pub fn calculate_times(
     results: Vec<(HashMap<String, u64>, Duration)>,
     abi_mode: bool,
 ) -> HashMap<String, f64> {
-    let _abi_names = get_abis_full_name();
-    let _abis = abis::get_abis();
     let mut data: Vec<(String, Vec<f64>)> = Vec::new();
     data.push((String::from("Time"), Vec::new()));
     for (idx, (stats, time)) in results.iter().enumerate() {
