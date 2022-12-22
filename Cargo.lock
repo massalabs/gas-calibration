@@ -1226,7 +1226,7 @@ dependencies = [
 [[package]]
 name = "massa-sc-runtime"
 version = "0.10.0"
-source = "git+https://github.com/massalabs/massa-sc-runtime?branch=add_gas_calibration_results#9c6561ac8a9387eddb1abd9412568795e50864c8"
+source = "git+https://github.com/massalabs/massa-sc-runtime?branch=add_gas_calibration_results#ef598289415227f346fe58caa585517e6962f117"
 dependencies = [
  "anyhow",
  "as-ffi-bindings",

@@ -65,16 +65,16 @@ pub fn execute_batch_sc(
             run_main_gc(&bytecode, u64::MAX, &interface, &[], GasCosts::default()).unwrap();
         //println!("Results: {:?}", results);
         let mut time_exec = start.elapsed();
-        println!("Time: {:?}", time_exec);
+        //println!("Time: {:?}", time_exec);
         for (_key, value) in results.timers {
-            println!("key: {:?}, value: {:?}", _key, value);
+            //println!("key: {:?}, value: {:?}", _key, value);
             time_exec -= Duration::from_secs_f64(value);
         }
         // Size ignored for now because we saw that it doesn't change a lot
         // results
         //     .counters
         //     .insert(String::from("Size"), bytecode.len() as u64);
-        println!("Time: {:?}", time_exec);
+        //println!("Time: {:?}", time_exec);
         total_execution_time += time_exec;
         for (key, value) in results.counters {
             let entry = total_execution_stats.entry(key).or_insert(0);
