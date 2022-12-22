@@ -47,6 +47,14 @@ fn std_deviation(data: &[f64]) -> Option<f64> {
     }
 }
 
+fn format_key(key: &str) -> String {
+    String::from(key)
+        .replace("Abi:call:massa.", "")
+        .replace("Abi:call:env.", "assembly_script_")
+        .replace(".", "_")
+        .to_lowercase()
+}
+
 pub fn compile_and_write_results(
     results: HashMap<String, Vec<f64>>,
     max_gas: u32,
@@ -81,7 +89,7 @@ pub fn compile_and_write_results(
     for (key, value) in final_results.iter() {
         gas_costs.insert(
             if abi_mode {
-                String::from(key).replace("Abi:call:massa.", "")
+                format_key(key)
             } else {
                 key.clone()
             },

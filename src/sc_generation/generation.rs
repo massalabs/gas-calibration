@@ -158,7 +158,7 @@ fn generate_abi_local_call(
 }
 
 fn generate_abi_local_execution(calls: &mut Vec<String>) {
-    let mut call = String::from("env.localExecution(env.getOpData(toBytes(\"empty_main_sc\")), \"main\", new StaticArray<u8>(0));");
+    let call = String::from("env.localExecution(env.getOpData(toBytes(\"empty_main_sc\")), \"main\", new StaticArray<u8>(0));");
     calls.push(call);
 }
 
