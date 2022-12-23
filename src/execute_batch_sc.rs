@@ -33,10 +33,14 @@ pub fn execute_batch_sc(
             "./src/sc_generation/template/build/SC_preparation_{}.wasm",
             i
         )) {
-            let mut bytecode = vec![];
-            file.read_to_end(&mut bytecode)
-                .unwrap_or_else(|_| panic!("Failed to read {}", filename));
-            Some(bytecode)
+            if abi_mode {
+                let mut bytecode = vec![];
+                file.read_to_end(&mut bytecode)
+                    .unwrap_or_else(|_| panic!("Failed to read {}", filename));
+                Some(bytecode)
+            } else {
+                None
+            }
         } else {
             None
         };
