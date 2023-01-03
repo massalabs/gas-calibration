@@ -23,5 +23,5 @@ pub fn generate_abi_get_op_data(
     let key = key.as_slice();
     let key = format!("toBytes(\"{}\")", String::from_utf16_lossy(&key));
 
-    calls.push(format!("env.getOpData(toBytes(\"{}\"));", key));
+    calls.push(format!("env.getOpData({});", key));
 }

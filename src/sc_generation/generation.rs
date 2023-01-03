@@ -144,7 +144,7 @@ pub fn generate_calls(
                 generate_abi_get_of(&address_sc, &mut rng, &mut calls, &mut preparation_calls)
             }
             "del" => generate_abi_del(&mut rng, &mut calls, &mut preparation_calls),
-            "delOf" => {
+            "deleteOf" => {
                 generate_abi_del_of(&address_sc, &mut rng, &mut calls, &mut preparation_calls)
             }
             "append" => generate_abi_append(&mut rng, &mut calls, &mut preparation_calls),
@@ -180,7 +180,9 @@ pub fn generate_calls(
             "getOpData" => generate_abi_get_op_data(&op_datastore, &mut rng, &mut calls),
             "seed" => calls.push("seed();".to_string()),
             "Date.now" => calls.push("Date.now();".to_string()),
-            _ => {}
+            _ => {
+                panic!("ABI: {} don't have any generation function. Please add one in src/sc_generation/generation.rs", abi[0].as_str())
+            }
         }
     }
 
