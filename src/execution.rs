@@ -16,10 +16,10 @@ pub fn execute_abi_scs(
     let mut pb = pbr::ProgressBar::new(abis.len() as u64);
     //let abi_index = 0;
     for (abi_index, _) in abis.iter().enumerate() {
-        // if abi_index < 3 || abi_index > 3 {
-        //     pb.inc();
-        //     continue;
-        // }
+        if abi_index < 30 || abi_index > 30 {
+            pb.inc();
+            continue;
+        }
         let mut full_stats = Vec::new();
         let mut executed = 0;
         //let mut nb_batches = 0;

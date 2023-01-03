@@ -1,18 +1,25 @@
-use std::{fs::File, str::FromStr};
+use std::fs::File;
 
-use massa_models::{address::Address, config::THREAD_COUNT, datastore::Datastore};
-use massa_signature::KeyPair;
+use massa_models::datastore::Datastore;
 use rand::Rng;
 use std::io::Write;
 
-fn _generate_u8_array(length: usize) -> Vec<u8> {
-    let mut rng = rand::thread_rng();
-    let mut array = Vec::new();
-    for _ in 0..length {
-        array.push(rng.gen());
-    }
-    array
-}
+use super::abi_generation::{
+    generate_abi_append, generate_abi_append_of, generate_abi_balance, generate_abi_balance_of,
+    generate_abi_call, generate_abi_call_coins, generate_abi_call_stack,
+    generate_abi_caller_has_write_access, generate_abi_create_sc, generate_abi_current_period,
+    generate_abi_current_thread, generate_abi_del, generate_abi_del_of,
+    generate_abi_function_exists, generate_abi_generate_event, generate_abi_get,
+    generate_abi_get_bytecode, generate_abi_get_bytecode_for, generate_abi_get_keys,
+    generate_abi_get_keys_of, generate_abi_get_of, generate_abi_get_op_data,
+    generate_abi_get_op_keys, generate_abi_has, generate_abi_has_of, generate_abi_has_op_key,
+    generate_abi_is_signature_valid, generate_abi_local_call, generate_abi_local_execution,
+    generate_abi_owned_addresses, generate_abi_print, generate_abi_public_key_to_address,
+    generate_abi_remaining_gas, generate_abi_send_message, generate_abi_set,
+    generate_abi_set_bytecode, generate_abi_set_bytecode_of, generate_abi_set_of,
+    generate_abi_time, generate_abi_to_base58, generate_abi_transfer_coins,
+    generate_abi_transfer_coins_of, generate_abi_unsafe_random,
+};
 
 fn generate_string(length: usize) -> String {
     let mut rng = rand::thread_rng();
@@ -23,25 +30,10 @@ fn generate_string(length: usize) -> String {
     string
 }
 
-fn static_public_key() -> String {
-    let keypair =
-        KeyPair::from_str("S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY").unwrap();
-    keypair.get_public_key().to_string()
-    // Secret key: S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY
-    // Public key: P12WKRCnYPKhVuwtk1mSEiMFSAPRfThR74bfhBEHAnT53JnBNj9T
-    // Address: A12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M
-}
-
 fn static_address() -> String {
     // Secret key: S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY
     // Public key: P12WKRCnYPKhVuwtk1mSEiMFSAPRfThR74bfhBEHAnT53JnBNj9T
     String::from("A12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M")
-}
-
-fn generate_address() -> String {
-    let keypair = KeyPair::generate();
-
-    Address::from_public_key(&keypair.get_public_key()).to_string()
 }
 
 pub fn generate_op_datastore() -> Datastore {
@@ -73,12 +65,8 @@ pub fn generate_op_datastore() -> Datastore {
             .1
             .to_vec();
         match std::fs::read("./src/sc_generation/template/empty_main_sc.wasm") {
-            Ok(bytes) => {
-                datastore.insert(key, bytes);
-            }
-            Err(e) => {
-                panic!("{}", e);
-            }
+            Ok(bytes) => datastore.insert(key, bytes),
+            Err(e) => panic!("{}", e),
         }
     };
     let mut output = File::create("./src/sc_generation/template/op_datastore.json").unwrap();
@@ -97,107 +85,6 @@ pub fn generate_op_datastore() -> Datastore {
     datastore
 }
 
-fn generate_abi_call(
-    address_sc: &str,
-    calls: &mut Vec<String>,
-    preparation_calls: &mut Vec<(&'static str, std::string::String)>,
-    call_already_prep: &mut bool,
-) {
-    let mut call = String::from("env.call(");
-
-    if !*call_already_prep {
-        preparation_calls.push((
-            "setBytecodeOf",
-            format!(
-                "\"{}\", env.getOpData(toBytes(\"empty_main_sc\"))",
-                address_sc
-            ),
-        ));
-        preparation_calls.push((
-            "transferCoins",
-            format!("\"{}\", 10_000_000_000", address_sc),
-        ));
-        *call_already_prep = true;
-    }
-
-    call.push_str(&format!(
-        "\"{}\", \"main\", new StaticArray<u8>(0), 0);",
-        address_sc
-    ));
-    calls.push(call);
-}
-
-fn generate_abi_local_call(
-    address_sc: &str,
-    calls: &mut Vec<String>,
-    preparation_calls: &mut Vec<(&'static str, std::string::String)>,
-    call_already_prep: &mut bool,
-) {
-    let mut call = String::from("env.localCall(");
-
-    if !*call_already_prep {
-        preparation_calls.push((
-            "setBytecodeOf",
-            format!(
-                "\"{}\", env.getOpData(toBytes(\"empty_main_sc\"))",
-                address_sc
-            ),
-        ));
-        preparation_calls.push((
-            "transferCoins",
-            format!("\"{}\", 10_000_000_000", address_sc),
-        ));
-        *call_already_prep = true;
-    }
-
-    call.push_str(&format!(
-        "\"{}\", \"main\", new StaticArray<u8>(0));",
-        address_sc
-    ));
-    calls.push(call);
-}
-
-fn generate_abi_local_execution(calls: &mut Vec<String>, call_already_prep: &mut bool) {
-    if !*call_already_prep {
-        let prep_call = String::from("let bytecode = env.getOpData(toBytes(\"empty_main_sc\"));");
-        calls.push(prep_call);
-        *call_already_prep = true;
-    }
-    let call = String::from("env.localExecution(bytecode, \"main\", new StaticArray<u8>(0));");
-    calls.push(call);
-}
-
-fn generate_abi_function_exists(
-    address_sc: &str,
-    calls: &mut Vec<String>,
-    preparation_calls: &mut Vec<(&'static str, std::string::String)>,
-    call_already_prep: &mut bool,
-) {
-    let mut call = String::from("env.functionExists(");
-
-    if !*call_already_prep {
-        preparation_calls.push((
-            "setBytecodeOf",
-            format!(
-                "\"{}\", env.getOpData(toBytes(\"empty_main_sc\"))",
-                address_sc
-            ),
-        ));
-        preparation_calls.push((
-            "transferCoins",
-            format!("\"{}\", 10_000_000_000", address_sc),
-        ));
-        *call_already_prep = true;
-    }
-
-    call.push_str(&format!(
-        "\"{}\", \"{}\");",
-        address_sc,
-        generate_string(10)
-    ));
-    calls.push(call);
-}
-
 // Return type: preparation calls, calls
 pub fn generate_calls(
     abi: Vec<String>,
@@ -206,160 +93,97 @@ pub fn generate_calls(
 ) -> (Vec<String>, Vec<String>) {
     let mut rng = rand::thread_rng();
     let mut calls = Vec::new();
-    let mut saved_key = String::new();
     let mut preparation_calls = Vec::new();
     let address_sc = static_address();
 
     let nb_calls = rng.gen_range(0..limit_per_calls);
     let mut call_already_prep = false;
     for _ in 0..nb_calls {
-        // Special cases
         match abi[0].as_str() {
-            "call" => {
-                generate_abi_call(
-                    &address_sc,
-                    &mut calls,
-                    &mut preparation_calls,
-                    &mut call_already_prep,
-                );
-                continue;
+            "print" => generate_abi_print(&mut rng, &mut calls),
+            "call" => generate_abi_call(
+                &address_sc,
+                &mut calls,
+                &mut preparation_calls,
+                &mut call_already_prep,
+            ),
+            "localCall" => generate_abi_local_call(
+                &address_sc,
+                &mut calls,
+                &mut preparation_calls,
+                &mut call_already_prep,
+            ),
+            "localExecution" => generate_abi_local_execution(&mut calls, &mut call_already_prep),
+            "getBytecode" => generate_abi_get_bytecode(
+                &address_sc,
+                &mut calls,
+                &mut preparation_calls,
+                &mut call_already_prep,
+            ),
+            "getBytecodeFor" => generate_abi_get_bytecode_for(
+                &address_sc,
+                &mut calls,
+                &mut preparation_calls,
+                &mut call_already_prep,
+            ),
+            "callerHasWriteAccess" => generate_abi_caller_has_write_access(&mut calls),
+            "functionExists" => generate_abi_function_exists(
+                &address_sc,
+                &mut calls,
+                &mut preparation_calls,
+                &mut call_already_prep,
+            ),
+            "remainingGas" => generate_abi_remaining_gas(&mut calls),
+            "createSC" => generate_abi_create_sc(&mut calls),
+            "getKeys" => generate_abi_get_keys(&mut calls),
+            "getKeysOf" => generate_abi_get_keys_of(&address_sc, &mut calls),
+            "set" => generate_abi_set(&mut rng, &mut calls),
+            "setOf" => generate_abi_set_of(&address_sc, &mut rng, &mut calls),
+            "get" => generate_abi_get(&mut rng, &mut calls, &mut preparation_calls),
+            "getOf" => {
+                generate_abi_get_of(&address_sc, &mut rng, &mut calls, &mut preparation_calls)
             }
-            "localCall" => {
-                generate_abi_local_call(
-                    &address_sc,
-                    &mut calls,
-                    &mut preparation_calls,
-                    &mut call_already_prep,
-                );
-                continue;
+            "del" => generate_abi_del(&mut rng, &mut calls, &mut preparation_calls),
+            "delOf" => {
+                generate_abi_del_of(&address_sc, &mut rng, &mut calls, &mut preparation_calls)
             }
-            "localExecution" => {
-                generate_abi_local_execution(&mut calls, &mut call_already_prep);
-                continue;
+            "append" => generate_abi_append(&mut rng, &mut calls, &mut preparation_calls),
+            "appendOf" => {
+                generate_abi_append_of(&address_sc, &mut rng, &mut calls, &mut preparation_calls)
             }
-            "functionExists" => {
-                generate_abi_function_exists(
-                    &address_sc,
-                    &mut calls,
-                    &mut preparation_calls,
-                    &mut call_already_prep,
-                );
-                continue;
+            "has" => generate_abi_has(&mut rng, &mut calls, &mut preparation_calls),
+            "hasOf" => {
+                generate_abi_has_of(&address_sc, &mut rng, &mut calls, &mut preparation_calls)
             }
-            "seed" => {
-                calls.push("seed();".to_string());
-                continue;
-            }
-            "Date.now" => {
-                calls.push("Date.now();".to_string());
-                continue;
-            }
+            "ownedAddresses" => generate_abi_owned_addresses(&mut calls),
+            "callStack" => generate_abi_call_stack(&mut calls),
+            "generateEvent" => generate_abi_generate_event(&mut rng, &mut calls),
+            "transferCoins" => generate_abi_transfer_coins(&mut rng, &mut calls),
+            "transferCoinsOf" => generate_abi_transfer_coins_of(&address_sc, &mut rng, &mut calls),
+            "balance" => generate_abi_balance(&mut calls),
+            "balanceOf" => generate_abi_balance_of(&address_sc, &mut calls),
+            "callCoins" => generate_abi_call_coins(&mut calls),
+            "toBase58" => generate_abi_to_base58(&mut rng, &mut calls),
+            "isSignatureValid" => generate_abi_is_signature_valid(&mut rng, &mut calls),
+            "publicKeyToAddress" => generate_abi_public_key_to_address(&mut calls),
+            "time" => generate_abi_time(&mut calls),
+            "unsafeRandom" => generate_abi_unsafe_random(&mut calls),
+            "sendMessage" => generate_abi_send_message(&address_sc, &mut rng, &mut calls),
+            "currentPeriod" => generate_abi_current_period(&mut calls),
+            "currentThread" => generate_abi_current_thread(&mut calls),
+            "setBytecode" => generate_abi_set_bytecode(&mut rng, &mut calls),
+            "setBytecodeOf" => generate_abi_set_bytecode_of(&address_sc, &mut rng, &mut calls),
+            "getOpKeys" => generate_abi_get_op_keys(&mut calls),
+            "hasOpKey" => generate_abi_has_op_key(&op_datastore, &mut rng, &mut calls),
+            "getOpData" => generate_abi_get_op_data(&op_datastore, &mut rng, &mut calls),
+            "seed" => calls.push("seed();".to_string()),
+            "Date.now" => calls.push("Date.now();".to_string()),
             _ => {}
         }
-        let mut call = format!("env.{}", abi[0].clone());
-        call.push('(');
-        for i in 1..abi.len() - 1 {
-            if abi[i].is_empty() {
-                break;
-            }
-            let mut splitted_params = abi[i].as_str().split(": ");
-            let arg = match (
-                splitted_params.next().unwrap(),
-                splitted_params.next().unwrap(),
-            ) {
-                ("to", "string") => format!("\"{}\"", generate_address()),
-                ("address" | "from", "string") => format!("\"{}\"", static_address()),
-                ("publicKey", "string") => format!("\"{}\"", static_public_key()),
-                ("key", "StaticArray<u8>") => {
-                    if abi[0] == "getOpData" || abi[0] == "hasOpKey" {
-                        let index_key = rng.gen_range(0..op_datastore.len());
-                        //op things
-                        // Get key at index_key in datastore
-                        let key = op_datastore
-                            .clone()
-                            .into_iter()
-                            .collect::<Vec<(Vec<u8>, Vec<u8>)>>()
-                            .get(index_key)
-                            .unwrap()
-                            .0
-                            .clone();
-                        let key: Vec<u16> = key
-                            .chunks_exact(2)
-                            .into_iter()
-                            .map(|a| u16::from_ne_bytes([a[0], a[1]]))
-                            .collect();
-                        let key = key.as_slice();
-                        format!("toBytes(\"{}\")", String::from_utf16_lossy(&key))
-                    } else {
-                        // Storage things
-                        let mut key = generate_string(rng.gen_range(5..32));
-                        if abi[0] == "set" {
-                            saved_key = key.clone();
-                        } else if abi[0] == "get"
-                            || abi[0] == "getOf"
-                            || abi[0] == "append"
-                            || abi[0] == "appendOf"
-                            || abi[0] == "del"
-                            || abi[0] == "deleteOf"
-                        {
-                            if saved_key.is_empty() {
-                                preparation_calls.push((
-                                    "set",
-                                    format!(
-                                        "toBytes(\"{}\"), toBytes(\"{}\")",
-                                        key,
-                                        generate_string(rng.gen_range(1..1000))
-                                    ),
-                                ));
-                            } else {
-                                key = saved_key.clone();
-                                saved_key = String::new();
-                            }
-                        }
-                        format!("toBytes(\"{}\")", key)
-                    }
-                }
-                ("func", "string") => format!("\"{}\"", generate_string(rng.gen_range(0..255))),
-                ("filter_address", "string") => format!("\"\""),
-                ("filter_key", "StaticArray<u8>") => format!("new StaticArray<u8>(0)"),
-                (_, "string") => format!("\"{}\"", generate_string(rng.gen_range(0..255))),
-                (_, "StaticArray<u8>") => {
-                    format!("toBytes(\"{}\")", generate_string(rng.gen_range(0..1000)))
-                }
-                ("amount", "u64") => rng
-                    .gen_range::<u64, _>(100_000_000..1_000_000_000)
-                    .to_string(),
-                ("coins", "u64") => rng
-                    .gen_range::<u64, _>(100_000_000..1_000_000_000)
-                    .to_string(),
-                ("maxGas", "u64") => rng.gen_range::<u64, _>(100_000..300_000).to_string(),
-                ("rawFee", "u64") => rng.gen_range::<u64, _>(1..4).to_string(),
-                ("validityStartPeriod", "u64") => rng.gen_range::<u64, _>(10..100).to_string(),
-                ("validityEndPeriod", "u64") => rng.gen_range::<u64, _>(100..1000).to_string(),
-                (_, "u64") => rng.gen::<u64>().to_string(),
-                ("thread", "u8") => rng.gen_range(0..THREAD_COUNT).to_string(),
-                ("validityStartThread", "u8") => rng.gen_range(0..THREAD_COUNT).to_string(),
-                ("validityEndThread", "u8") => rng.gen_range(0..THREAD_COUNT).to_string(),
-                (_, "u8") => rng.gen::<u8>().to_string(),
-                (_, "boolean") => rng.gen::<bool>().to_string(),
-                (a, b) => {
-                    panic!("Unknown type: {} {}", a, b);
-                }
-            };
-            call.push_str(&arg);
-            call.push(',');
-        }
-        if call.ends_with(',') {
-            call.pop();
-        }
-        call.push(')');
-        call.push(';');
-        calls.push(call);
     }
 
     let mut final_preparation_calls = Vec::new();
-    for (abi, key) in preparation_calls {
-        let call = format!("env.{}({});", abi, key);
+    for call in preparation_calls {
         final_preparation_calls.insert(0, call);
     }
     (final_preparation_calls, calls)
