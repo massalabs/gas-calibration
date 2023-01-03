@@ -12,7 +12,7 @@ mod sc_generation;
 
 fn main() {
     let args = args::Args::parse();
-    let nb_scs_by_abi: u32 = 10;
+    let nb_scs_by_abi: u32 = 100;
     let nb_wasm_scs = 500;
     let abis = sc_generation::abis::get_abis();
     let op_datastore = if args.skip_generation_scs {
