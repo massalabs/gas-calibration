@@ -68,8 +68,13 @@ fn write_wat(setup_calls: Vec<String>, calls: Vec<String>, file_name: String) {
     write!(src, "{}", template_index).unwrap();
 }
 
-pub fn generate_scs(nb_sc_per_abi: u32, limit_per_calls_per_sc: u64, op_datastore: Datastore) {
-    let abis = abis::get_abis();
+pub fn generate_scs(
+    nb_sc_per_abi: u32,
+    limit_per_calls_per_sc: u64,
+    op_datastore: Datastore,
+    env_path: &String,
+) {
+    let abis = abis::get_abis(env_path);
     println!("Generating {} smart contracts for each abi", nb_sc_per_abi);
     let mut pb = pbr::ProgressBar::new(abis.len() as u64);
     for (index_abi, abi) in abis.iter().enumerate() {

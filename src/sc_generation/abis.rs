@@ -1,6 +1,6 @@
-pub fn get_abis() -> Vec<Vec<String>> {
-    let abis_string = std::fs::read_to_string("./src/sc_generation/template/env.ts")
-        .expect("Should have been able to read the file");
+pub fn get_abis(file_path: &String) -> Vec<Vec<String>> {
+    let abis_string =
+        std::fs::read_to_string(file_path).expect("Should have been able to read the file");
     let mut abis: Vec<Vec<String>> = abis_string
         .lines()
         .filter_map(|line| {

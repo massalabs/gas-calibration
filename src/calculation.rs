@@ -51,7 +51,7 @@ fn format_key(key: &str) -> String {
     String::from(key)
         .replace("Abi:call:massa.", "")
         .replace("Abi:call:env.", "assembly_script_")
-        .replace(".", "_")
+        .replace('.', "_")
         .to_lowercase()
 }
 
@@ -75,9 +75,9 @@ pub fn compile_and_write_results(
         );
     }
     let result_filename = if abi_mode {
-        format!("./results/abi_results.json")
+        "./results/abi_results.json".to_string()
     } else {
-        format!("./results/wasm_results.json")
+        "./results/wasm_results.json".to_string()
     };
     let mut output = File::create(result_filename).unwrap();
     write!(
@@ -97,9 +97,9 @@ pub fn compile_and_write_results(
         );
     }
     let output_filename = if abi_mode {
-        format!("./results/abi_gas_costs.json")
+        "./results/abi_gas_costs.json".to_string()
     } else {
-        format!("./results/wasm_gas_costs.json")
+        "./results/wasm_gas_costs.json".to_string()
     };
     let mut output = File::create(output_filename).unwrap();
     write!(
@@ -119,7 +119,7 @@ fn is_param_size(key: &str) -> bool {
     key.split(':').last().unwrap().parse::<usize>().is_ok()
 }
 
-fn _is_constant(key: &str, abi_names: &Vec<String>, abis: &Vec<Vec<String>>) -> bool {
+fn _is_constant(key: &str, abi_names: &[String], abis: &[Vec<String>]) -> bool {
     let mut filtered = false;
     for (idx, abi_name) in abi_names.iter().enumerate() {
         let abi_name = format!("{}:", abi_name);
@@ -149,10 +149,10 @@ pub fn calculate_times(
     for (idx, (stats, time)) in results.iter().enumerate() {
         data[0].1.push(time.as_nanos() as f64);
         for (key, value) in stats {
-            if abi_mode && (key.contains("Wasm:") || is_param_size(&key)) {
+            if abi_mode && (key.contains("Wasm:") || is_param_size(key)) {
                 continue;
             }
-            if !abi_mode && (key.contains("Abi:") || is_wasm_filter(&key)) {
+            if !abi_mode && (key.contains("Abi:") || is_wasm_filter(key)) {
                 continue;
             }
             if let Some(pos) = data.iter().position(|(k, _)| k == key) {
@@ -185,7 +185,6 @@ pub fn calculate_times(
     let alphas = alphas
         .iter()
         .enumerate()
-        .map(|elem| (data[elem.0 + 1].0.clone(), (*elem.1 / 1_000_000_000f64)))
-        .collect::<Vec<(String, f64)>>();
+        .map(|elem| (data[elem.0 + 1].0.clone(), (*elem.1 / 1_000_000_000f64)));
     alphas.into_iter().collect()
 }

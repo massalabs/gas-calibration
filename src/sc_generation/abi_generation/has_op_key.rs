@@ -21,7 +21,7 @@ pub fn generate_abi_has_op_key(
         .map(|a| u16::from_ne_bytes([a[0], a[1]]))
         .collect();
     let key = key.as_slice();
-    let key = format!("toBytes(\"{}\")", String::from_utf16_lossy(&key));
+    let key = format!("toBytes(\"{}\")", String::from_utf16_lossy(key));
 
     calls.push(format!("env.hasOpKey({});", key));
 }

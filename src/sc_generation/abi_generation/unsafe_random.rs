@@ -1,3 +1,3 @@
 pub fn generate_abi_unsafe_random(calls: &mut Vec<String>) {
-    calls.push(format!("env.unsafeRandom();"));
+    calls.push("env.unsafeRandom();".to_string());
 }

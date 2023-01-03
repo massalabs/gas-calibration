@@ -15,5 +15,5 @@ pub fn generate_abi_get_bytecode(
         ));
         *call_already_prep = true;
     }
-    calls.push(format!("env.getBytecode();"));
+    calls.push("env.getBytecode();".to_string());
 }

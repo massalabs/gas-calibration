@@ -38,7 +38,3 @@ cargo run -- --skip-generation-scs
 ```
 
 Results are stored in the `results` folder.
-
-## TODO:
-
-- For the moment we only measure the time it takes to execute the ABIs we also need to measure the time it takes to execute the WASM instructions

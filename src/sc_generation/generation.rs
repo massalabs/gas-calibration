@@ -226,11 +226,7 @@ pub fn generate_instruction(limit_per_calls: u64) -> (Vec<String>, Vec<String>) 
     for _ in 0..nb_calls {
         let left_operand = rng.gen_range(1..i32::MAX);
         let right_operand = rng.gen_range(1..i32::MAX);
-        let gen_first_operand = if rng.gen_range(0..2) == 1 {
-            true
-        } else {
-            false
-        };
+        let gen_first_operand = rng.gen_range(0..2) == 1;
         let instruction = match (
             rng.gen_range(0..operations.len()),
             nb_drop,
