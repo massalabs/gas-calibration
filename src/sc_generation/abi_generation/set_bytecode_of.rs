@@ -1,15 +1,13 @@
-use rand::{rngs::ThreadRng, Rng};
-
-use super::generate_string;
-
 pub fn generate_abi_set_bytecode_of(
     address_sc: &str,
-    rng: &mut ThreadRng,
     calls: &mut Vec<String>,
+    call_already_prep: &mut bool,
 ) {
-    calls.push(format!(
-        "env.setBytecodeOf(\"{}\", toBytes(\"{}\"));",
-        address_sc,
-        generate_string(rng.gen_range(5..10000))
-    ));
+    if !*call_already_prep {
+        calls.push(format!(
+            "let bytecode = env.getOpData(toBytes(\"empty_main_sc\"));"
+        ));
+        *call_already_prep = true;
+    }
+    calls.push(format!("env.setBytecodeOf(\"{}\", bytecode);", address_sc,));
 }

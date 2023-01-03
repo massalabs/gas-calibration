@@ -171,8 +171,10 @@ pub fn generate_calls(
             "sendMessage" => generate_abi_send_message(&address_sc, &mut rng, &mut calls),
             "currentPeriod" => generate_abi_current_period(&mut calls),
             "currentThread" => generate_abi_current_thread(&mut calls),
-            "setBytecode" => generate_abi_set_bytecode(&mut rng, &mut calls),
-            "setBytecodeOf" => generate_abi_set_bytecode_of(&address_sc, &mut rng, &mut calls),
+            "setBytecode" => generate_abi_set_bytecode(&mut calls, &mut call_already_prep),
+            "setBytecodeOf" => {
+                generate_abi_set_bytecode_of(&address_sc, &mut calls, &mut call_already_prep)
+            }
             "getOpKeys" => generate_abi_get_op_keys(&mut calls),
             "hasOpKey" => generate_abi_has_op_key(&op_datastore, &mut rng, &mut calls),
             "getOpData" => generate_abi_get_op_data(&op_datastore, &mut rng, &mut calls),

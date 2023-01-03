@@ -20,6 +20,7 @@ fn main() {
         sc_generation::read_existing_op_datastore()
     } else {
         let datastore = sc_generation::generation::generate_op_datastore();
+        //let datastore = sc_generation::read_existing_op_datastore();
         sc_generation::generate_scs(nb_scs_by_abi, 300, datastore.clone());
         sc_generation::build_scs(nb_scs_by_abi, abis);
         sc_generation::generate_wasm_scs(nb_wasm_scs, 300);
