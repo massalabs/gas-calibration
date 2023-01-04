@@ -13,7 +13,7 @@ rayon = "1.5.3"
 ndarray = { version="0.15", features = ["approx-0_5"] }
 serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
 pbr = { git = "https://github.com/a8m/pb" }
-massa-sc-runtime = { git = "https://github.com/massalabs/massa-sc-runtime", branch = "main", features = ["gas_calibration"] }
+massa-sc-runtime = { git = "https://github.com/massalabs/massa-sc-runtime", features = ["gas_calibration"] }
 massa-models = { git = "https://github.com/massalabs/massa", package = "massa_models", branch = "main" }
 massa-signature = { git = "https://github.com/massalabs/massa", package = "massa_signature", branch = "main" }
 massa-execution-worker = { git = "https://github.com/massalabs/massa", package = "massa_execution_worker", branch = "main", features = ["gas_calibration"] }

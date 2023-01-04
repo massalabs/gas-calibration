@@ -980,7 +980,7 @@ version = "0.1.0"
 dependencies = [
  "base64",
  "clap",
- "massa-sc-runtime 0.10.0 (git+https://github.com/massalabs/massa-sc-runtime?branch=main)",
+ "massa-sc-runtime",
  "massa_execution_worker",
  "massa_models",
  "massa_signature",
@@ -1349,31 +1349,6 @@ dependencies = [
 [[package]]
 name = "massa-sc-runtime"
 version = "0.10.0"
-source = "git+https://github.com/massalabs/massa-sc-runtime?branch=main#04082b4986753160f9c3a075daf9f6f772d73c29"
-dependencies = [
- "anyhow",
- "as-ffi-bindings",
- "base64",
- "displaydoc",
- "function_name",
- "loupe",
- "more-asserts 0.3.1",
- "parking_lot",
- "rand 0.8.5",
- "regex",
- "serde",
- "serde_json",
- "serial_test",
- "thiserror",
- "wasmer",
- "wasmer-compiler-singlepass",
- "wasmer-middlewares",
- "wasmer-types",
-]
-
-[[package]]
-name = "massa-sc-runtime"
-version = "0.10.0"
 source = "git+https://github.com/massalabs/massa-sc-runtime#04082b4986753160f9c3a075daf9f6f772d73c29"
 dependencies = [
  "anyhow",
@@ -1437,7 +1412,7 @@ version = "0.1.0"
 source = "git+https://github.com/massalabs/massa?branch=main#08d87e0c151657e3cd109d7a862e67af63456d68"
 dependencies = [
  "displaydoc",
- "massa-sc-runtime 0.10.0 (git+https://github.com/massalabs/massa-sc-runtime)",
+ "massa-sc-runtime",
  "massa_final_state",
  "massa_hash",
  "massa_ledger_exports",
@@ -1455,7 +1430,7 @@ version = "0.1.0"
 source = "git+https://github.com/massalabs/massa?branch=main#08d87e0c151657e3cd109d7a862e67af63456d68"
 dependencies = [
  "anyhow",
- "massa-sc-runtime 0.10.0 (git+https://github.com/massalabs/massa-sc-runtime)",
+ "massa-sc-runtime",
  "massa_async_pool",
  "massa_executed_ops",
  "massa_execution_exports",
@@ -1938,9 +1913,9 @@ dependencies = [
 
 [[package]]
 name = "object"
-version = "0.30.0"
+version = "0.30.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "239da7f290cfa979f43f85a8efeee9a8a76d0827c356d37f9d3d7254d6b537fb"
+checksum = "8d864c91689fdc196779b98dba0aceac6118594c2df6ee5d943eb6a8df4d107a"
 dependencies = [
  "memchr",
 ]
