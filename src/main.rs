@@ -18,6 +18,12 @@ fn main() {
         .as_sdk_env_path
         .unwrap_or(String::from("./src/sc_generation/template/env.ts"));
     let abis = sc_generation::abis::get_abis(&env_path);
+    if args.only_generate {
+        let datastore = sc_generation::generation::generate_op_datastore();
+        //let datastore = sc_generation::read_existing_op_datastore();
+        sc_generation::generate_scs(nb_scs_by_abi, 300, datastore.clone(), &env_path);
+        return;
+    }
     let op_datastore = if args.skip_generation_scs {
         //sc_generation::generate_wasm_scs(nb_wasm_scs, 300);
         sc_generation::read_existing_op_datastore()

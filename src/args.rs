@@ -13,4 +13,7 @@ pub struct Args {
     /// Override path to as-sdk env
     #[arg(long, short, action)]
     pub as_sdk_env_path: Option<String>,
+    /// Only generate SCs
+    #[arg(long, short, action)]
+    pub only_generate: bool,
 }
