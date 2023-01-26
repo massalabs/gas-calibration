@@ -112,7 +112,7 @@ pub fn compile_and_write_results(
 }
 
 fn is_wasm_filter(key: &str) -> bool {
-    key == "Wasm:End"
+    key == "Wasm:End" || key == "Launch"
 }
 
 fn is_param_size(key: &str) -> bool {
