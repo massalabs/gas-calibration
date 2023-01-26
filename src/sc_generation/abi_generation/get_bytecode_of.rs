@@ -1,4 +1,4 @@
-pub fn generate_abi_get_bytecode_for(
+pub fn generate_abi_get_bytecode_of(
     address_sc: &str,
     calls: &mut Vec<String>,
     preparation_calls: &mut Vec<String>,
@@ -15,5 +15,5 @@ pub fn generate_abi_get_bytecode_for(
         ));
         *call_already_prep = true;
     }
-    calls.push(format!("env.getBytecodeFor(\"{}\");", address_sc));
+    calls.push(format!("env.getBytecodeOf(\"{}\");", address_sc));
 }

@@ -10,7 +10,7 @@ use super::abi_generation::{
     generate_abi_caller_has_write_access, generate_abi_create_sc, generate_abi_current_period,
     generate_abi_current_thread, generate_abi_del, generate_abi_del_of,
     generate_abi_function_exists, generate_abi_generate_event, generate_abi_get,
-    generate_abi_get_bytecode, generate_abi_get_bytecode_for, generate_abi_get_keys,
+    generate_abi_get_bytecode, generate_abi_get_bytecode_of, generate_abi_get_keys,
     generate_abi_get_keys_of, generate_abi_get_of, generate_abi_get_op_data,
     generate_abi_get_op_keys, generate_abi_has, generate_abi_has_of, generate_abi_has_op_key,
     generate_abi_is_signature_valid, generate_abi_local_call, generate_abi_local_execution,
@@ -120,7 +120,7 @@ pub fn generate_calls(
                 &mut preparation_calls,
                 &mut call_already_prep,
             ),
-            "getBytecodeFor" => generate_abi_get_bytecode_for(
+            "getBytecodeOf" => generate_abi_get_bytecode_of(
                 &address_sc,
                 &mut calls,
                 &mut preparation_calls,
