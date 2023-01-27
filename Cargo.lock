@@ -1374,7 +1374,7 @@ dependencies = [
 [[package]]
 name = "massa_async_pool"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=main#08d87e0c151657e3cd109d7a862e67af63456d68"
+source = "git+https://github.com/massalabs/massa?branch=main#af9ee9fffe289173f3c6d2fe6795cb33afc3d257"
 dependencies = [
  "displaydoc",
  "futures",
@@ -1398,7 +1398,7 @@ dependencies = [
 [[package]]
 name = "massa_executed_ops"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=main#08d87e0c151657e3cd109d7a862e67af63456d68"
+source = "git+https://github.com/massalabs/massa?branch=main#af9ee9fffe289173f3c6d2fe6795cb33afc3d257"
 dependencies = [
  "massa_hash",
  "massa_models",
@@ -1409,7 +1409,7 @@ dependencies = [
 [[package]]
 name = "massa_execution_exports"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=main#08d87e0c151657e3cd109d7a862e67af63456d68"
+source = "git+https://github.com/massalabs/massa?branch=main#af9ee9fffe289173f3c6d2fe6795cb33afc3d257"
 dependencies = [
  "displaydoc",
  "massa-sc-runtime",
@@ -1427,7 +1427,7 @@ dependencies = [
 [[package]]
 name = "massa_execution_worker"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=main#08d87e0c151657e3cd109d7a862e67af63456d68"
+source = "git+https://github.com/massalabs/massa?branch=main#af9ee9fffe289173f3c6d2fe6795cb33afc3d257"
 dependencies = [
  "anyhow",
  "massa-sc-runtime",
@@ -1456,7 +1456,7 @@ dependencies = [
 [[package]]
 name = "massa_final_state"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=main#08d87e0c151657e3cd109d7a862e67af63456d68"
+source = "git+https://github.com/massalabs/massa?branch=main#af9ee9fffe289173f3c6d2fe6795cb33afc3d257"
 dependencies = [
  "displaydoc",
  "massa_async_pool",
@@ -1475,7 +1475,7 @@ dependencies = [
 [[package]]
 name = "massa_hash"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=main#08d87e0c151657e3cd109d7a862e67af63456d68"
+source = "git+https://github.com/massalabs/massa?branch=main#af9ee9fffe289173f3c6d2fe6795cb33afc3d257"
 dependencies = [
  "blake3",
  "bs58",
@@ -1489,7 +1489,7 @@ dependencies = [
 [[package]]
 name = "massa_ledger_exports"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=main#08d87e0c151657e3cd109d7a862e67af63456d68"
+source = "git+https://github.com/massalabs/massa?branch=main#af9ee9fffe289173f3c6d2fe6795cb33afc3d257"
 dependencies = [
  "displaydoc",
  "massa_hash",
@@ -1505,7 +1505,7 @@ dependencies = [
 [[package]]
 name = "massa_ledger_worker"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=main#08d87e0c151657e3cd109d7a862e67af63456d68"
+source = "git+https://github.com/massalabs/massa?branch=main#af9ee9fffe289173f3c6d2fe6795cb33afc3d257"
 dependencies = [
  "massa_hash",
  "massa_ledger_exports",
@@ -1520,7 +1520,7 @@ dependencies = [
 [[package]]
 name = "massa_logging"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=main#08d87e0c151657e3cd109d7a862e67af63456d68"
+source = "git+https://github.com/massalabs/massa?branch=main#af9ee9fffe289173f3c6d2fe6795cb33afc3d257"
 dependencies = [
  "serde_json",
  "tracing",
@@ -1529,7 +1529,7 @@ dependencies = [
 [[package]]
 name = "massa_models"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=main#08d87e0c151657e3cd109d7a862e67af63456d68"
+source = "git+https://github.com/massalabs/massa?branch=main#af9ee9fffe289173f3c6d2fe6795cb33afc3d257"
 dependencies = [
  "bitvec",
  "bs58",
@@ -1554,7 +1554,7 @@ dependencies = [
 [[package]]
 name = "massa_pos_exports"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=main#08d87e0c151657e3cd109d7a862e67af63456d68"
+source = "git+https://github.com/massalabs/massa?branch=main#af9ee9fffe289173f3c6d2fe6795cb33afc3d257"
 dependencies = [
  "anyhow",
  "bitvec",
@@ -1578,7 +1578,7 @@ dependencies = [
 [[package]]
 name = "massa_pos_worker"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=main#08d87e0c151657e3cd109d7a862e67af63456d68"
+source = "git+https://github.com/massalabs/massa?branch=main#af9ee9fffe289173f3c6d2fe6795cb33afc3d257"
 dependencies = [
  "bitvec",
  "massa_final_state",
@@ -1599,7 +1599,7 @@ dependencies = [
 [[package]]
 name = "massa_serialization"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=main#08d87e0c151657e3cd109d7a862e67af63456d68"
+source = "git+https://github.com/massalabs/massa?branch=main#af9ee9fffe289173f3c6d2fe6795cb33afc3d257"
 dependencies = [
  "displaydoc",
  "nom",
@@ -1610,7 +1610,7 @@ dependencies = [
 [[package]]
 name = "massa_signature"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=main#08d87e0c151657e3cd109d7a862e67af63456d68"
+source = "git+https://github.com/massalabs/massa?branch=main#af9ee9fffe289173f3c6d2fe6795cb33afc3d257"
 dependencies = [
  "bs58",
  "displaydoc",
@@ -1626,7 +1626,7 @@ dependencies = [
 [[package]]
 name = "massa_storage"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=main#08d87e0c151657e3cd109d7a862e67af63456d68"
+source = "git+https://github.com/massalabs/massa?branch=main#af9ee9fffe289173f3c6d2fe6795cb33afc3d257"
 dependencies = [
  "massa_logging",
  "massa_models",
@@ -1638,7 +1638,7 @@ dependencies = [
 [[package]]
 name = "massa_time"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?branch=main#08d87e0c151657e3cd109d7a862e67af63456d68"
+source = "git+https://github.com/massalabs/massa?branch=main#af9ee9fffe289173f3c6d2fe6795cb33afc3d257"
 dependencies = [
  "displaydoc",
  "massa_serialization",

@@ -2,7 +2,8 @@ use std::{collections::HashMap, io::Read, str::FromStr, time::Duration};
 
 use massa_execution_worker::InterfaceImpl;
 use massa_models::{address::Address, datastore::Datastore};
-use massa_sc_runtime::{run_main_gc, GasCosts};
+use massa_sc_runtime::{run_main_gc, GasCosts, RuntimeModule};
+use rand::Rng;
 use std::fs::File;
 
 pub fn execute_batch_sc(
@@ -49,24 +50,43 @@ pub fn execute_batch_sc(
     let mut total_execution_stats: HashMap<String, u64> = HashMap::default();
     let mut total_execution_time = Duration::from_secs(0);
     let bytecodes_len = bytecodes.len() as u64;
+    let mut nb_compiled = 0;
     for (preparation_bytecode, bytecode) in bytecodes {
+        let mut rng = rand::thread_rng();
+        let need_compile = rng.gen_bool(0.5);
         let interface = InterfaceImpl::new_default(
             Address::from_str("A12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M").unwrap(),
             Some(op_datastore.clone()),
         );
         if let Some(preparation_bytecode) = preparation_bytecode {
             run_main_gc(
-                &preparation_bytecode,
-                u64::MAX,
                 &interface,
+                RuntimeModule::new(&preparation_bytecode, u64::MAX, GasCosts::default()).unwrap(),
                 &[],
+                u64::MAX,
                 GasCosts::default(),
             )
             .unwrap();
         }
-        let start = std::time::Instant::now();
-        let results =
-            run_main_gc(&bytecode, u64::MAX, &interface, &[], GasCosts::default()).unwrap();
+        let (start, results) = if need_compile {
+            let start = std::time::Instant::now();
+            let results = run_main_gc(
+                &interface,
+                RuntimeModule::new(&bytecode, u64::MAX, GasCosts::default()).unwrap(),
+                &[],
+                u64::MAX,
+                GasCosts::default(),
+            )
+            .unwrap();
+            nb_compiled += 1;
+            (start, results)
+        } else {
+            let module = RuntimeModule::new(&bytecode, u64::MAX, GasCosts::default()).unwrap();
+            let start = std::time::Instant::now();
+            let results =
+                run_main_gc(&interface, module, &[], u64::MAX, GasCosts::default()).unwrap();
+            (start, results)
+        };
         //println!("Results: {:?}", results);
         let mut time_exec = start.elapsed();
         //println!("Time: {:?}", time_exec);
@@ -85,6 +105,7 @@ pub fn execute_batch_sc(
             *entry += value;
         }
     }
+    total_execution_stats.insert(String::from("Compile"), nb_compiled);
     total_execution_stats.insert(String::from("Launch"), bytecodes_len);
     (total_execution_stats, total_execution_time)
 }

@@ -22,7 +22,8 @@ pub fn get_abis(file_path: &String) -> Vec<Vec<String>> {
         }
     }
 
-    let mut abis: Vec<Vec<String>> = abis_string_vec.iter()
+    let mut abis: Vec<Vec<String>> = abis_string_vec
+        .iter()
         .filter_map(|line| {
             if line.starts_with("  export declare function") {
                 Some(
@@ -36,10 +37,19 @@ pub fn get_abis(file_path: &String) -> Vec<Vec<String>> {
             }
         })
         .map(|line| &line[0..line.len() - 1])
-        .map(|function| function.split('(').map(|s| String::from(s.trim_start())).collect())
+        .map(|function| {
+            function
+                .split('(')
+                .map(|s| String::from(s.trim_start()))
+                .collect()
+        })
         .map(|function_array: Vec<String>| {
             let mut abi = vec![function_array[0].clone()];
-            abi.extend(function_array[1].split("): ").map(|s| String::from(s.trim_end_matches(&[',', ' ']))));
+            abi.extend(
+                function_array[1]
+                    .split("): ")
+                    .map(|s| String::from(s.trim_end_matches(&[',', ' ']))),
+            );
             abi
         })
         .map(|function_array| {

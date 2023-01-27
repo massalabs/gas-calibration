@@ -17,11 +17,24 @@ fn main() {
     let env_path = args
         .as_sdk_env_path
         .unwrap_or(String::from("./src/sc_generation/template/env.ts"));
+    // Copy the env file to the current directory
+    //TODO: Improve
+    std::fs::copy(
+        "./src/sc_generation/template/env.ts",
+        "./src/sc_generation/template/env.ts.bak",
+    )
+    .unwrap();
+    std::fs::copy(env_path.clone(), "./src/sc_generation/template/env.ts").unwrap();
     let abis = sc_generation::abis::get_abis(&env_path);
     if args.only_generate {
         let datastore = sc_generation::generation::generate_op_datastore();
         //let datastore = sc_generation::read_existing_op_datastore();
         sc_generation::generate_scs(nb_scs_by_abi, 300, datastore.clone(), &env_path);
+        std::fs::copy(
+            "./src/sc_generation/template/env.ts.bak",
+            "./src/sc_generation/template/env.ts",
+        )
+        .unwrap();
         return;
     }
     let op_datastore = if args.skip_generation_scs {
@@ -35,6 +48,11 @@ fn main() {
         sc_generation::generate_wasm_scs(nb_wasm_scs, 300);
         datastore
     };
+    std::fs::copy(
+        "./src/sc_generation/template/env.ts.bak",
+        "./src/sc_generation/template/env.ts",
+    )
+    .unwrap();
     let mut full_results: HashMap<String, Vec<f64>> = HashMap::new();
     execution::execute_abi_scs(&mut full_results, nb_scs_by_abi, op_datastore, &env_path);
     compile_and_write_results(full_results, u32::MAX, Duration::from_millis(300), true);
