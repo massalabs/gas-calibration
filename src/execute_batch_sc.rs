@@ -69,10 +69,11 @@ pub fn execute_batch_sc(
             .unwrap();
         }
         //let (start, results) = if need_compile {
+        let module = RuntimeModule::new(&bytecode, u64::MAX, GasCosts::default()).unwrap();
         let start = std::time::Instant::now();
         let results = run_main_gc(
             &interface,
-            RuntimeModule::new(&bytecode, u64::MAX, GasCosts::default()).unwrap(),
+            module,
             &[],
             u64::MAX,
             GasCosts::default(),
