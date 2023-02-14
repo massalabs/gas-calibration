@@ -18,7 +18,7 @@ use super::abi_generation::{
     generate_abi_remaining_gas, generate_abi_send_message, generate_abi_set,
     generate_abi_set_bytecode, generate_abi_set_bytecode_of, generate_abi_set_of,
     generate_abi_time, generate_abi_to_base58, generate_abi_transfer_coins,
-    generate_abi_transfer_coins_of, generate_abi_unsafe_random,
+    generate_abi_transfer_coins_of, generate_abi_unsafe_random, generate_abi_hash_sha256,
 };
 
 fn generate_string(length: usize) -> String {
@@ -164,6 +164,7 @@ pub fn generate_calls(
             "balanceOf" => generate_abi_balance_of(&address_sc, &mut calls),
             "callCoins" => generate_abi_call_coins(&mut calls),
             "toBase58" => generate_abi_to_base58(&mut rng, &mut calls),
+            "sha256" => generate_abi_hash_sha256(&mut rng, &mut calls),
             "isSignatureValid" => generate_abi_is_signature_valid(&mut rng, &mut calls),
             "publicKeyToAddress" => generate_abi_public_key_to_address(&mut calls),
             "time" => generate_abi_time(&mut calls),
