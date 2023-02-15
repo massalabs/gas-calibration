@@ -13,12 +13,12 @@ use super::abi_generation::{
     generate_abi_get_bytecode, generate_abi_get_bytecode_of, generate_abi_get_keys,
     generate_abi_get_keys_of, generate_abi_get_of, generate_abi_get_op_data,
     generate_abi_get_op_keys, generate_abi_has, generate_abi_has_of, generate_abi_has_op_key,
-    generate_abi_is_signature_valid, generate_abi_local_call, generate_abi_local_execution,
-    generate_abi_owned_addresses, generate_abi_print, generate_abi_public_key_to_address,
-    generate_abi_remaining_gas, generate_abi_send_message, generate_abi_set,
-    generate_abi_set_bytecode, generate_abi_set_bytecode_of, generate_abi_set_of,
+    generate_abi_hash_sha256, generate_abi_is_signature_valid, generate_abi_local_call,
+    generate_abi_local_execution, generate_abi_owned_addresses, generate_abi_print,
+    generate_abi_public_key_to_address, generate_abi_remaining_gas, generate_abi_send_message,
+    generate_abi_set, generate_abi_set_bytecode, generate_abi_set_bytecode_of, generate_abi_set_of,
     generate_abi_time, generate_abi_to_base58, generate_abi_transfer_coins,
-    generate_abi_transfer_coins_of, generate_abi_unsafe_random, generate_abi_hash_sha256,
+    generate_abi_transfer_coins_of, generate_abi_unsafe_random,
 };
 
 fn generate_string(length: usize) -> String {
@@ -33,7 +33,7 @@ fn generate_string(length: usize) -> String {
 fn static_address() -> String {
     // Secret key: S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY
     // Public key: P12WKRCnYPKhVuwtk1mSEiMFSAPRfThR74bfhBEHAnT53JnBNj9T
-    String::from("A12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M")
+    String::from("AU12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M")
 }
 
 pub fn generate_op_datastore() -> Datastore {

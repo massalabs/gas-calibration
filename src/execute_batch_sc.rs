@@ -55,7 +55,7 @@ pub fn execute_batch_sc(
         //let mut rng = rand::thread_rng();
         //let need_compile = rng.gen_bool(0.5);
         let interface = InterfaceImpl::new_default(
-            Address::from_str("A12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M").unwrap(),
+            Address::from_str("AU12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M").unwrap(),
             Some(op_datastore.clone()),
         );
         if let Some(preparation_bytecode) = preparation_bytecode {
@@ -71,14 +71,7 @@ pub fn execute_batch_sc(
         //let (start, results) = if need_compile {
         let module = RuntimeModule::new(&bytecode, u64::MAX, GasCosts::default()).unwrap();
         let start = std::time::Instant::now();
-        let results = run_main_gc(
-            &interface,
-            module,
-            &[],
-            u64::MAX,
-            GasCosts::default(),
-        )
-        .unwrap();
+        let results = run_main_gc(&interface, module, &[], u64::MAX, GasCosts::default()).unwrap();
         //    nb_compiled += 1;
         //    (start, results)
         // } else {
