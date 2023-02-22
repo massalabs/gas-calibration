@@ -6,7 +6,7 @@ use std::io::Write;
 
 use super::abi_generation::{
     generate_abi_append, generate_abi_append_of, generate_abi_balance, generate_abi_balance_of,
-    generate_abi_call, generate_abi_call_coins, generate_abi_call_stack,
+    generate_abi_blake3, generate_abi_call, generate_abi_call_coins, generate_abi_call_stack,
     generate_abi_caller_has_write_access, generate_abi_create_sc, generate_abi_current_period,
     generate_abi_current_thread, generate_abi_del, generate_abi_del_of,
     generate_abi_function_exists, generate_abi_generate_event, generate_abi_get,
@@ -17,8 +17,8 @@ use super::abi_generation::{
     generate_abi_local_execution, generate_abi_owned_addresses, generate_abi_print,
     generate_abi_public_key_to_address, generate_abi_remaining_gas, generate_abi_send_message,
     generate_abi_set, generate_abi_set_bytecode, generate_abi_set_bytecode_of, generate_abi_set_of,
-    generate_abi_time, generate_abi_to_base58, generate_abi_transfer_coins,
-    generate_abi_transfer_coins_of, generate_abi_unsafe_random,
+    generate_abi_time, generate_abi_transfer_coins, generate_abi_transfer_coins_of,
+    generate_abi_unsafe_random,
 };
 
 fn generate_string(length: usize) -> String {
@@ -163,7 +163,7 @@ pub fn generate_calls(
             "balance" => generate_abi_balance(&mut calls),
             "balanceOf" => generate_abi_balance_of(&address_sc, &mut calls),
             "callCoins" => generate_abi_call_coins(&mut calls),
-            "toBase58" => generate_abi_to_base58(&mut rng, &mut calls),
+            "blake3" => generate_abi_blake3(&mut rng, &mut calls),
             "sha256" => generate_abi_hash_sha256(&mut rng, &mut calls),
             "isSignatureValid" => generate_abi_is_signature_valid(&mut rng, &mut calls),
             "publicKeyToAddress" => generate_abi_public_key_to_address(&mut calls),
