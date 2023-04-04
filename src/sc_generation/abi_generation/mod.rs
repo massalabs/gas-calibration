@@ -48,6 +48,7 @@ mod time;
 mod transfer_coins;
 mod transfer_coins_of;
 mod unsafe_random;
+mod validate_address;
 
 pub use append::generate_abi_append;
 pub use append_of::generate_abi_append_of;
@@ -93,6 +94,7 @@ pub use time::generate_abi_time;
 pub use transfer_coins::generate_abi_transfer_coins;
 pub use transfer_coins_of::generate_abi_transfer_coins_of;
 pub use unsafe_random::generate_abi_unsafe_random;
+pub use validate_address::generate_abi_validate_address;
 
 fn generate_string(length: usize) -> String {
     let mut rng = rand::thread_rng();

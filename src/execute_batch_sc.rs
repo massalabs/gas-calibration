@@ -2,7 +2,7 @@ use std::{collections::HashMap, io::Read, str::FromStr, time::Duration};
 
 use massa_execution_worker::InterfaceImpl;
 use massa_models::{address::Address, datastore::Datastore};
-use massa_sc_runtime::{run_main_gc, GasCosts, RuntimeModule};
+use massa_sc_runtime::{run_main_gc, Compiler, GasCosts, RuntimeModule};
 //use rand::Rng;
 use std::fs::File;
 
@@ -61,7 +61,7 @@ pub fn execute_batch_sc(
         if let Some(preparation_bytecode) = preparation_bytecode {
             run_main_gc(
                 &interface,
-                RuntimeModule::new(&preparation_bytecode, u64::MAX, GasCosts::default()).unwrap(),
+                RuntimeModule::new(&preparation_bytecode, u64::MAX, GasCosts::default(), Compiler::CL).unwrap(),
                 &[],
                 u64::MAX,
                 GasCosts::default(),
@@ -69,7 +69,7 @@ pub fn execute_batch_sc(
             .unwrap();
         }
         //let (start, results) = if need_compile {
-        let module = RuntimeModule::new(&bytecode, u64::MAX, GasCosts::default()).unwrap();
+        let module = RuntimeModule::new(&bytecode, u64::MAX, GasCosts::default(), Compiler::CL).unwrap();
         let start = std::time::Instant::now();
         let results = run_main_gc(&interface, module, &[], u64::MAX, GasCosts::default()).unwrap();
         //    nb_compiled += 1;

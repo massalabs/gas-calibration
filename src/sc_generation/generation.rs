@@ -18,7 +18,7 @@ use super::abi_generation::{
     generate_abi_public_key_to_address, generate_abi_remaining_gas, generate_abi_send_message,
     generate_abi_set, generate_abi_set_bytecode, generate_abi_set_bytecode_of, generate_abi_set_of,
     generate_abi_time, generate_abi_transfer_coins, generate_abi_transfer_coins_of,
-    generate_abi_unsafe_random,
+    generate_abi_unsafe_random, generate_abi_validate_address,
 };
 
 fn generate_string(length: usize) -> String {
@@ -176,6 +176,7 @@ pub fn generate_calls(
             "setBytecodeOf" => {
                 generate_abi_set_bytecode_of(&address_sc, &mut calls, &mut call_already_prep)
             }
+            "validateAddress" => generate_abi_validate_address(&address_sc, &mut calls),
             "getOpKeys" => generate_abi_get_op_keys(&mut calls),
             "hasOpKey" => generate_abi_has_op_key(&op_datastore, &mut rng, &mut calls),
             "getOpData" => generate_abi_get_op_data(&op_datastore, &mut rng, &mut calls),

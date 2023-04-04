@@ -43,10 +43,13 @@ export namespace env {
   export declare function createSC(bytecode: StaticArray<u8>): string;
 
   @external("massa", "assembly_script_get_keys")
-  export declare function getKeys(): StaticArray<u8>;
+  export declare function getKeys(prefix: StaticArray<u8>): StaticArray<u8>;
 
   @external("massa", "assembly_script_get_keys_for")
-  export declare function getKeysOf(address: string): StaticArray<u8>;
+  export declare function getKeysOf(
+    address: string,
+    prefix: StaticArray<u8>,
+  ): StaticArray<u8>;
 
   @external("massa", "assembly_script_set_data")
   export declare function set(
@@ -124,7 +127,7 @@ export namespace env {
   export declare function callCoins(): u64;
 
   @external("massa", "assembly_script_hash")
-  export declare function toBase58(data: string): string;
+  export declare function blake3(bytecode: StaticArray<u8>): StaticArray<u8>;
 
   @external("massa", "assembly_script_signature_verify")
   export declare function isSignatureValid(
@@ -184,4 +187,7 @@ export namespace env {
 
   @external("massa", "assembly_script_hash_sha256")
   export declare function sha256(bytecode: StaticArray<u8>): StaticArray<u8>;
+
+  @external("massa", "assembly_script_validate_address")
+  export declare function validateAddress(address: string): bool;
 }
