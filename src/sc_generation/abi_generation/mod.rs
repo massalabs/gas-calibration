@@ -106,7 +106,7 @@ fn generate_string(length: usize) -> String {
 }
 
 fn generate_address() -> String {
-    let keypair = KeyPair::generate();
+    let keypair = KeyPair::generate(0).unwrap();
 
     Address::from_public_key(&keypair.get_public_key()).to_string()
 }

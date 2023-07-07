@@ -6,3 +6,4 @@ target/
 **/build/**.wat
 **/index.ts
 **/op_datastore.json
+.vscode/settings.json
