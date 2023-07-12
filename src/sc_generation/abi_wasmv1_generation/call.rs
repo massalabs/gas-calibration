@@ -8,11 +8,11 @@ pub fn generate_abi_call(
 
     if !*call_already_prep {
         preparation_calls.push(format!(
-            "env.set_bytecode(\"{}\", env.get_op_data(toBytes(\"empty_main_sc\")));",
+            "env.set_bytecode(env.get_op_data(toBytes(\"empty_main_sc\")), \"{}\");",
             address_sc
         ));
         preparation_calls.push(format!(
-            "env.transfer_coins(\"{}\", env.make_native_amount(100, 0));",
+            "env.transfer_coins(\"{}\", env.make_native_amount(100,0), null);",
             address_sc
         ));
         *call_already_prep = true;

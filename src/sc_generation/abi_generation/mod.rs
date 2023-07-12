@@ -1,3 +1,4 @@
+/*
 use std::str::FromStr;
 
 use massa_models::address::Address;
@@ -119,3 +120,4 @@ fn static_public_key() -> String {
     // Public key: P12WKRCnYPKhVuwtk1mSEiMFSAPRfThR74bfhBEHAnT53JnBNj9T
     // Address: A12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M
 }
+*/

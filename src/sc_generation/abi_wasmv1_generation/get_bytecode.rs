@@ -6,7 +6,7 @@ pub fn generate_abi_get_bytecode(
 ) {
     if !*call_already_prep {
         preparation_calls.push(format!(
-            "env.set_bytecode(\"{}\", env.get_op_data(toBytes(\"empty_main_sc\")), null);",
+            "env.set_bytecode(env.get_op_data(toBytes(\"empty_main_sc\")), \"{}\");",
             address_sc
         ));
         preparation_calls.push(format!(

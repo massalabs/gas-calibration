@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use massa_models::address::Address;
+use massa_models::{address::Address, amount::Amount};
 use massa_signature::KeyPair;
 use rand::Rng;
 
@@ -132,6 +132,11 @@ fn generate_string(length: usize) -> String {
         string.push(rng.gen_range('a'..='z'));
     }
     string
+}
+
+fn generate_native_amount_string(mantissa: u64, scale: u32) -> String {
+    let amount = Amount::from_mantissa_scale(mantissa, scale).unwrap();
+    amount.to_string()
 }
 
 fn generate_address() -> String {

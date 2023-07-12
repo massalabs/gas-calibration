@@ -43,7 +43,8 @@ fn generate_string(length: usize) -> String {
 fn static_address() -> String {
     // Secret key: S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY
     // Public key: P12WKRCnYPKhVuwtk1mSEiMFSAPRfThR74bfhBEHAnT53JnBNj9T
-    String::from("AU12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M")
+    // String::from("AU12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M")
+    String::from("AS12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M")
 }
 
 pub fn generate_op_datastore() -> Datastore {
@@ -74,10 +75,10 @@ pub fn generate_op_datastore() -> Datastore {
             .align_to::<u8>()
             .1
             .to_vec();
-        match std::fs::read("./src/sc_generation/template/empty_main_sc.wasm") {
+        match std::fs::read("./src/sc_generation/template/empty_main_sc_wasmv1.wasm_add") {
             Ok(bytes) => datastore.insert(key, bytes),
             Err(e) => panic!("{}", e),
-        }
+        };
     };
     let mut output = File::create("./src/sc_generation/template/op_datastore.json").unwrap();
     write!(

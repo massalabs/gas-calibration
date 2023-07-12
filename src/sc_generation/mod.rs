@@ -35,7 +35,7 @@ fn write_sc(calls: Vec<String>, file_name: String) {
     let template_index = format!(
         "import {{ decimalCount32 }} from 'util/number';
 import {{ env }} from '../env_wasmv1';
-import {{ toBytes, fromBytes }} from '../helpers';
+import {{ toBytes }} from '../helpers';
 
 let shared_mem: ArrayBuffer = new ArrayBuffer(0);
 
@@ -146,12 +146,6 @@ fn write_wat(setup_calls: Vec<String>, calls: Vec<String>, file_name: String) {
     ))
     .unwrap();
     write!(src, "{}", template_index).unwrap();
-
-    Command::new("wasmv1_transform")
-        .arg("./build/test_bs58_to_from.wasm")
-        .arg("add")
-        .output()
-        .expect("failed to execute process");
 }
 
 pub fn generate_scs(

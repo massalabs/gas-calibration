@@ -26,7 +26,7 @@ pub fn execute_batch_sc(
             continue;
         }
         let mut file = file.unwrap();
-        let mut bytecode = vec![1_u8];
+        let mut bytecode = if abi_mode { vec![1_u8] } else { vec![0_u8] };
         file.read_to_end(&mut bytecode)
             .unwrap_or_else(|_| panic!("Failed to read {}", filename));
         //TODO: Change here
@@ -55,7 +55,7 @@ pub fn execute_batch_sc(
         //let mut rng = rand::thread_rng();
         //let need_compile = rng.gen_bool(0.5);
         let interface = InterfaceImpl::new_default(
-            Address::from_str("AU12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M").unwrap(),
+            Address::from_str("AS12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M").unwrap(),
             Some(op_datastore.clone()),
         );
         if let Some(preparation_bytecode) = preparation_bytecode {
