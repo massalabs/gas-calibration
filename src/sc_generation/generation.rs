@@ -4,21 +4,31 @@ use massa_models::datastore::Datastore;
 use rand::Rng;
 use std::io::Write;
 
-use super::abi_generation::{
-    generate_abi_append, generate_abi_append_of, generate_abi_balance, generate_abi_balance_of,
-    generate_abi_blake3, generate_abi_call, generate_abi_call_coins, generate_abi_call_stack,
-    generate_abi_caller_has_write_access, generate_abi_create_sc, generate_abi_current_period,
-    generate_abi_current_thread, generate_abi_del, generate_abi_del_of,
-    generate_abi_function_exists, generate_abi_generate_event, generate_abi_get,
-    generate_abi_get_bytecode, generate_abi_get_bytecode_of, generate_abi_get_keys,
-    generate_abi_get_keys_of, generate_abi_get_of, generate_abi_get_op_data,
-    generate_abi_get_op_keys, generate_abi_has, generate_abi_has_of, generate_abi_has_op_key,
-    generate_abi_hash_sha256, generate_abi_is_signature_valid, generate_abi_local_call,
-    generate_abi_local_execution, generate_abi_owned_addresses, generate_abi_print,
-    generate_abi_public_key_to_address, generate_abi_remaining_gas, generate_abi_send_message,
-    generate_abi_set, generate_abi_set_bytecode, generate_abi_set_bytecode_of, generate_abi_set_of,
-    generate_abi_time, generate_abi_transfer_coins, generate_abi_transfer_coins_of,
-    generate_abi_unsafe_random, generate_abi_validate_address,
+use super::abi_wasmv1_generation::{
+    generate_abi_abort, generate_abi_add_native_amounts, generate_abi_address_from_public_key,
+    generate_abi_append_data, generate_abi_base58_check_to_bytes, generate_abi_blake3_hash,
+    generate_abi_bytes_to_base58_check, generate_abi_call, generate_abi_caller_has_write_access,
+    generate_abi_check_address, generate_abi_check_native_amount, generate_abi_check_pubkey,
+    generate_abi_check_signature, generate_abi_checked_add_native_time,
+    generate_abi_checked_div_native_time, generate_abi_checked_mul_native_time,
+    generate_abi_checked_scalar_div_native_time, generate_abi_checked_sub_native_time,
+    generate_abi_compare_address, generate_abi_compare_native_amount,
+    generate_abi_compare_native_time, generate_abi_compare_pub_key, generate_abi_create_sc,
+    generate_abi_delete_data, generate_abi_div_rem_native_amount,
+    generate_abi_div_rem_native_amounts, generate_abi_generate_event,
+    generate_abi_get_address_category, generate_abi_get_address_version, generate_abi_get_balance,
+    generate_abi_get_bytecode, generate_abi_get_call_coins, generate_abi_get_call_stack,
+    generate_abi_get_current_slot, generate_abi_get_data, generate_abi_get_keys,
+    generate_abi_get_native_time, generate_abi_get_op_data, generate_abi_get_op_keys,
+    generate_abi_get_origin_operation_id, generate_abi_get_owned_addresses,
+    generate_abi_get_pubkey_version, generate_abi_get_remaining_gas,
+    generate_abi_get_signature_version, generate_abi_has_data, generate_abi_has_op_key,
+    generate_abi_hash_keccak256, generate_abi_hash_sha256, generate_abi_local_execution,
+    generate_abi_mul_native_amount, generate_abi_native_amount_from_string,
+    generate_abi_native_amount_to_string, generate_abi_send_async_message,
+    generate_abi_set_bytecode, generate_abi_set_data, generate_abi_sub_native_amounts,
+    generate_abi_transfer_coins, generate_abi_unsafe_random, generate_abi_verify_evm_signature,
+    generate_abi_verify_signature,
 };
 
 fn generate_string(length: usize) -> String {
@@ -100,88 +110,115 @@ pub fn generate_calls(
     let mut call_already_prep = false;
     for _ in 0..nb_calls {
         match abi[0].as_str() {
-            "print" => generate_abi_print(&mut rng, &mut calls),
-            "call" => generate_abi_call(
+            "abi_set_data" => generate_abi_set_data(&mut rng, &mut calls),
+            "abi_get_data" => generate_abi_get_data(&mut rng, &mut calls, &mut preparation_calls),
+            "abi_delete_data" => {
+                generate_abi_delete_data(&mut rng, &mut calls, &mut preparation_calls)
+            }
+            "abi_append_data" => {
+                generate_abi_append_data(&mut rng, &mut calls, &mut preparation_calls)
+            }
+            "abi_has_data" => generate_abi_has_data(&mut rng, &mut calls, &mut preparation_calls),
+            "abi_get_balance" => generate_abi_get_balance(&mut calls),
+            "abi_get_bytecode" => generate_abi_get_bytecode(
                 &address_sc,
                 &mut calls,
                 &mut preparation_calls,
                 &mut call_already_prep,
             ),
+            "abi_set_bytecode" => generate_abi_set_bytecode(&mut calls, &mut call_already_prep),
+            "abi_get_keys" => generate_abi_get_keys(&mut calls),
+            "abi_get_op_keys" => generate_abi_get_op_keys(&mut calls),
+            "abi_has_op_key" => generate_abi_has_op_key(&op_datastore, &mut rng, &mut calls),
+            "abi_get_op_data" => generate_abi_get_op_data(&op_datastore, &mut rng, &mut calls),
+            "abi_call" => generate_abi_call(
+                &address_sc,
+                &mut calls,
+                &mut preparation_calls,
+                &mut call_already_prep,
+            ),
+            "abi_create_sc" => generate_abi_create_sc(&mut calls),
+            "abi_transfer_coins" => generate_abi_transfer_coins(&mut rng, &mut calls),
+            "abi_generate_event" => generate_abi_generate_event(&mut rng, &mut calls),
+            "abi_abort" => generate_abi_abort(),
+            "abi_get_current_slot" => generate_abi_get_current_slot(&mut calls),
+            "abi_hash_sha256" => generate_abi_hash_sha256(&mut rng, &mut calls),
+            "abi_hash_keccak256" => generate_abi_hash_keccak256(&mut rng, &mut calls),
+            "abi_blake3_hash" => generate_abi_blake3_hash(&mut rng, &mut calls),
+            "abi_verify_evm_signature" => generate_abi_verify_evm_signature(&mut rng, &mut calls),
+            "abi_get_remaining_gas" => generate_abi_get_remaining_gas(&mut calls),
+            "abi_get_owned_addresses" => generate_abi_get_owned_addresses(&mut calls),
+            "abi_get_call_stack" => generate_abi_get_call_stack(&mut calls),
+            "abi_address_from_public_key" => generate_abi_address_from_public_key(&mut calls),
+            "abi_unsafe_random" => generate_abi_unsafe_random(&mut rng, &mut calls),
+            "abi_get_call_coins" => generate_abi_get_call_coins(&mut calls),
+            "abi_get_native_time" => generate_abi_get_native_time(&mut calls),
+            "abi_send_async_message" => {
+                generate_abi_send_async_message(&address_sc, &mut rng, &mut calls)
+            }
+            "abi_get_origin_operation_id" => generate_abi_get_origin_operation_id(&mut calls),
+            "abi_local_execution" => {
+                generate_abi_local_execution(&mut calls, &mut call_already_prep)
+            }
+            "abi_caller_has_write_access" => generate_abi_caller_has_write_access(&mut calls),
+            "abi_check_native_amount" => generate_abi_check_native_amount(&mut rng, &mut calls),
+            "abi_add_native_amounts" => generate_abi_add_native_amounts(&mut rng, &mut calls),
+            "abi_sub_native_amounts" => generate_abi_sub_native_amounts(&mut rng, &mut calls),
+            "abi_mul_native_amount" => generate_abi_mul_native_amount(&mut rng, &mut calls),
+            "abi_div_rem_native_amount" => generate_abi_div_rem_native_amount(&mut rng, &mut calls),
+            "abi_div_rem_native_amounts" => {
+                generate_abi_div_rem_native_amounts(&mut rng, &mut calls)
+            }
+            "abi_native_amount_to_string" => {
+                generate_abi_native_amount_to_string(&mut rng, &mut calls)
+            }
+            "abi_native_amount_from_string" => {
+                generate_abi_native_amount_from_string(&mut rng, &mut calls)
+            }
+            "abi_base58_check_to_bytes" => generate_abi_base58_check_to_bytes(&mut rng, &mut calls),
+            "abi_bytes_to_base58_check" => generate_abi_bytes_to_base58_check(&mut rng, &mut calls),
+            "abi_check_address" => generate_abi_check_address(&address_sc, &mut calls),
+            "abi_check_pubkey" => generate_abi_check_pubkey(&mut calls),
+            "abi_check_signature" => generate_abi_check_signature(&mut rng, &mut calls),
+            "abi_get_address_category" => {
+                generate_abi_get_address_category(&address_sc, &mut calls)
+            }
+            "abi_get_address_version" => generate_abi_get_address_version(&address_sc, &mut calls),
+            "abi_get_pubkey_version" => generate_abi_get_pubkey_version(&mut calls),
+            "abi_get_signature_version" => generate_abi_get_signature_version(&mut rng, &mut calls),
+            "abi_checked_add_native_time" => {
+                generate_abi_checked_add_native_time(&mut rng, &mut calls)
+            }
+            "abi_checked_sub_native_time" => {
+                generate_abi_checked_sub_native_time(&mut rng, &mut calls)
+            }
+            "abi_checked_mul_native_time" => {
+                generate_abi_checked_mul_native_time(&mut rng, &mut calls)
+            }
+            "abi_checked_scalar_div_native_time" => {
+                generate_abi_checked_scalar_div_native_time(&mut rng, &mut calls)
+            }
+            "abi_checked_div_native_time" => {
+                generate_abi_checked_div_native_time(&mut rng, &mut calls)
+            }
+            "abi_compare_address" => generate_abi_compare_address(&address_sc, &mut calls),
+            "abi_compare_native_amount" => generate_abi_compare_native_amount(&mut rng, &mut calls),
+            "abi_compare_native_time" => generate_abi_compare_native_time(&mut rng, &mut calls),
+            "abi_compare_pub_key" => generate_abi_compare_pub_key(&mut calls),
+            "abi_verify_signature" => generate_abi_verify_signature(&mut rng, &mut calls),
+            /*
             "localCall" => generate_abi_local_call(
                 &address_sc,
                 &mut calls,
                 &mut preparation_calls,
                 &mut call_already_prep,
             ),
-            "localExecution" => generate_abi_local_execution(&mut calls, &mut call_already_prep),
-            "getBytecode" => generate_abi_get_bytecode(
-                &address_sc,
-                &mut calls,
-                &mut preparation_calls,
-                &mut call_already_prep,
-            ),
-            "getBytecodeOf" => generate_abi_get_bytecode_of(
-                &address_sc,
-                &mut calls,
-                &mut preparation_calls,
-                &mut call_already_prep,
-            ),
-            "callerHasWriteAccess" => generate_abi_caller_has_write_access(&mut calls),
             "functionExists" => generate_abi_function_exists(
                 &address_sc,
                 &mut calls,
                 &mut preparation_calls,
                 &mut call_already_prep,
-            ),
-            "remainingGas" => generate_abi_remaining_gas(&mut calls),
-            "createSC" => generate_abi_create_sc(&mut calls),
-            "getKeys" => generate_abi_get_keys(&mut calls),
-            "getKeysOf" => generate_abi_get_keys_of(&address_sc, &mut calls),
-            "set" => generate_abi_set(&mut rng, &mut calls),
-            "setOf" => generate_abi_set_of(&address_sc, &mut rng, &mut calls),
-            "get" => generate_abi_get(&mut rng, &mut calls, &mut preparation_calls),
-            "getOf" => {
-                generate_abi_get_of(&address_sc, &mut rng, &mut calls, &mut preparation_calls)
-            }
-            "del" => generate_abi_del(&mut rng, &mut calls, &mut preparation_calls),
-            "deleteOf" => {
-                generate_abi_del_of(&address_sc, &mut rng, &mut calls, &mut preparation_calls)
-            }
-            "append" => generate_abi_append(&mut rng, &mut calls, &mut preparation_calls),
-            "appendOf" => {
-                generate_abi_append_of(&address_sc, &mut rng, &mut calls, &mut preparation_calls)
-            }
-            "has" => generate_abi_has(&mut rng, &mut calls, &mut preparation_calls),
-            "hasOf" => {
-                generate_abi_has_of(&address_sc, &mut rng, &mut calls, &mut preparation_calls)
-            }
-            "ownedAddresses" => generate_abi_owned_addresses(&mut calls),
-            "callStack" => generate_abi_call_stack(&mut calls),
-            "generateEvent" => generate_abi_generate_event(&mut rng, &mut calls),
-            "transferCoins" => generate_abi_transfer_coins(&mut rng, &mut calls),
-            "transferCoinsOf" => generate_abi_transfer_coins_of(&address_sc, &mut rng, &mut calls),
-            "balance" => generate_abi_balance(&mut calls),
-            "balanceOf" => generate_abi_balance_of(&address_sc, &mut calls),
-            "callCoins" => generate_abi_call_coins(&mut calls),
-            "blake3" => generate_abi_blake3(&mut rng, &mut calls),
-            "sha256" => generate_abi_hash_sha256(&mut rng, &mut calls),
-            "isSignatureValid" => generate_abi_is_signature_valid(&mut rng, &mut calls),
-            "publicKeyToAddress" => generate_abi_public_key_to_address(&mut calls),
-            "time" => generate_abi_time(&mut calls),
-            "unsafeRandom" => generate_abi_unsafe_random(&mut calls),
-            "sendMessage" => generate_abi_send_message(&address_sc, &mut rng, &mut calls),
-            "currentPeriod" => generate_abi_current_period(&mut calls),
-            "currentThread" => generate_abi_current_thread(&mut calls),
-            "setBytecode" => generate_abi_set_bytecode(&mut calls, &mut call_already_prep),
-            "setBytecodeOf" => {
-                generate_abi_set_bytecode_of(&address_sc, &mut calls, &mut call_already_prep)
-            }
-            "validateAddress" => generate_abi_validate_address(&address_sc, &mut calls),
-            "getOpKeys" => generate_abi_get_op_keys(&mut calls),
-            "hasOpKey" => generate_abi_has_op_key(&op_datastore, &mut rng, &mut calls),
-            "getOpData" => generate_abi_get_op_data(&op_datastore, &mut rng, &mut calls),
-            "seed" => calls.push("seed();".to_string()),
-            "Date.now" => calls.push("Date.now();".to_string()),
+            ),*/
             _ => {
                 panic!("ABI: {} don't have any generation function. Please add one in src/sc_generation/generation.rs", abi[0].as_str())
             }
@@ -202,7 +239,7 @@ pub fn generate_instruction(limit_per_calls: u64) -> (Vec<String>, Vec<String>) 
     let mut instructions = Vec::new();
     let mut setup_instructions = Vec::new();
 
-    let operations = vec![
+    let operations = [
         "i32.add",
         "i32.sub",
         "i32.mul",

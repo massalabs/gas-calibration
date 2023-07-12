@@ -26,7 +26,7 @@ pub fn execute_batch_sc(
             continue;
         }
         let mut file = file.unwrap();
-        let mut bytecode = vec![];
+        let mut bytecode = vec![1_u8];
         file.read_to_end(&mut bytecode)
             .unwrap_or_else(|_| panic!("Failed to read {}", filename));
         //TODO: Change here
@@ -35,7 +35,7 @@ pub fn execute_batch_sc(
             i
         )) {
             if abi_mode {
-                let mut bytecode = vec![];
+                let mut bytecode = vec![1_u8];
                 file.read_to_end(&mut bytecode)
                     .unwrap_or_else(|_| panic!("Failed to read {}", filename));
                 Some(bytecode)
@@ -61,7 +61,13 @@ pub fn execute_batch_sc(
         if let Some(preparation_bytecode) = preparation_bytecode {
             run_main_gc(
                 &interface,
-                RuntimeModule::new(&preparation_bytecode, u64::MAX, GasCosts::default(), Compiler::CL).unwrap(),
+                RuntimeModule::new(
+                    &preparation_bytecode,
+                    u64::MAX,
+                    GasCosts::default(),
+                    Compiler::CL,
+                )
+                .unwrap(),
                 &[],
                 u64::MAX,
                 GasCosts::default(),
@@ -69,7 +75,8 @@ pub fn execute_batch_sc(
             .unwrap();
         }
         //let (start, results) = if need_compile {
-        let module = RuntimeModule::new(&bytecode, u64::MAX, GasCosts::default(), Compiler::CL).unwrap();
+        let module =
+            RuntimeModule::new(&bytecode, u64::MAX, GasCosts::default(), Compiler::CL).unwrap();
         let start = std::time::Instant::now();
         let results = run_main_gc(&interface, module, &[], u64::MAX, GasCosts::default()).unwrap();
         //    nb_compiled += 1;

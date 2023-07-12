@@ -1,9 +1,14 @@
 target/
 **/node_modules/**
 **/results/**.json
+**/build/**.wasm_add
 **/build/**.wasm
 **/build/**.ts
 **/build/**.wat
 **/index.ts
 **/op_datastore.json
 .vscode/settings.json
+**/old_build/**.wasm
+**/old_build/**.ts
+**/old_build/**.wat
+**/**.bak
