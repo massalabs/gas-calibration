@@ -7,14 +7,16 @@ edition = "2021"
 
 [dependencies]
 base64 = "0.13"
+bs58 = { version = "=0.4", features = ["check"] }
 clap = { version = "4.0.23", features = ["derive"] }
 nnls = "0.3.0"
 rayon = "1.5.3"
 ndarray = { version="0.15", features = ["approx-0_5"] }
 serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
 pbr = { git = "https://github.com/a8m/pb" }
-massa-sc-runtime = { git = "https://github.com/massalabs/massa-sc-runtime", branch = "feature/Improve_ABI_types_in_wasmv1", features = ["gas_calibration"] }
-massa-models = { git = "https://github.com/massalabs/massa", package = "massa_models", branch = "runtime-changes-common" }
-massa-signature = { git = "https://github.com/massalabs/massa", package = "massa_signature", branch = "runtime-changes-common" }
-massa-execution-worker = { git = "https://github.com/massalabs/massa", package = "massa_execution_worker", branch = "runtime-changes-common", features = ["gas_calibration"] }
+massa-sc-runtime = { git = "https://github.com/massalabs/massa-sc-runtime", branch = "test_for_gas_calib", features = ["gas_calibration"] }
+massa-models = { git = "https://github.com/massalabs/massa", package = "massa_models", branch = "test_for_gas_calib" }
+massa-signature = { git = "https://github.com/massalabs/massa", package = "massa_signature", branch = "test_for_gas_calib" }
+massa-execution-worker = { git = "https://github.com/massalabs/massa", package = "massa_execution_worker", branch = "test_for_gas_calib", features = ["gas_calibration"] }
 rand = "0.8.5"
+which = "4.4.0"

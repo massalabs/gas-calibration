@@ -134,6 +134,16 @@ fn generate_string(length: usize) -> String {
     string
 }
 
+fn generate_b58_check_string(byte_size: usize) -> String {
+    let mut rng = rand::thread_rng();
+    let mut data = vec![0_u8];
+    for _ in 0..byte_size {
+        data.push(rng.gen_range(u8::MIN..=u8::MAX));
+    }
+
+    bs58::encode(data).with_check().into_string()
+}
+
 fn generate_native_amount_string(mantissa: u64, scale: u32) -> String {
     let amount = Amount::from_mantissa_scale(mantissa, scale).unwrap();
     amount.to_string()
@@ -152,4 +162,26 @@ fn static_public_key() -> String {
     // Secret key: S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY
     // Public key: P12WKRCnYPKhVuwtk1mSEiMFSAPRfThR74bfhBEHAnT53JnBNj9T
     // Address: A12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M
+}
+
+fn static_signature() -> String {
+    "1SYkkid5YKuziu1kCMRoAPYeakZHDevAw2jzLqDypBRwpyeEvSo3F5VGwJXP3gjjhzjuqohxetvd4siv8PfjyzTziiMrVH"
+        .to_string()
+}
+
+fn static_evm_triplet() -> (Vec<u8>, Vec<u8>, Vec<u8>) {
+    let message = b"test";
+    let signature = [
+        208, 208, 92, 53, 8, 6, 53, 181, 232, 101, 0, 108, 108, 79, 91, 93, 69, 126, 195, 66, 86,
+        77, 143, 198, 124, 228, 14, 220, 38, 76, 205, 171, 63, 47, 54, 107, 91, 209, 227, 133, 130,
+        83, 143, 237, 127, 166, 40, 33, 72, 232, 106, 249, 121, 112, 161, 12, 179, 48, 40, 150,
+        245, 214, 142, 245, 27,
+    ];
+    let public_key = [
+        4, 242, 192, 4, 239, 171, 3, 90, 235, 89, 176, 251, 75, 242, 14, 65, 253, 71, 177, 105, 0,
+        111, 117, 57, 248, 100, 223, 210, 100, 6, 122, 58, 123, 252, 232, 199, 170, 56, 251, 37,
+        74, 97, 93, 193, 95, 18, 147, 233, 195, 248, 196, 141, 114, 17, 114, 13, 138, 233, 242,
+        105, 9, 142, 173, 144, 14,
+    ];
+    (message.to_vec(), signature.to_vec(), public_key.to_vec())
 }

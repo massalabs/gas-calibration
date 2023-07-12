@@ -146,7 +146,7 @@ pub fn generate_calls(
             "abi_hash_sha256" => generate_abi_hash_sha256(&mut rng, &mut calls),
             "abi_hash_keccak256" => generate_abi_hash_keccak256(&mut rng, &mut calls),
             "abi_blake3_hash" => generate_abi_blake3_hash(&mut rng, &mut calls),
-            "abi_verify_evm_signature" => generate_abi_verify_evm_signature(&mut rng, &mut calls),
+            "abi_verify_evm_signature" => generate_abi_verify_evm_signature(&mut calls),
             "abi_get_remaining_gas" => generate_abi_get_remaining_gas(&mut calls),
             "abi_get_owned_addresses" => generate_abi_get_owned_addresses(&mut calls),
             "abi_get_call_stack" => generate_abi_get_call_stack(&mut calls),
@@ -186,7 +186,7 @@ pub fn generate_calls(
             }
             "abi_get_address_version" => generate_abi_get_address_version(&address_sc, &mut calls),
             "abi_get_pubkey_version" => generate_abi_get_pubkey_version(&mut calls),
-            "abi_get_signature_version" => generate_abi_get_signature_version(&mut rng, &mut calls),
+            "abi_get_signature_version" => generate_abi_get_signature_version(&mut calls),
             "abi_checked_add_native_time" => {
                 generate_abi_checked_add_native_time(&mut rng, &mut calls)
             }

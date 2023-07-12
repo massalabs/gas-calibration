@@ -92,9 +92,9 @@ export namespace env {
   export declare function abi_blake3_hash(arg: ArrayBuffer): ArrayBuffer;
   
   // @ts-ignore: decorator
-@external("massa", "abi_verify_evm_signature")
-export declare function abi_verify_evm_signature(arg: ArrayBuffer): ArrayBuffer;
-  
+  @external("massa", "abi_verify_evm_signature")
+  export declare function abi_verify_evm_signature(arg: ArrayBuffer): ArrayBuffer;
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_remaining_gas")
   export declare function abi_get_remaining_gas(arg: ArrayBuffer): ArrayBuffer;
@@ -171,9 +171,9 @@ export declare function abi_verify_evm_signature(arg: ArrayBuffer): ArrayBuffer;
   @external("massa", "abi_native_amount_from_string")
   export declare function abi_native_amount_from_string(arg: ArrayBuffer): ArrayBuffer;
   
-// @ts-ignore: decorator
-@external("massa", "abi_base58_check_to_bytes")
-export declare function abi_base58_check_to_bytes(arg: ArrayBuffer): ArrayBuffer;
+  // @ts-ignore: decorator
+  @external("massa", "abi_base58_check_to_bytes")
+  export declare function abi_base58_check_to_bytes(arg: ArrayBuffer): ArrayBuffer;
   
   // @ts-ignore: decorator
   @external("massa", "abi_bytes_to_base58_check")
@@ -203,9 +203,9 @@ export declare function abi_base58_check_to_bytes(arg: ArrayBuffer): ArrayBuffer
   @external("massa", "abi_get_pubkey_version")
   export declare function abi_get_pubkey_version(arg: ArrayBuffer): ArrayBuffer;
   
-// @ts-ignore: decorator
-@external("massa", "abi_get_signature_version")
-export declare function abi_get_signature_version(arg: ArrayBuffer): ArrayBuffer;
+  // @ts-ignore: decorator
+  @external("massa", "abi_get_signature_version")
+  export declare function abi_get_signature_version(arg: ArrayBuffer): ArrayBuffer;
   
   // @ts-ignore: decorator
   @external("massa", "abi_checked_add_native_time")
