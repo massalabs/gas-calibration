@@ -1,7 +1,7 @@
 use massa_models::datastore::Datastore;
 use rand::Rng;
 
-pub fn generate_abi_has_op_key(op_datastore: &Datastore, calls: &mut Vec<String>) {
+pub fn generate_abi_op_entry_exists(op_datastore: &Datastore, calls: &mut Vec<String>) {
     let mut rng = rand::thread_rng();
     let index_key = rng.gen_range(0..op_datastore.len() - 2);
     let key = op_datastore
@@ -19,5 +19,5 @@ pub fn generate_abi_has_op_key(op_datastore: &Datastore, calls: &mut Vec<String>
     let key = key.as_slice();
     let key = format!("toBytes(\"{}\")", String::from_utf16_lossy(key));
 
-    calls.push(format!("  env.has_op_key({});", key));
+    calls.push(format!("  env.op_entry_exists({});", key));
 }
