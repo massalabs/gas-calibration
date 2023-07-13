@@ -1,5 +1,4 @@
-use std::str::FromStr;
-
+use massa_hash::Hash;
 use massa_models::{address::Address, amount::Amount};
 use massa_signature::KeyPair;
 use rand::Rng;
@@ -125,7 +124,7 @@ pub use unsafe_random::generate_abi_unsafe_random;
 pub use verify_evm_signature::generate_abi_verify_evm_signature;
 pub use verify_signature::generate_abi_verify_signature;
 
-fn generate_string(length: usize) -> String {
+pub fn generate_string(length: usize) -> String {
     let mut rng = rand::thread_rng();
     let mut string = String::new();
     for _ in 0..length {
@@ -151,22 +150,25 @@ fn generate_native_amount_string(mantissa: u64, scale: u32) -> String {
 
 fn generate_address() -> String {
     let keypair = KeyPair::generate(0).unwrap();
-
     Address::from_public_key(&keypair.get_public_key()).to_string()
 }
 
-fn static_public_key() -> String {
-    let keypair =
-        KeyPair::from_str("S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY").unwrap();
+fn generate_pub_key() -> String {
+    let keypair = KeyPair::generate(0).unwrap();
     keypair.get_public_key().to_string()
-    // Secret key: S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY
-    // Public key: P12WKRCnYPKhVuwtk1mSEiMFSAPRfThR74bfhBEHAnT53JnBNj9T
-    // Address: A12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M
 }
 
-fn static_signature() -> String {
-    "1SYkkid5YKuziu1kCMRoAPYeakZHDevAw2jzLqDypBRwpyeEvSo3F5VGwJXP3gjjhzjuqohxetvd4siv8PfjyzTziiMrVH"
-        .to_string()
+fn generate_signature() -> String {
+    let keypair = KeyPair::generate(0).unwrap();
+
+    let mut rng = rand::thread_rng();
+    let mut message = String::new();
+    for _ in 0..rng.gen_range(1..=100) {
+        message.push(rng.gen_range('a'..='z'));
+    }
+    let msg_hash = Hash::compute_from(message.as_bytes());
+
+    keypair.sign(&msg_hash).unwrap().to_string()
 }
 
 fn static_evm_triplet() -> (Vec<u8>, Vec<u8>, Vec<u8>) {

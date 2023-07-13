@@ -4,46 +4,13 @@ use massa_models::datastore::Datastore;
 use rand::Rng;
 use std::io::Write;
 
-use super::abi_wasmv1_generation::{
-    generate_abi_abort, generate_abi_add_native_amounts, generate_abi_address_from_public_key,
-    generate_abi_append_data, generate_abi_base58_check_to_bytes, generate_abi_blake3_hash,
-    generate_abi_bytes_to_base58_check, generate_abi_call, generate_abi_caller_has_write_access,
-    generate_abi_check_address, generate_abi_check_native_amount, generate_abi_check_pubkey,
-    generate_abi_check_signature, generate_abi_checked_add_native_time,
-    generate_abi_checked_div_native_time, generate_abi_checked_mul_native_time,
-    generate_abi_checked_scalar_div_native_time, generate_abi_checked_sub_native_time,
-    generate_abi_compare_address, generate_abi_compare_native_amount,
-    generate_abi_compare_native_time, generate_abi_compare_pub_key, generate_abi_create_sc,
-    generate_abi_delete_data, generate_abi_div_rem_native_amount,
-    generate_abi_div_rem_native_amounts, generate_abi_generate_event,
-    generate_abi_get_address_category, generate_abi_get_address_version, generate_abi_get_balance,
-    generate_abi_get_bytecode, generate_abi_get_call_coins, generate_abi_get_call_stack,
-    generate_abi_get_current_slot, generate_abi_get_data, generate_abi_get_keys,
-    generate_abi_get_native_time, generate_abi_get_op_data, generate_abi_get_op_keys,
-    generate_abi_get_origin_operation_id, generate_abi_get_owned_addresses,
-    generate_abi_get_pubkey_version, generate_abi_get_remaining_gas,
-    generate_abi_get_signature_version, generate_abi_has_data, generate_abi_has_op_key,
-    generate_abi_hash_keccak256, generate_abi_hash_sha256, generate_abi_local_execution,
-    generate_abi_mul_native_amount, generate_abi_native_amount_from_string,
-    generate_abi_native_amount_to_string, generate_abi_send_async_message,
-    generate_abi_set_bytecode, generate_abi_set_data, generate_abi_sub_native_amounts,
-    generate_abi_transfer_coins, generate_abi_unsafe_random, generate_abi_verify_evm_signature,
-    generate_abi_verify_signature,
-};
-
-fn generate_string(length: usize) -> String {
-    let mut rng = rand::thread_rng();
-    let mut string = String::new();
-    for _ in 0..length {
-        string.push(rng.gen_range('a'..='z'));
-    }
-    string
-}
+use super::abi_wasmv1_generation::*;
 
 fn static_address() -> String {
     // Secret key: S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY
     // Public key: P12WKRCnYPKhVuwtk1mSEiMFSAPRfThR74bfhBEHAnT53JnBNj9T
     // String::from("AU12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M")
+    // We need to have a SC Address to be able to set its bytecode
     String::from("AS12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M")
 }
 
@@ -178,13 +145,11 @@ pub fn generate_calls(
             }
             "abi_base58_check_to_bytes" => generate_abi_base58_check_to_bytes(&mut rng, &mut calls),
             "abi_bytes_to_base58_check" => generate_abi_bytes_to_base58_check(&mut rng, &mut calls),
-            "abi_check_address" => generate_abi_check_address(&address_sc, &mut calls),
+            "abi_check_address" => generate_abi_check_address(&mut calls),
             "abi_check_pubkey" => generate_abi_check_pubkey(&mut calls),
-            "abi_check_signature" => generate_abi_check_signature(&mut rng, &mut calls),
-            "abi_get_address_category" => {
-                generate_abi_get_address_category(&address_sc, &mut calls)
-            }
-            "abi_get_address_version" => generate_abi_get_address_version(&address_sc, &mut calls),
+            "abi_check_signature" => generate_abi_check_signature(&mut calls),
+            "abi_get_address_category" => generate_abi_get_address_category(&mut calls),
+            "abi_get_address_version" => generate_abi_get_address_version(&mut calls),
             "abi_get_pubkey_version" => generate_abi_get_pubkey_version(&mut calls),
             "abi_get_signature_version" => generate_abi_get_signature_version(&mut calls),
             "abi_checked_add_native_time" => {
@@ -202,7 +167,7 @@ pub fn generate_calls(
             "abi_checked_div_native_time" => {
                 generate_abi_checked_div_native_time(&mut rng, &mut calls)
             }
-            "abi_compare_address" => generate_abi_compare_address(&address_sc, &mut calls),
+            "abi_compare_address" => generate_abi_compare_address(&mut calls),
             "abi_compare_native_amount" => generate_abi_compare_native_amount(&mut rng, &mut calls),
             "abi_compare_native_time" => generate_abi_compare_native_time(&mut rng, &mut calls),
             "abi_compare_pub_key" => generate_abi_compare_pub_key(&mut calls),

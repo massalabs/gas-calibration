@@ -1,6 +1,9 @@
-pub fn generate_abi_compare_address(address_sc: &str, calls: &mut Vec<String>) {
+use super::generate_address;
+
+pub fn generate_abi_compare_address(calls: &mut Vec<String>) {
     calls.push(format!(
         "env.compare_address(\"{}\", \"{}\");",
-        address_sc, address_sc
+        generate_address(),
+        generate_address()
     ));
 }
