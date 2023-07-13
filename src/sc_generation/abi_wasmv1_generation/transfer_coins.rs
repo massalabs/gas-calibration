@@ -1,8 +1,9 @@
-use rand::{rngs::ThreadRng, Rng};
+use rand::Rng;
 
 use super::generate_address;
 
-pub fn generate_abi_transfer_coins(rng: &mut ThreadRng, calls: &mut Vec<String>) {
+pub fn generate_abi_transfer_coins(calls: &mut Vec<String>) {
+    let mut rng = rand::thread_rng();
     calls.push(format!(
         "env.transfer_coins(\"{}\", env.make_native_amount({}, 8), null);",
         generate_address(),

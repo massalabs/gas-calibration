@@ -1,13 +1,10 @@
 use massa_models::config::THREAD_COUNT;
-use rand::{rngs::ThreadRng, Rng};
+use rand::Rng;
 
 use super::generate_string;
 
-pub fn generate_abi_send_async_message(
-    address_sc: &str,
-    rng: &mut ThreadRng,
-    calls: &mut Vec<String>,
-) {
+pub fn generate_abi_send_async_message(address_sc: &str, calls: &mut Vec<String>) {
+    let mut rng = rand::thread_rng();
     calls.push(format!(
         "env.send_async_message(\"{}\", \"{}\", env.make_slot({}, {}), env.make_slot({}, {}), {}, {}, {}, toBytes(\"{}\"), env.make_send_async_message_filter_null());",
         address_sc,

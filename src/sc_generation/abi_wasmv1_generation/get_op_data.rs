@@ -1,11 +1,8 @@
 use massa_models::datastore::Datastore;
-use rand::{rngs::ThreadRng, Rng};
+use rand::Rng;
 
-pub fn generate_abi_get_op_data(
-    op_datastore: &Datastore,
-    rng: &mut ThreadRng,
-    calls: &mut Vec<String>,
-) {
+pub fn generate_abi_get_op_data(op_datastore: &Datastore, calls: &mut Vec<String>) {
+    let mut rng = rand::thread_rng();
     let index_key = rng.gen_range(0..op_datastore.len() - 2);
     let key = op_datastore
         .clone()

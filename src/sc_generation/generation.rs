@@ -78,15 +78,11 @@ pub fn generate_calls(
     let mut call_already_prep = false;
     for _ in 0..nb_calls {
         match abi[0].as_str() {
-            "abi_set_data" => generate_abi_set_data(&mut rng, &mut calls),
-            "abi_get_data" => generate_abi_get_data(&mut rng, &mut calls, &mut preparation_calls),
-            "abi_delete_data" => {
-                generate_abi_delete_data(&mut rng, &mut calls, &mut preparation_calls)
-            }
-            "abi_append_data" => {
-                generate_abi_append_data(&mut rng, &mut calls, &mut preparation_calls)
-            }
-            "abi_has_data" => generate_abi_has_data(&mut rng, &mut calls, &mut preparation_calls),
+            "abi_set_data" => generate_abi_set_data(&mut calls),
+            "abi_get_data" => generate_abi_get_data(&mut calls, &mut preparation_calls),
+            "abi_delete_data" => generate_abi_delete_data(&mut calls, &mut preparation_calls),
+            "abi_append_data" => generate_abi_append_data(&mut calls, &mut preparation_calls),
+            "abi_has_data" => generate_abi_has_data(&mut calls, &mut preparation_calls),
             "abi_get_balance" => generate_abi_get_balance(&mut calls),
             "abi_get_bytecode" => generate_abi_get_bytecode(
                 &address_sc,
@@ -97,8 +93,8 @@ pub fn generate_calls(
             "abi_set_bytecode" => generate_abi_set_bytecode(&mut calls, &mut call_already_prep),
             "abi_get_keys" => generate_abi_get_keys(&mut calls),
             "abi_get_op_keys" => generate_abi_get_op_keys(&mut calls),
-            "abi_has_op_key" => generate_abi_has_op_key(&op_datastore, &mut rng, &mut calls),
-            "abi_get_op_data" => generate_abi_get_op_data(&op_datastore, &mut rng, &mut calls),
+            "abi_has_op_key" => generate_abi_has_op_key(&op_datastore, &mut calls),
+            "abi_get_op_data" => generate_abi_get_op_data(&op_datastore, &mut calls),
             "abi_call" => generate_abi_call(
                 &address_sc,
                 &mut calls,
@@ -106,45 +102,37 @@ pub fn generate_calls(
                 &mut call_already_prep,
             ),
             "abi_create_sc" => generate_abi_create_sc(&mut calls),
-            "abi_transfer_coins" => generate_abi_transfer_coins(&mut rng, &mut calls),
-            "abi_generate_event" => generate_abi_generate_event(&mut rng, &mut calls),
+            "abi_transfer_coins" => generate_abi_transfer_coins(&mut calls),
+            "abi_generate_event" => generate_abi_generate_event(&mut calls),
             "abi_abort" => generate_abi_abort(),
             "abi_get_current_slot" => generate_abi_get_current_slot(&mut calls),
-            "abi_hash_sha256" => generate_abi_hash_sha256(&mut rng, &mut calls),
-            "abi_hash_keccak256" => generate_abi_hash_keccak256(&mut rng, &mut calls),
-            "abi_blake3_hash" => generate_abi_blake3_hash(&mut rng, &mut calls),
+            "abi_hash_sha256" => generate_abi_hash_sha256(&mut calls),
+            "abi_hash_keccak256" => generate_abi_hash_keccak256(&mut calls),
+            "abi_blake3_hash" => generate_abi_blake3_hash(&mut calls),
             "abi_verify_evm_signature" => generate_abi_verify_evm_signature(&mut calls),
             "abi_get_remaining_gas" => generate_abi_get_remaining_gas(&mut calls),
             "abi_get_owned_addresses" => generate_abi_get_owned_addresses(&mut calls),
             "abi_get_call_stack" => generate_abi_get_call_stack(&mut calls),
             "abi_address_from_public_key" => generate_abi_address_from_public_key(&mut calls),
-            "abi_unsafe_random" => generate_abi_unsafe_random(&mut rng, &mut calls),
+            "abi_unsafe_random" => generate_abi_unsafe_random(&mut calls),
             "abi_get_call_coins" => generate_abi_get_call_coins(&mut calls),
             "abi_get_native_time" => generate_abi_get_native_time(&mut calls),
-            "abi_send_async_message" => {
-                generate_abi_send_async_message(&address_sc, &mut rng, &mut calls)
-            }
+            "abi_send_async_message" => generate_abi_send_async_message(&address_sc, &mut calls),
             "abi_get_origin_operation_id" => generate_abi_get_origin_operation_id(&mut calls),
             "abi_local_execution" => {
                 generate_abi_local_execution(&mut calls, &mut call_already_prep)
             }
             "abi_caller_has_write_access" => generate_abi_caller_has_write_access(&mut calls),
-            "abi_check_native_amount" => generate_abi_check_native_amount(&mut rng, &mut calls),
-            "abi_add_native_amounts" => generate_abi_add_native_amounts(&mut rng, &mut calls),
-            "abi_sub_native_amounts" => generate_abi_sub_native_amounts(&mut rng, &mut calls),
-            "abi_mul_native_amount" => generate_abi_mul_native_amount(&mut rng, &mut calls),
-            "abi_div_rem_native_amount" => generate_abi_div_rem_native_amount(&mut rng, &mut calls),
-            "abi_div_rem_native_amounts" => {
-                generate_abi_div_rem_native_amounts(&mut rng, &mut calls)
-            }
-            "abi_native_amount_to_string" => {
-                generate_abi_native_amount_to_string(&mut rng, &mut calls)
-            }
-            "abi_native_amount_from_string" => {
-                generate_abi_native_amount_from_string(&mut rng, &mut calls)
-            }
-            "abi_base58_check_to_bytes" => generate_abi_base58_check_to_bytes(&mut rng, &mut calls),
-            "abi_bytes_to_base58_check" => generate_abi_bytes_to_base58_check(&mut rng, &mut calls),
+            "abi_check_native_amount" => generate_abi_check_native_amount(&mut calls),
+            "abi_add_native_amounts" => generate_abi_add_native_amounts(&mut calls),
+            "abi_sub_native_amounts" => generate_abi_sub_native_amounts(&mut calls),
+            "abi_mul_native_amount" => generate_abi_mul_native_amount(&mut calls),
+            "abi_div_rem_native_amount" => generate_abi_div_rem_native_amount(&mut calls),
+            "abi_div_rem_native_amounts" => generate_abi_div_rem_native_amounts(&mut calls),
+            "abi_native_amount_to_string" => generate_abi_native_amount_to_string(&mut calls),
+            "abi_native_amount_from_string" => generate_abi_native_amount_from_string(&mut calls),
+            "abi_base58_check_to_bytes" => generate_abi_base58_check_to_bytes(&mut calls),
+            "abi_bytes_to_base58_check" => generate_abi_bytes_to_base58_check(&mut calls),
             "abi_check_address" => generate_abi_check_address(&mut calls),
             "abi_check_pubkey" => generate_abi_check_pubkey(&mut calls),
             "abi_check_signature" => generate_abi_check_signature(&mut calls),
@@ -152,26 +140,18 @@ pub fn generate_calls(
             "abi_get_address_version" => generate_abi_get_address_version(&mut calls),
             "abi_get_pubkey_version" => generate_abi_get_pubkey_version(&mut calls),
             "abi_get_signature_version" => generate_abi_get_signature_version(&mut calls),
-            "abi_checked_add_native_time" => {
-                generate_abi_checked_add_native_time(&mut rng, &mut calls)
-            }
-            "abi_checked_sub_native_time" => {
-                generate_abi_checked_sub_native_time(&mut rng, &mut calls)
-            }
-            "abi_checked_mul_native_time" => {
-                generate_abi_checked_mul_native_time(&mut rng, &mut calls)
-            }
+            "abi_checked_add_native_time" => generate_abi_checked_add_native_time(&mut calls),
+            "abi_checked_sub_native_time" => generate_abi_checked_sub_native_time(&mut calls),
+            "abi_checked_mul_native_time" => generate_abi_checked_mul_native_time(&mut calls),
             "abi_checked_scalar_div_native_time" => {
-                generate_abi_checked_scalar_div_native_time(&mut rng, &mut calls)
+                generate_abi_checked_scalar_div_native_time(&mut calls)
             }
-            "abi_checked_div_native_time" => {
-                generate_abi_checked_div_native_time(&mut rng, &mut calls)
-            }
+            "abi_checked_div_native_time" => generate_abi_checked_div_native_time(&mut calls),
             "abi_compare_address" => generate_abi_compare_address(&mut calls),
-            "abi_compare_native_amount" => generate_abi_compare_native_amount(&mut rng, &mut calls),
-            "abi_compare_native_time" => generate_abi_compare_native_time(&mut rng, &mut calls),
+            "abi_compare_native_amount" => generate_abi_compare_native_amount(&mut calls),
+            "abi_compare_native_time" => generate_abi_compare_native_time(&mut calls),
             "abi_compare_pub_key" => generate_abi_compare_pub_key(&mut calls),
-            "abi_verify_signature" => generate_abi_verify_signature(&mut rng, &mut calls),
+            "abi_verify_signature" => generate_abi_verify_signature(&mut calls),
             /*
             "localCall" => generate_abi_local_call(
                 &address_sc,
