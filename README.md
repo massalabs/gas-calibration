@@ -41,8 +41,4 @@ Results are stored in the `results` folder.
 
 ## Update for new runtime todos
 
-- [ ] Parse the new env.ts file to get all the new abis
-- [ ] Adapt the existing args code to produce protobuf serialized
-- [ ] Generate the SCs and test them
-- [ ] Test the gas calibration on the new ABIs
 - [ ] Produce the new gas calibration results with a server that has similar hardware to the testnet requirements

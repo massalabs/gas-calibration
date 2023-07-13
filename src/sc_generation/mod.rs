@@ -9,7 +9,6 @@ use crate::sc_generation::generation::generate_calls;
 
 use self::generation::generate_instruction;
 
-mod abi_generation;
 mod abi_wasmv1_generation;
 
 pub mod abis;
@@ -139,7 +138,6 @@ fn write_wat(setup_calls: Vec<String>, calls: Vec<String>, file_name: String) {
         setup_calls.join("\n"),
         calls.join("\n")
     );
-
     let mut src = File::create(format!(
         "./src/sc_generation/template/build/WAT_{}.wat",
         file_name
@@ -190,10 +188,15 @@ pub fn build_scs(nb_sc_per_abi: u32, abis: Vec<Vec<String>>) {
             //     return;
             // }
             let npm_path = which("npm").expect("npm not found in PATH");
+            let build_script = if cfg!(target_os = "windows") {
+                "build_windows"
+            } else {
+                "build"
+            };
 
             Command::new(npm_path.clone())
                 .arg("run")
-                .arg("build_windows")
+                .arg(build_script)
                 .env("SC_NAME", format!("SC_preparation_{}", i))
                 .current_dir("./src/sc_generation/template")
                 .output()
@@ -201,7 +204,7 @@ pub fn build_scs(nb_sc_per_abi: u32, abis: Vec<Vec<String>>) {
             //std::io::stderr().write_all(&output1.stderr).unwrap();
             let output = Command::new(npm_path)
                 .arg("run")
-                .arg("build_windows")
+                .arg(build_script)
                 .env("SC_NAME", format!("SC_{}", i))
                 .current_dir("./src/sc_generation/template")
                 .output()

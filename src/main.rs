@@ -12,8 +12,8 @@ mod sc_generation;
 
 fn main() {
     let args = args::Args::parse();
-    let nb_scs_by_abi: u32 = args.nb_scs_by_abi.unwrap_or(2);
-    let nb_wasm_scs = 5;
+    let nb_scs_by_abi: u32 = args.nb_scs_by_abi.unwrap_or(100);
+    let nb_wasm_scs = 500;
     let env_path = args
         .as_sdk_env_path
         .unwrap_or(String::from("./src/sc_generation/template/env_wasmv1.ts"));
