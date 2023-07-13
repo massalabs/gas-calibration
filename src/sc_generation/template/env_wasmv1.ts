@@ -1,5 +1,5 @@
-import * as proto from "../../../../massa-abi-metaproject/massa-proto-as/assembly";
-import { StringValue } from "../../../../massa-abi-metaproject/massa-proto-as/assembly/google/protobuf/StringValue";
+import * as proto from "massa-proto-as/assembly";
+import { StringValue } from "massa-proto-as/assembly/google/protobuf/StringValue";
 import { decimalCount32 } from "util/number";
 
 export namespace env {
