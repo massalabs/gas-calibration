@@ -80,9 +80,15 @@ pub fn generate_calls(
         match abi[0].as_str() {
             "abi_set_ds_value" => generate_abi_set_ds_value(&mut calls),
             "abi_get_ds_value" => generate_abi_get_ds_value(&mut calls, &mut preparation_calls),
-            "abi_delete_ds_entry" => generate_abi_delete_ds_entry(&mut calls, &mut preparation_calls),
-            "abi_append_ds_value" => generate_abi_append_ds_value(&mut calls, &mut preparation_calls),
-            "abi_ds_entry_exists" => generate_abi_ds_entry_exists(&mut calls, &mut preparation_calls),
+            "abi_delete_ds_entry" => {
+                generate_abi_delete_ds_entry(&mut calls, &mut preparation_calls)
+            }
+            "abi_append_ds_value" => {
+                generate_abi_append_ds_value(&mut calls, &mut preparation_calls)
+            }
+            "abi_ds_entry_exists" => {
+                generate_abi_ds_entry_exists(&mut calls, &mut preparation_calls)
+            }
             "abi_get_balance" => generate_abi_get_balance(&mut calls),
             "abi_get_bytecode" => generate_abi_get_bytecode(
                 &address_sc,
@@ -127,7 +133,9 @@ pub fn generate_calls(
             "abi_add_native_amount" => generate_abi_add_native_amount(&mut calls),
             "abi_sub_native_amount" => generate_abi_sub_native_amount(&mut calls),
             "abi_scalar_mul_native_amount" => generate_abi_scalar_mul_native_amount(&mut calls),
-            "abi_scalar_div_rem_native_amount" => generate_abi_scalar_div_rem_native_amount(&mut calls),
+            "abi_scalar_div_rem_native_amount" => {
+                generate_abi_scalar_div_rem_native_amount(&mut calls)
+            }
             "abi_div_rem_native_amount" => generate_abi_div_rem_native_amount(&mut calls),
             "abi_native_amount_to_string" => generate_abi_native_amount_to_string(&mut calls),
             "abi_native_amount_from_string" => generate_abi_native_amount_from_string(&mut calls),

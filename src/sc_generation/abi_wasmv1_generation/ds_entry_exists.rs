@@ -10,5 +10,8 @@ pub fn generate_abi_ds_entry_exists(calls: &mut Vec<String>, preparation_calls: 
         key,
         generate_string(rng.gen_range(1..1000))
     ));
-    calls.push(format!("  env.ds_entry_exists(toBytes(\"{}\"), null);", key));
+    calls.push(format!(
+        "  env.ds_entry_exists(toBytes(\"{}\"), null);",
+        key
+    ));
 }

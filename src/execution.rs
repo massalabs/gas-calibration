@@ -49,6 +49,7 @@ pub fn execute_abi_scs(
     pb.finish_print("Finished executing ABI SCs");
 }
 
+#[allow(dead_code)]
 pub fn execute_wasm_scs(full_results: &mut HashMap<String, Vec<f64>>, nb_contracts: u32) {
     println!("Executing {} SCs WASM", nb_contracts);
     let mut rng = rand::thread_rng();

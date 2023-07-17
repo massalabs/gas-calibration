@@ -869,7 +869,7 @@ export namespace env {
   ): proto.NativeAmount {
     return new proto.NativeAmount(mantissa, scale);
   }
-
+  
   export function make_native_time(
     time: i64,
   ): proto.NativeTime {
@@ -882,7 +882,7 @@ export namespace env {
   ): proto.Slot {
     return new proto.Slot(period, thread);
   }
-
+  
   export function make_send_async_message_filter_null(): proto.SendAsyncMessageFilter {
     return new proto.SendAsyncMessageFilter("", null);
   }

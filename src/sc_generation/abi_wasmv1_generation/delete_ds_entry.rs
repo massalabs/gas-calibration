@@ -10,5 +10,8 @@ pub fn generate_abi_delete_ds_entry(calls: &mut Vec<String>, preparation_calls: 
         key,
         generate_string(rng.gen_range(1..1000))
     ));
-    calls.push(format!("  env.delete_ds_entry(toBytes(\"{}\"), null);", key));
+    calls.push(format!(
+        "  env.delete_ds_entry(toBytes(\"{}\"), null);",
+        key
+    ));
 }
