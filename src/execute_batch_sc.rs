@@ -79,6 +79,18 @@ pub fn execute_batch_sc(
             RuntimeModule::new(&bytecode, u64::MAX, GasCosts::default(), Compiler::CL).unwrap();
         let start = std::time::Instant::now();
         let results = run_main_gc(&interface, module, &[], u64::MAX, GasCosts::default()).unwrap();
+        
+        println!("Results:");
+        println!("");
+        println!("Counters:");
+        for (key, value) in &results.counters {
+            println!("key: {:?}, value: {:?}", key, value);
+        }
+        println!("");
+        println!("Timers:");
+        for (key, value) in &results.timers {
+            println!("key: {:?}, value: {:?}", key, value);
+        }
         //    nb_compiled += 1;
         //    (start, results)
         // } else {
