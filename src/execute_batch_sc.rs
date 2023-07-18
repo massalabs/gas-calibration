@@ -81,16 +81,11 @@ pub fn execute_batch_sc(
         let results = run_main_gc(&interface, module, &[], u64::MAX, GasCosts::default()).unwrap();
         
         println!("Results:");
-        println!("");
+        /*println!("");
         println!("Counters:");
         for (key, value) in &results.counters {
             println!("key: {:?}, value: {:?}", key, value);
-        }
-        println!("");
-        println!("Timers:");
-        for (key, value) in &results.timers {
-            println!("key: {:?}, value: {:?}", key, value);
-        }
+        }*/
         //    nb_compiled += 1;
         //    (start, results)
         // } else {
@@ -104,7 +99,8 @@ pub fn execute_batch_sc(
         let mut time_exec = start.elapsed();
         //println!("Time: {:?}", time_exec);
         for (_key, value) in results.timers {
-            //println!("key: {:?}, value: {:?}", _key, value);
+            println!("time_exec: {:?}", time_exec);
+            println!("key: {:?}, value: {:?}", _key, value);
             time_exec -= Duration::from_secs_f64(value);
         }
         // Size ignored for now because we saw that it doesn't change a lot
