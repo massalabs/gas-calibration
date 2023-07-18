@@ -99,9 +99,18 @@ pub fn execute_batch_sc(
         let mut time_exec = start.elapsed();
         //println!("Time: {:?}", time_exec);
         for (_key, value) in results.timers {
+            /*
             println!("time_exec: {:?}", time_exec);
             println!("key: {:?}, value: {:?}", _key, value);
             time_exec -= Duration::from_secs_f64(value);
+            */
+            time_exec = match time_exec.checked_sub(Duration::from_secs_f64(value)) {
+                Some(new_time_exec) => new_time_exec,
+                None => {
+                    println!("Time exec overflow: {:?}, {:?}", time_exec, Duration::from_secs_f64(value));
+                    Duration::from_secs(0)
+                },
+            };
         }
         // Size ignored for now because we saw that it doesn't change a lot
         // results
