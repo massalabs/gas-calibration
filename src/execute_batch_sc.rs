@@ -80,7 +80,7 @@ pub fn execute_batch_sc(
         let start = std::time::Instant::now();
         let results = run_main_gc(&interface, module, &[], u64::MAX, GasCosts::default()).unwrap();
         
-        println!("Results:");
+        //println!("Results:");
         /*println!("");
         println!("Counters:");
         for (key, value) in &results.counters {
