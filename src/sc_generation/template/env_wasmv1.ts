@@ -593,7 +593,7 @@ export namespace env {
     );
     const resp = proto.decodeAbiResponse(resp_bytes);
   
-    assert(resp.error === null);
+    assert(resp.error === null, resp.error!.message);
   }
   
   // ABI to generate an event
