@@ -5,7 +5,7 @@ use super::generate_bytes;
 pub fn generate_abi_hash_sha256(calls: &mut Vec<String>) {
     let mut rng = rand::thread_rng();
 
-    let rng_bytes = generate_bytes(rng.gen_range(2..500));
+    let rng_bytes = generate_bytes(rng.gen_range(1..1000));
 
     calls.push(format!(
         "{{let bytes = new Uint8Array({});

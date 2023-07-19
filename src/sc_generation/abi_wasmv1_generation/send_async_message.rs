@@ -6,12 +6,12 @@ use super::{generate_bytes, generate_string};
 pub fn generate_abi_send_async_message(address_sc: &str, calls: &mut Vec<String>) {
     let mut rng = rand::thread_rng();
 
-    let rng_bytes = generate_bytes(rng.gen_range(0..500));
+    let rng_bytes = generate_bytes(rng.gen_range(1..1000));
 
     calls.push(format!(
-        "{{let key_bytes = new Uint8Array({});
-        key_bytes.set({:?});
-        env.send_async_message(\"{}\", \"{}\", env.make_slot({}, {}), env.make_slot({}, {}), {}, {}, {}, key_bytes, env.make_send_async_message_filter_null());}}",
+        "{{let bytes = new Uint8Array({});
+        bytes.set({:?});
+        env.send_async_message(\"{}\", \"{}\", env.make_slot({}, {}), env.make_slot({}, {}), {}, {}, {}, bytes, env.make_send_async_message_filter_null());}}",
         rng_bytes.len(),
         rng_bytes,
         address_sc,

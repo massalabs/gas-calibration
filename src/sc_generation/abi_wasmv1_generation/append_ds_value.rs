@@ -5,7 +5,7 @@ use super::generate_bytes;
 pub fn generate_abi_append_ds_value(calls: &mut Vec<String>, preparation_calls: &mut Vec<String>) {
     let mut rng = rand::thread_rng();
 
-    let rng_key_bytes = generate_bytes(rng.gen_range(5..32));
+    let rng_key_bytes = generate_bytes(rng.gen_range(10..64));
     let rng_value1_bytes = generate_bytes(rng.gen_range(1..1000));
     let rng_value2_bytes = generate_bytes(rng.gen_range(1..1000));
 

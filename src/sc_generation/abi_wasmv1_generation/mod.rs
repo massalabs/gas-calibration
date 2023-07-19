@@ -133,26 +133,17 @@ pub fn generate_string(length: usize) -> String {
     string
 }
 
-// Here, the bytes size will be twice the string length
-pub fn generate_bytes(from_string_length: usize) -> Vec<u8> {
-    let rng_string = generate_string(from_string_length);
-    let rng_bytes: Vec<_> = unsafe {
-        rng_string
-            .encode_utf16()
-            .collect::<Vec<u16>>()
-            .align_to::<u8>()
-            .1
-            .to_vec()
-    };
-    rng_bytes
+pub fn generate_bytes(byte_size: usize) -> Vec<u8> {
+    let mut rng = rand::thread_rng();
+    let mut bytes = Vec::new();
+    for _ in 0..byte_size {
+        bytes.push(rng.gen_range(u8::MIN..=u8::MAX));
+    }
+    bytes
 }
 
 fn generate_b58_check_string(byte_size: usize) -> String {
-    let mut rng = rand::thread_rng();
-    let mut data = vec![0_u8];
-    for _ in 0..byte_size {
-        data.push(rng.gen_range(u8::MIN..=u8::MAX));
-    }
+    let data = generate_bytes(byte_size);
 
     bs58::encode(data).with_check().into_string()
 }
@@ -176,11 +167,9 @@ fn generate_signature() -> String {
     let keypair = KeyPair::generate(0).unwrap();
 
     let mut rng = rand::thread_rng();
-    let mut message = String::new();
-    for _ in 0..rng.gen_range(1..=100) {
-        message.push(rng.gen_range('a'..='z'));
-    }
-    let msg_hash = Hash::compute_from(message.as_bytes());
+    let msg = generate_string(rng.gen_range(1..=100));
+
+    let msg_hash = Hash::compute_from(msg.as_bytes());
 
     keypair.sign(&msg_hash).unwrap().to_string()
 }
