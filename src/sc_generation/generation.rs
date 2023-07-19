@@ -107,7 +107,7 @@ pub fn generate_calls(
                 &mut preparation_calls,
                 &mut call_already_prep,
             ),
-            "abi_create_sc" => generate_abi_create_sc(&mut calls,  &mut call_already_prep),
+            "abi_create_sc" => generate_abi_create_sc(&mut calls, &mut call_already_prep),
             "abi_transfer_coins" => generate_abi_transfer_coins(&mut calls),
             "abi_generate_event" => generate_abi_generate_event(&mut calls),
             "abi_abort" => generate_abi_abort(),

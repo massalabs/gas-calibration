@@ -79,7 +79,7 @@ pub fn execute_batch_sc(
             RuntimeModule::new(&bytecode, u64::MAX, GasCosts::default(), Compiler::CL).unwrap();
         let start = std::time::Instant::now();
         let results = run_main_gc(&interface, module, &[], u64::MAX, GasCosts::default()).unwrap();
-        
+
         //println!("Results:");
         /*println!("");
         println!("Counters:");
@@ -107,9 +107,13 @@ pub fn execute_batch_sc(
             time_exec = match time_exec.checked_sub(Duration::from_secs_f64(value)) {
                 Some(new_time_exec) => new_time_exec,
                 None => {
-                    println!("Time exec overflow: {:?}, {:?}", time_exec, Duration::from_secs_f64(value));
+                    println!(
+                        "Time exec overflow: {:?}, {:?}",
+                        time_exec,
+                        Duration::from_secs_f64(value)
+                    );
                     Duration::from_secs(0)
-                },
+                }
             };
         }
         // Size ignored for now because we saw that it doesn't change a lot
