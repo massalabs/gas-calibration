@@ -1,9 +1,17 @@
 use rand::Rng;
 
-use super::generate_string;
+use super::generate_bytes;
 
 pub fn generate_abi_hash_keccak256(calls: &mut Vec<String>) {
     let mut rng = rand::thread_rng();
-    let data = generate_string(rng.gen_range(5..32));
-    calls.push(format!("  env.hash_keccak256(toBytes(\"{}\"));", data));
+
+    let rng_bytes = generate_bytes(rng.gen_range(2..500));
+
+    calls.push(format!(
+        "{{let bytes = new Uint8Array({});
+        bytes.set({:?});
+        env.hash_keccak256(bytes);}}",
+        rng_bytes.len(),
+        rng_bytes,
+    ));
 }

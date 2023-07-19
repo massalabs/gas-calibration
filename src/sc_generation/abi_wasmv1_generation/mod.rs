@@ -133,6 +133,20 @@ pub fn generate_string(length: usize) -> String {
     string
 }
 
+// Here, the bytes size will be twice the string length
+pub fn generate_bytes(from_string_length: usize) -> Vec<u8> {
+    let rng_string = generate_string(from_string_length);
+    let rng_bytes: Vec<_> = unsafe {
+        rng_string
+            .encode_utf16()
+            .collect::<Vec<u16>>()
+            .align_to::<u8>()
+            .1
+            .to_vec()
+    };
+    rng_bytes
+}
+
 fn generate_b58_check_string(byte_size: usize) -> String {
     let mut rng = rand::thread_rng();
     let mut data = vec![0_u8];
