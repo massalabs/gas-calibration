@@ -4,6 +4,6 @@
  * @return {Uint8Array}
  */
 export function toBytes(str: string): Uint8Array {
-    let arr = Uint8Array.wrap(String.UTF16.encode(str));
+    let arr = Uint8Array.wrap(String.UTF8.encode(str));
     return arr;
 }

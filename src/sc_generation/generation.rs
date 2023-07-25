@@ -19,29 +19,16 @@ pub fn generate_op_datastore() -> Datastore {
     let mut datastore: Datastore = Datastore::new();
     let nb_entries = 100;
     for _ in 0..nb_entries {
-        unsafe {
-            let key = generate_string(rng.gen_range(5..32))
-                .encode_utf16()
-                .collect::<Vec<u16>>()
-                .align_to::<u8>()
-                .1
-                .to_vec();
-            let value = generate_string(rng.gen_range(5..100))
-                .encode_utf16()
-                .collect::<Vec<u16>>()
-                .align_to::<u8>()
-                .1
-                .to_vec();
-            datastore.insert(key, value);
+        /*unsafe*/
+        {
+            let rng_key_bytes = generate_bytes(rng.gen_range(10..64));
+            let rng_value_bytes = generate_bytes(rng.gen_range(1..1000));
+            datastore.insert(rng_key_bytes, rng_value_bytes);
         }
     }
-    unsafe {
-        let key = String::from("empty_main_sc")
-            .encode_utf16()
-            .collect::<Vec<u16>>()
-            .align_to::<u8>()
-            .1
-            .to_vec();
+    /*unsafe*/
+    {
+        let key = String::from("empty_main_sc").into_bytes();
         match std::fs::read("./src/sc_generation/template/empty_main_sc_wasmv1.wasm_add") {
             Ok(bytes) => datastore.insert(key, bytes),
             Err(e) => panic!("{}", e),
@@ -73,8 +60,7 @@ pub fn generate_calls(
     let mut calls = Vec::new();
     let mut preparation_calls = Vec::new();
     let address_sc = static_address();
-
-    let nb_calls = rng.gen_range(0..limit_per_calls);
+    let nb_calls = rng.gen_range(1..limit_per_calls);
     let mut call_already_prep = false;
     for _ in 0..nb_calls {
         match abi[0].as_str() {
@@ -100,7 +86,9 @@ pub fn generate_calls(
             "abi_get_ds_keys" => generate_abi_get_ds_keys(&mut calls),
             "abi_get_op_keys" => generate_abi_get_op_keys(&mut calls),
             "abi_op_entry_exists" => generate_abi_op_entry_exists(&op_datastore, &mut calls),
-            "abi_get_op_data" => generate_abi_get_op_data(&op_datastore, &mut calls),
+            "abi_get_op_data" => {
+                generate_abi_get_op_data(&op_datastore, &mut calls, &mut call_already_prep)
+            }
             "abi_call" => generate_abi_call(
                 &address_sc,
                 &mut calls,

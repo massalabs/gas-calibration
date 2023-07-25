@@ -14,15 +14,15 @@ export namespace env {
   // @ts-ignore: decorator
   @external("massa", "abi_get_ds_value")
   export declare function abi_get_ds_value(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_delete_ds_entry")
   export declare function abi_delete_ds_entry(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_append_ds_value")
   export declare function abi_append_ds_value(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_ds_entry_exists")
   export declare function abi_ds_entry_exists(arg: ArrayBuffer): ArrayBuffer;
@@ -50,11 +50,11 @@ export namespace env {
   // @ts-ignore: decorator
   @external("massa", "abi_op_entry_exists")
   export declare function abi_op_entry_exists(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_op_data")
   export declare function abi_get_op_data(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_call")
   export declare function abi_call(arg: ArrayBuffer): ArrayBuffer;
@@ -130,11 +130,11 @@ export namespace env {
   // @ts-ignore: decorator
   @external("massa", "abi_get_origin_operation_id")
   export declare function abi_get_origin_operation_id(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_local_execution")
   export declare function abi_local_execution(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_caller_has_write_access")
   export declare function abi_caller_has_write_access(arg: ArrayBuffer): ArrayBuffer;
@@ -246,7 +246,7 @@ export namespace env {
   // @ts-ignore: decorator
   @external("massa", "abi_verify_signature")
   export declare function abi_verify_signature(arg: ArrayBuffer): ArrayBuffer;
-  // */
+// */
   
   // ***************************************************************************
   // utility functions
@@ -675,16 +675,13 @@ export namespace env {
   ): bool {
     const req = new proto.DsEntryExistsRequest(key, makeStringValue(optional_address));
     const req_bytes = proto.encodeDsEntryExistsRequest(req);
-    const resp_bytes = Uint8Array.wrap(
-      abi_ds_entry_exists(encode_length_prefixed(req_bytes).buffer)
-    );
+    const resp_bytes = Uint8Array.wrap(abi_ds_entry_exists(encode_length_prefixed(req_bytes).buffer));
   
     const resp = proto.decodeAbiResponse(resp_bytes);
   
     assert(resp.error === null);
     assert(resp.res !== null);
     assert(resp.res!.dsEntryExistsResult !== null);
-  
     return resp.res!.dsEntryExistsResult!.hasData;
   }
   

@@ -1,3 +1,5 @@
+use super::get_bytecode;
+
 pub fn generate_abi_get_bytecode(
     address_sc: &str,
     calls: &mut Vec<String>,
@@ -5,9 +7,12 @@ pub fn generate_abi_get_bytecode(
     call_already_prep: &mut bool,
 ) {
     if !*call_already_prep {
+        let bytecode_bytes = get_bytecode();
         preparation_calls.push(format!(
-            "env.set_bytecode(env.get_op_data(toBytes(\"empty_main_sc\")), \"{}\");",
-            address_sc
+            "let bytecode_bytes = new Uint8Array({});
+            bytecode_bytes.set({:?});",
+            bytecode_bytes.len(),
+            bytecode_bytes
         ));
         preparation_calls.push(format!(
             "env.transfer_coins(\"{}\", env.make_native_amount(100,0), null);",
@@ -15,5 +20,6 @@ pub fn generate_abi_get_bytecode(
         ));
         *call_already_prep = true;
     }
+
     calls.push("  env.get_bytecode(null);".to_string());
 }
