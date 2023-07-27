@@ -1,5 +1,5 @@
 use massa_models::datastore::Datastore;
-use rand::Rng;
+use rand::seq::IteratorRandom;
 
 pub fn generate_abi_get_op_data(
     op_datastore: &Datastore,
@@ -9,18 +9,8 @@ pub fn generate_abi_get_op_data(
     let mut rng = rand::thread_rng();
 
     if !*call_already_prep {
-        let mut call_added = false;
-        while !call_added {
-            let index_key = rng.gen_range(0..op_datastore.len() - 2);
-            let key_bytes = op_datastore
-                .clone()
-                .into_iter()
-                .collect::<Vec<(Vec<u8>, Vec<u8>)>>()
-                .get(index_key)
-                .unwrap()
-                .0
-                .clone();
-            let key = String::from_utf8_lossy(&key_bytes);
+        while let Some((key_bytes, _)) = op_datastore.iter().choose(&mut rng) {
+            let key = String::from_utf8_lossy(key_bytes);
             if key != "empty_main_sc" {
                 calls.push(format!(
                     "let key_bytes = new Uint8Array({});
@@ -28,7 +18,7 @@ pub fn generate_abi_get_op_data(
                     key_bytes.len(),
                     key_bytes
                 ));
-                call_added = true;
+                break;
             }
         }
         *call_already_prep = true;

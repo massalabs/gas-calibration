@@ -19,20 +19,14 @@ pub fn generate_op_datastore() -> Datastore {
     let mut datastore: Datastore = Datastore::new();
     let nb_entries = 100;
     for _ in 0..nb_entries {
-        /*unsafe*/
-        {
-            let rng_key_bytes = generate_bytes(rng.gen_range(10..64));
-            let rng_value_bytes = generate_bytes(rng.gen_range(1..1000));
-            datastore.insert(rng_key_bytes, rng_value_bytes);
-        }
+        let rng_key_bytes = generate_bytes(rng.gen_range(10..64));
+        let rng_value_bytes = generate_bytes(rng.gen_range(1..1000));
+        datastore.insert(rng_key_bytes, rng_value_bytes);
     }
-    /*unsafe*/
-    {
-        let key = String::from("empty_main_sc").into_bytes();
-        match std::fs::read("./src/sc_generation/template/empty_main_sc_wasmv1.wasm_add") {
-            Ok(bytes) => datastore.insert(key, bytes),
-            Err(e) => panic!("{}", e),
-        };
+    let key = String::from("empty_main_sc").into_bytes();
+    match std::fs::read("./src/sc_generation/template/empty_main_sc_wasmv1.wasm_add") {
+        Ok(bytes) => datastore.insert(key, bytes),
+        Err(e) => panic!("{}", e),
     };
     let mut output = File::create("./src/sc_generation/template/op_datastore.json").unwrap();
     write!(
