@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "asc build/$SC_NAME.ts --target release --exportRuntime --runtime stub --outFile build/$SC_NAME.wasm",
+    "build": "asc build/$SC_NAME.ts --use abort=build/$SC_NAME/myabort --target release --outFile build/$SC_NAME.wasm && wasmv1_transform build/$SC_NAME.wasm add",
+    "build_windows": "asc build/%SC_NAME%.ts --use abort=build/%SC_NAME%/myabort --target release --outFile build/%SC_NAME%.wasm && wasmv1_transform build/%SC_NAME%.wasm add",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,5 +14,9 @@
   "devDependencies": {
     "assemblyscript": "^0.26",
     "typescript": "^4.8.4"
+  },
+  "dependencies": {
+    "as-proto": "^1.3.0",
+    "massa-proto-as": "github:massalabs/massa-proto-as#feature/Improve_ABI_types_in_wasmv1"
   }
 }

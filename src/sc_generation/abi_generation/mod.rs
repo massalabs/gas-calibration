@@ -1,3 +1,4 @@
+/*
 use std::str::FromStr;
 
 use massa_models::address::Address;
@@ -106,7 +107,7 @@ fn generate_string(length: usize) -> String {
 }
 
 fn generate_address() -> String {
-    let keypair = KeyPair::generate();
+    let keypair = KeyPair::generate(0).unwrap();
 
     Address::from_public_key(&keypair.get_public_key()).to_string()
 }
@@ -119,3 +120,4 @@ fn static_public_key() -> String {
     // Public key: P12WKRCnYPKhVuwtk1mSEiMFSAPRfThR74bfhBEHAnT53JnBNj9T
     // Address: A12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M
 }
+*/

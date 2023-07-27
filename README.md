@@ -1,4 +1,5 @@
 # gas-calibration
+
 A tool to calibrate the gas of the SC
 
 ## Context
@@ -24,7 +25,6 @@ The program will run multiple batches of smart contract with the same instructio
 
 We have the time it takes to execute one instruction and we also have the gas limit for a block. We can then calculate the number of instruction that can be executed in a block and so the gas cost for this instruction.
 
-
 ## How to use
 
 ```bash
@@ -38,3 +38,7 @@ cargo run -- --skip-generation-scs
 ```
 
 Results are stored in the `results` folder.
+
+## Update for new runtime todos
+
+- [ ] Produce the new gas calibration results with a server that has similar hardware to the testnet requirements

@@ -11,7 +11,7 @@ pub fn get_abis(file_path: &String) -> Vec<Vec<String>> {
             in_abi_definition = true;
             abis_string_vec.push(line.to_string());
         } else if in_abi_definition {
-            if line.starts_with("    ") || line.ends_with(";") {
+            if line.starts_with("    ") || line.ends_with(';') {
                 abis_string_vec
                     .last_mut()
                     .unwrap()
@@ -22,7 +22,7 @@ pub fn get_abis(file_path: &String) -> Vec<Vec<String>> {
         }
     }
 
-    let mut abis: Vec<Vec<String>> = abis_string_vec
+    let abis: Vec<Vec<String>> = abis_string_vec
         .iter()
         .filter_map(|line| {
             if line.starts_with("  export declare function") {
@@ -59,8 +59,6 @@ pub fn get_abis(file_path: &String) -> Vec<Vec<String>> {
             abi
         })
         .collect();
-    abis.push(vec![String::from("seed")]);
-    abis.push(vec![String::from("Date.now")]);
 
     abis
 }

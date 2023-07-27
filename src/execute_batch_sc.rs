@@ -26,7 +26,7 @@ pub fn execute_batch_sc(
             continue;
         }
         let mut file = file.unwrap();
-        let mut bytecode = vec![];
+        let mut bytecode = if abi_mode { vec![1_u8] } else { vec![0_u8] };
         file.read_to_end(&mut bytecode)
             .unwrap_or_else(|_| panic!("Failed to read {}", filename));
         //TODO: Change here
@@ -35,7 +35,7 @@ pub fn execute_batch_sc(
             i
         )) {
             if abi_mode {
-                let mut bytecode = vec![];
+                let mut bytecode = vec![1_u8];
                 file.read_to_end(&mut bytecode)
                     .unwrap_or_else(|_| panic!("Failed to read {}", filename));
                 Some(bytecode)
@@ -55,13 +55,19 @@ pub fn execute_batch_sc(
         //let mut rng = rand::thread_rng();
         //let need_compile = rng.gen_bool(0.5);
         let interface = InterfaceImpl::new_default(
-            Address::from_str("AU12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M").unwrap(),
+            Address::from_str("AS12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M").unwrap(),
             Some(op_datastore.clone()),
         );
         if let Some(preparation_bytecode) = preparation_bytecode {
             run_main_gc(
                 &interface,
-                RuntimeModule::new(&preparation_bytecode, u64::MAX, GasCosts::default(), Compiler::CL).unwrap(),
+                RuntimeModule::new(
+                    &preparation_bytecode,
+                    u64::MAX,
+                    GasCosts::default(),
+                    Compiler::CL,
+                )
+                .unwrap(),
                 &[],
                 u64::MAX,
                 GasCosts::default(),
@@ -69,9 +75,17 @@ pub fn execute_batch_sc(
             .unwrap();
         }
         //let (start, results) = if need_compile {
-        let module = RuntimeModule::new(&bytecode, u64::MAX, GasCosts::default(), Compiler::CL).unwrap();
+        let module =
+            RuntimeModule::new(&bytecode, u64::MAX, GasCosts::default(), Compiler::CL).unwrap();
         let start = std::time::Instant::now();
         let results = run_main_gc(&interface, module, &[], u64::MAX, GasCosts::default()).unwrap();
+
+        //println!("Results:");
+        /*println!("");
+        println!("Counters:");
+        for (key, value) in &results.counters {
+            println!("key: {:?}, value: {:?}", key, value);
+        }*/
         //    nb_compiled += 1;
         //    (start, results)
         // } else {
@@ -85,8 +99,22 @@ pub fn execute_batch_sc(
         let mut time_exec = start.elapsed();
         //println!("Time: {:?}", time_exec);
         for (_key, value) in results.timers {
-            //println!("key: {:?}, value: {:?}", _key, value);
+            /*
+            println!("time_exec: {:?}", time_exec);
+            println!("key: {:?}, value: {:?}", _key, value);
             time_exec -= Duration::from_secs_f64(value);
+            */
+            time_exec = match time_exec.checked_sub(Duration::from_secs_f64(value)) {
+                Some(new_time_exec) => new_time_exec,
+                None => {
+                    println!(
+                        "Time exec overflow: {:?}, {:?}",
+                        time_exec,
+                        Duration::from_secs_f64(value)
+                    );
+                    Duration::from_secs(0)
+                }
+            };
         }
         // Size ignored for now because we saw that it doesn't change a lot
         // results
