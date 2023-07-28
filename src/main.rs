@@ -13,7 +13,7 @@ mod sc_generation;
 
 fn main() {
     let args = args::Args::parse();
-    let nb_scs_by_abi: u32 = args.nb_scs_by_abi.unwrap_or(100);
+    let nb_scs_by_abi: u32 = args.nb_scs_by_abi.unwrap_or(1);
     let nb_wasm_scs = 0;
 
     let npm_path = which("npm").expect("npm not found in PATH");

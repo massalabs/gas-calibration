@@ -1905,7 +1905,7 @@ dependencies = [
 [[package]]
 name = "massa-proto-rs"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa-proto-rs?branch=feature/Improve_ABI_types_in_wasmv1#b1c4d97e905b2abad8e4fe3867789e8d482a8791"
+source = "git+https://github.com/massalabs/massa-proto-rs?rev=32179e2#32179e291bb1ad521d362390318d7dad80c04026"
 dependencies = [
  "glob",
  "prost",
@@ -1918,7 +1918,7 @@ dependencies = [
 [[package]]
 name = "massa-sc-runtime"
 version = "0.10.0"
-source = "git+https://github.com/massalabs/massa-sc-runtime?branch=feature/Improve_ABI_types_in_wasmv1#7125e65f79421a5512ff20d79e229910233ca4bd"
+source = "git+https://github.com/massalabs/massa-sc-runtime?branch=main#7ca196a04c4bfd62a96892df5832c5e338e86533"
 dependencies = [
  "anyhow",
  "as-ffi-bindings",
@@ -1952,8 +1952,8 @@ dependencies = [
 
 [[package]]
 name = "massa_async_pool"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "massa-proto-rs",
  "massa_db_exports",
@@ -1972,8 +1972,8 @@ dependencies = [
 
 [[package]]
 name = "massa_channel"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "crossbeam",
  "prometheus",
@@ -1982,8 +1982,8 @@ dependencies = [
 
 [[package]]
 name = "massa_cipher"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "aes-gcm",
  "displaydoc",
@@ -1995,8 +1995,8 @@ dependencies = [
 
 [[package]]
 name = "massa_db_exports"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "displaydoc",
  "massa_hash",
@@ -2008,8 +2008,8 @@ dependencies = [
 
 [[package]]
 name = "massa_db_worker"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "lsmtree",
  "massa_db_exports",
@@ -2022,8 +2022,8 @@ dependencies = [
 
 [[package]]
 name = "massa_executed_ops"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "massa_db_exports",
  "massa_hash",
@@ -2035,8 +2035,8 @@ dependencies = [
 
 [[package]]
 name = "massa_execution_exports"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "displaydoc",
  "massa-proto-rs",
@@ -2059,8 +2059,8 @@ dependencies = [
 
 [[package]]
 name = "massa_execution_worker"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "anyhow",
  "blake3",
@@ -2083,6 +2083,7 @@ dependencies = [
  "massa_module_cache",
  "massa_pos_exports",
  "massa_pos_worker",
+ "massa_serialization",
  "massa_signature",
  "massa_storage",
  "massa_time",
@@ -2101,8 +2102,8 @@ dependencies = [
 
 [[package]]
 name = "massa_final_state"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "bs58",
  "displaydoc",
@@ -2127,8 +2128,8 @@ dependencies = [
 
 [[package]]
 name = "massa_hash"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "blake3",
  "bs58",
@@ -2143,8 +2144,8 @@ dependencies = [
 
 [[package]]
 name = "massa_ledger_exports"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "displaydoc",
  "massa-proto-rs",
@@ -2162,8 +2163,8 @@ dependencies = [
 
 [[package]]
 name = "massa_ledger_worker"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "massa_db_exports",
  "massa_db_worker",
@@ -2177,8 +2178,8 @@ dependencies = [
 
 [[package]]
 name = "massa_metrics"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "hyper",
  "lazy_static",
@@ -2190,8 +2191,8 @@ dependencies = [
 
 [[package]]
 name = "massa_models"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "bitvec",
  "bs58",
@@ -2216,8 +2217,8 @@ dependencies = [
 
 [[package]]
 name = "massa_module_cache"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "anyhow",
  "displaydoc",
@@ -2237,8 +2238,8 @@ dependencies = [
 
 [[package]]
 name = "massa_pos_exports"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "bitvec",
  "crossbeam-channel",
@@ -2260,8 +2261,8 @@ dependencies = [
 
 [[package]]
 name = "massa_pos_worker"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "massa_hash",
  "massa_models",
@@ -2275,8 +2276,8 @@ dependencies = [
 
 [[package]]
 name = "massa_serialization"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "displaydoc",
  "nom",
@@ -2287,8 +2288,8 @@ dependencies = [
 
 [[package]]
 name = "massa_signature"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "bs58",
  "displaydoc",
@@ -2304,8 +2305,8 @@ dependencies = [
 
 [[package]]
 name = "massa_storage"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "massa_metrics",
  "massa_models",
@@ -2314,10 +2315,11 @@ dependencies = [
 
 [[package]]
 name = "massa_time"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "displaydoc",
+ "massa-proto-rs",
  "massa_serialization",
  "nom",
  "serde",
@@ -2327,8 +2329,8 @@ dependencies = [
 
 [[package]]
 name = "massa_versioning"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "machine",
  "massa-proto-rs",
@@ -2348,8 +2350,8 @@ dependencies = [
 
 [[package]]
 name = "massa_wallet"
-version = "0.24.0"
-source = "git+https://github.com/massalabs/massa?branch=runtime-changes-common#de74bbfa02d981775db9e7eef2fe2215f0aff3d2"
+version = "0.25.0"
+source = "git+https://github.com/massalabs/massa?branch=testnet_25#32d8a1741ab0a25fa21bc9b838dcdccb80382348"
 dependencies = [
  "displaydoc",
  "massa_cipher",
