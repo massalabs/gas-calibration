@@ -28,6 +28,10 @@ mod create_sc;
 mod delete_ds_entry;
 mod div_rem_native_amount;
 mod ds_entry_exists;
+mod evm_get_address_from_pubkey;
+mod evm_get_pubkey_from_signature;
+mod evm_verify_signature;
+mod function_exists;
 mod generate_event;
 mod get_address_category;
 mod get_address_version;
@@ -49,6 +53,8 @@ mod get_signature_version;
 mod hash_blake3;
 mod hash_keccak256;
 mod hash_sha256;
+mod is_address_eoa;
+mod local_call;
 mod local_execution;
 mod native_amount_from_string;
 mod native_amount_to_string;
@@ -61,8 +67,8 @@ mod set_ds_value;
 mod sub_native_amount;
 mod transfer_coins;
 mod unsafe_random;
-mod verify_evm_signature;
 mod verify_signature;
+
 pub use abort::generate_abi_abort;
 pub use add_native_amount::generate_abi_add_native_amount;
 pub use address_from_public_key::generate_abi_address_from_public_key;
@@ -88,6 +94,10 @@ pub use create_sc::generate_abi_create_sc;
 pub use delete_ds_entry::generate_abi_delete_ds_entry;
 pub use div_rem_native_amount::generate_abi_div_rem_native_amount;
 pub use ds_entry_exists::generate_abi_ds_entry_exists;
+pub use evm_get_address_from_pubkey::generate_abi_evm_get_address_from_pubkey;
+pub use evm_get_pubkey_from_signature::generate_abi_evm_get_pubkey_from_signature;
+pub use evm_verify_signature::generate_abi_evm_verify_signature;
+pub use function_exists::generate_abi_function_exists;
 pub use generate_event::generate_abi_generate_event;
 pub use get_address_category::generate_abi_get_address_category;
 pub use get_address_version::generate_abi_get_address_version;
@@ -109,6 +119,8 @@ pub use get_signature_version::generate_abi_get_signature_version;
 pub use hash_blake3::generate_abi_hash_blake3;
 pub use hash_keccak256::generate_abi_hash_keccak256;
 pub use hash_sha256::generate_abi_hash_sha256;
+pub use is_address_eoa::generate_abi_is_address_eoa;
+pub use local_call::generate_abi_local_call;
 pub use local_execution::generate_abi_local_execution;
 pub use native_amount_from_string::generate_abi_native_amount_from_string;
 pub use native_amount_to_string::generate_abi_native_amount_to_string;
@@ -121,7 +133,6 @@ pub use set_ds_value::generate_abi_set_ds_value;
 pub use sub_native_amount::generate_abi_sub_native_amount;
 pub use transfer_coins::generate_abi_transfer_coins;
 pub use unsafe_random::generate_abi_unsafe_random;
-pub use verify_evm_signature::generate_abi_verify_evm_signature;
 pub use verify_signature::generate_abi_verify_signature;
 
 pub fn generate_string(length: usize) -> String {
@@ -1033,8 +1044,12 @@ fn generate_signature() -> String {
     keypair.sign(&msg_hash).unwrap().to_string()
 }
 
-fn static_evm_triplet() -> (Vec<u8>, Vec<u8>, Vec<u8>) {
+fn static_evm_quadruplet() -> (Vec<u8>, Vec<u8>, Vec<u8>, Vec<u8>) {
     let message = b"test";
+    let hash = [
+        74, 92, 93, 69, 71, 33, 187, 187, 37, 84, 12, 51, 23, 82, 30, 113, 195, 115, 174, 54, 69,
+        143, 150, 13, 42, 212, 110, 240, 136, 17, 14, 149,
+    ];
     let signature = [
         208, 208, 92, 53, 8, 6, 53, 181, 232, 101, 0, 108, 108, 79, 91, 93, 69, 126, 195, 66, 86,
         77, 143, 198, 124, 228, 14, 220, 38, 76, 205, 171, 63, 47, 54, 107, 91, 209, 227, 133, 130,
@@ -1042,10 +1057,15 @@ fn static_evm_triplet() -> (Vec<u8>, Vec<u8>, Vec<u8>) {
         245, 214, 142, 245, 27,
     ];
     let public_key = [
-        4, 242, 192, 4, 239, 171, 3, 90, 235, 89, 176, 251, 75, 242, 14, 65, 253, 71, 177, 105, 0,
+        242, 192, 4, 239, 171, 3, 90, 235, 89, 176, 251, 75, 242, 14, 65, 253, 71, 177, 105, 0,
         111, 117, 57, 248, 100, 223, 210, 100, 6, 122, 58, 123, 252, 232, 199, 170, 56, 251, 37,
         74, 97, 93, 193, 95, 18, 147, 233, 195, 248, 196, 141, 114, 17, 114, 13, 138, 233, 242,
         105, 9, 142, 173, 144, 14,
     ];
-    (message.to_vec(), signature.to_vec(), public_key.to_vec())
+    (
+        hash.to_vec(),
+        message.to_vec(),
+        signature.to_vec(),
+        public_key.to_vec(),
+    )
 }

@@ -1,7 +1,7 @@
-use super::static_evm_triplet;
+use super::static_evm_quadruplet;
 
-pub fn generate_abi_verify_evm_signature(calls: &mut Vec<String>) {
-    let (message, signature, public_key) = static_evm_triplet();
+pub fn generate_abi_evm_verify_signature(calls: &mut Vec<String>) {
+    let (_hash, message, signature, public_key) = static_evm_quadruplet();
     calls.push(format!(
         "{{let message = new Uint8Array({});
         message.set({:?});
@@ -9,7 +9,7 @@ pub fn generate_abi_verify_evm_signature(calls: &mut Vec<String>) {
         signature.set({:?});
         let public_key = new Uint8Array({});
         public_key.set({:?});
-        env.verify_evm_signature(message, signature, public_key);}}",
+        env.evm_verify_signature(message, signature, public_key);}}",
         message.len(),
         message,
         signature.len(),

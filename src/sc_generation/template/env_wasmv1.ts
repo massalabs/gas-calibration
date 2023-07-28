@@ -14,15 +14,15 @@ export namespace env {
   // @ts-ignore: decorator
   @external("massa", "abi_get_ds_value")
   export declare function abi_get_ds_value(arg: ArrayBuffer): ArrayBuffer;
-
+  
   // @ts-ignore: decorator
   @external("massa", "abi_delete_ds_entry")
   export declare function abi_delete_ds_entry(arg: ArrayBuffer): ArrayBuffer;
-
+  
   // @ts-ignore: decorator
   @external("massa", "abi_append_ds_value")
   export declare function abi_append_ds_value(arg: ArrayBuffer): ArrayBuffer;
-
+  
   // @ts-ignore: decorator
   @external("massa", "abi_ds_entry_exists")
   export declare function abi_ds_entry_exists(arg: ArrayBuffer): ArrayBuffer;
@@ -50,11 +50,11 @@ export namespace env {
   // @ts-ignore: decorator
   @external("massa", "abi_op_entry_exists")
   export declare function abi_op_entry_exists(arg: ArrayBuffer): ArrayBuffer;
-
+  
   // @ts-ignore: decorator
   @external("massa", "abi_get_op_data")
   export declare function abi_get_op_data(arg: ArrayBuffer): ArrayBuffer;
-
+  
   // @ts-ignore: decorator
   @external("massa", "abi_call")
   export declare function abi_call(arg: ArrayBuffer): ArrayBuffer;
@@ -92,8 +92,20 @@ export namespace env {
   export declare function abi_hash_blake3(arg: ArrayBuffer): ArrayBuffer;
   
   // @ts-ignore: decorator
-  @external("massa", "abi_verify_evm_signature")
-  export declare function abi_verify_evm_signature(arg: ArrayBuffer): ArrayBuffer;
+  @external("massa", "abi_evm_verify_signature")
+  export declare function abi_evm_verify_signature(arg: ArrayBuffer): ArrayBuffer;
+  
+  // @ts-ignore: decorator
+  @external("massa", "abi_evm_get_address_from_pubkey")
+  export declare function abi_evm_get_address_from_pubkey(arg: ArrayBuffer): ArrayBuffer;
+  
+  // @ts-ignore: decorator
+  @external("massa", "abi_evm_get_pubkey_from_signature")
+  export declare function abi_evm_get_pubkey_from_signature(arg: ArrayBuffer): ArrayBuffer;
+  
+  // @ts-ignore: decorator
+  @external("massa", "abi_is_address_eoa")
+  export declare function abi_is_address_eoa(arg: ArrayBuffer): ArrayBuffer;
   
   // @ts-ignore: decorator
   @external("massa", "abi_get_remaining_gas")
@@ -130,11 +142,11 @@ export namespace env {
   // @ts-ignore: decorator
   @external("massa", "abi_get_origin_operation_id")
   export declare function abi_get_origin_operation_id(arg: ArrayBuffer): ArrayBuffer;
-
+  
   // @ts-ignore: decorator
   @external("massa", "abi_local_execution")
   export declare function abi_local_execution(arg: ArrayBuffer): ArrayBuffer;
-
+  
   // @ts-ignore: decorator
   @external("massa", "abi_caller_has_write_access")
   export declare function abi_caller_has_write_access(arg: ArrayBuffer): ArrayBuffer;
@@ -246,7 +258,16 @@ export namespace env {
   // @ts-ignore: decorator
   @external("massa", "abi_verify_signature")
   export declare function abi_verify_signature(arg: ArrayBuffer): ArrayBuffer;
-// */
+  
+  // @ts-ignore: decorator
+  @external("massa", "abi_local_call")
+  export declare function abi_local_call(arg: ArrayBuffer): ArrayBuffer;
+  
+  // @ts-ignore: decorator
+  @external("massa", "abi_function_exists")
+  export declare function abi_function_exists(arg: ArrayBuffer): ArrayBuffer;
+
+  // */
   
   // ***************************************************************************
   // utility functions
@@ -370,6 +391,36 @@ export namespace env {
     return resp.data;
   }
   
+  // ABI to local call another SC
+  export function localCall(
+    address: string,
+    func_name: string,
+    arg: Uint8Array
+  ): Uint8Array {
+    // Reuse the protobuf CallRequest message with the coins field set to null
+    const req = new proto.CallRequest(address, func_name, arg, null);
+    const req_bytes = proto.encodeCallRequest(req);
+    const resp_bytes = Uint8Array.wrap(
+      abi_local_call(encode_length_prefixed(req_bytes).buffer)
+    );
+    const resp = proto.decodeCallResponse(resp_bytes);
+    return resp.data;
+  }
+  
+  export function functionExists(address: string, func: string): bool {
+    const req = new proto.FunctionExistsRequest(address, func);
+    const req_bytes = proto.encodeFunctionExistsRequest(req);
+    const resp_bytes = Uint8Array.wrap(
+      abi_function_exists(encode_length_prefixed(req_bytes).buffer)
+    );
+    const resp = proto.decodeAbiResponse(resp_bytes);
+    assert(resp.error === null, resp.error!.message);
+    assert(resp.res !== null);
+    assert(resp.res!.functionExistsResult !== null);
+  
+    return resp.res!.functionExistsResult!.exists;
+  }
+  
   // ABI to create a new SC
   export function create_sc(bytecode: Uint8Array): string {
     const req = new proto.CreateScRequest(bytecode);
@@ -379,32 +430,76 @@ export namespace env {
     );
     const resp = proto.decodeAbiResponse(resp_bytes);
   
-    assert(
-      resp.error === null,
-      "Failed to create smart contract: " + resp.error!.message
-    );
-    assert(resp.res !== null, "response is null");
-    assert(resp.res!.createScResult !== null, "createScResult is null");
-    assert(resp.res!.createScResult!.scAddress !== "", "scAddress is empty");
+    assert(resp.error === null, resp.error!.message);
+    assert(resp.res !== null);
+    assert(resp.res!.createScResult !== null);
+    assert(resp.res!.createScResult!.scAddress !== "");
   
     return resp.res!.createScResult!.scAddress;
   }
-  
-  export function verify_evm_signature(
+
+  export function evm_verify_signature(
     sig: Uint8Array,
     message: Uint8Array,
     pub_key: Uint8Array
   ): bool {
-    const req = new proto.VerifyEvmSigRequest(sig, message, pub_key);
-    const req_bytes = proto.encodeVerifyEvmSigRequest(req);
+    const req = new proto.EvmVerifySigRequest(sig, message, pub_key);
+    const req_bytes = proto.encodeEvmVerifySigRequest(req);
     const resp_bytes = Uint8Array.wrap(
-      abi_verify_evm_signature(encode_length_prefixed(req_bytes).buffer)
+      abi_evm_verify_signature(encode_length_prefixed(req_bytes).buffer)
     );
     const resp = proto.decodeAbiResponse(resp_bytes);
     assert(resp.error === null);
     assert(resp.res !== null);
-    assert(resp.res!.verifyEvmSigResult !== null);
-    return resp.res!.verifyEvmSigResult!.isVerified;
+    assert(resp.res!.evmVerifySigResult !== null);
+    return resp.res!.evmVerifySigResult!.isVerified;
+  }
+  
+  export function evm_get_address_from_pubkey(
+    pub_key: Uint8Array
+  ): Uint8Array {
+    const req = new proto.EvmGetAddressFromPubkeyRequest(pub_key);
+    const req_bytes = proto.encodeEvmGetAddressFromPubkeyRequest(req);
+    const resp_bytes = Uint8Array.wrap(
+      abi_evm_get_address_from_pubkey(encode_length_prefixed(req_bytes).buffer)
+    );
+    const resp = proto.decodeAbiResponse(resp_bytes);
+    assert(resp.error === null);
+    assert(resp.res !== null);
+    assert(resp.res!.evmGetAddressFromPubkeyResult !== null);
+    return resp.res!.evmGetAddressFromPubkeyResult!.address;
+  }
+  
+  export function evm_get_pubkey_from_signature(
+    hash: Uint8Array,
+    sig: Uint8Array
+  ): Uint8Array {
+    const req = new proto.EvmGetPubkeyFromSignatureRequest(hash, sig);
+    const req_bytes = proto.encodeEvmGetPubkeyFromSignatureRequest(req);
+    const resp_bytes = Uint8Array.wrap(
+      abi_evm_get_pubkey_from_signature(encode_length_prefixed(req_bytes).buffer)
+    );
+    const resp = proto.decodeAbiResponse(resp_bytes);
+    assert(resp.error === null);
+    assert(resp.res !== null);
+    assert(resp.res!.evmGetPubkeyFromSignatureResult !== null);
+    return resp.res!.evmGetPubkeyFromSignatureResult!.pubKey;
+  }
+  
+  
+  export function is_address_eoa(
+    address: string,
+  ): bool {
+    const req = new proto.IsAddressEoaRequest(address);
+    const req_bytes = proto.encodeIsAddressEoaRequest(req);
+    const resp_bytes = Uint8Array.wrap(
+      abi_is_address_eoa(encode_length_prefixed(req_bytes).buffer)
+    );
+    const resp = proto.decodeAbiResponse(resp_bytes);
+    assert(resp.error === null);
+    assert(resp.res !== null);
+    assert(resp.res!.isAddressEoaResult !== null);
+    return resp.res!.isAddressEoaResult!.isEoa;
   }
   
   export function get_remaining_gas(): u64 {
@@ -628,7 +723,10 @@ export namespace env {
     key: Uint8Array,
     optional_address: string | null
   ): Uint8Array {
-    const req = new proto.GetDsValueRequest(key, makeStringValue(optional_address));
+    const req = new proto.GetDsValueRequest(
+      key,
+      makeStringValue(optional_address)
+    );
     const req_bytes = proto.encodeGetDsValueRequest(req);
     const resp_bytes = Uint8Array.wrap(
       abi_get_ds_value(encode_length_prefixed(req_bytes).buffer)
@@ -673,15 +771,21 @@ export namespace env {
     key: Uint8Array,
     optional_address: string | null
   ): bool {
-    const req = new proto.DsEntryExistsRequest(key, makeStringValue(optional_address));
+    const req = new proto.DsEntryExistsRequest(
+      key,
+      makeStringValue(optional_address)
+    );
     const req_bytes = proto.encodeDsEntryExistsRequest(req);
-    const resp_bytes = Uint8Array.wrap(abi_ds_entry_exists(encode_length_prefixed(req_bytes).buffer));
+    const resp_bytes = Uint8Array.wrap(
+      abi_ds_entry_exists(encode_length_prefixed(req_bytes).buffer)
+    );
   
     const resp = proto.decodeAbiResponse(resp_bytes);
   
     assert(resp.error === null);
     assert(resp.res !== null);
     assert(resp.res!.dsEntryExistsResult !== null);
+  
     return resp.res!.dsEntryExistsResult!.hasData;
   }
   
@@ -955,10 +1059,11 @@ export namespace env {
     const resp = proto.decodeAbiResponse(resp_bytes);
     assert(resp.error === null, resp.error!.message);
     assert(resp.res !== null);
+    assert(resp.res!.scalarMulNativeAmountResult !== null);
     assert(
-      resp.res!.scalarMulNativeAmountResult !== null
+      resp.res!.scalarMulNativeAmountResult!.product !== null,
+      "product null"
     );
-    assert(resp.res!.scalarMulNativeAmountResult!.product !== null, "product null");
     return resp.res!.scalarMulNativeAmountResult!.product!;
   }
   
