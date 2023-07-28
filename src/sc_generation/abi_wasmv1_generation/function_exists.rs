@@ -21,9 +21,6 @@ pub fn generate_abi_function_exists(
         *call_already_prep = true;
     }
 
-    let call = format!(
-        "env.functionExists(\"{}\", \"main\");",
-        address_sc
-    );
+    let call = format!("env.functionExists(\"{}\", \"main\");", address_sc);
     calls.push(call);
 }
