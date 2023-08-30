@@ -14,10 +14,10 @@ rayon = "1.5.3"
 ndarray = { version="0.15", features = ["approx-0_5"] }
 serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
 pbr = { git = "https://github.com/a8m/pb" }
-massa-sc-runtime = { git = "https://github.com/massalabs/massa-sc-runtime", branch = "main", features = ["gas_calibration"] }
-massa-models = { git = "https://github.com/massalabs/massa", package = "massa_models", branch = "testnet_25" }
-massa-hash = { git = "https://github.com/massalabs/massa", package = "massa_hash", branch = "testnet_25" }
-massa-signature = { git = "https://github.com/massalabs/massa", package = "massa_signature", branch = "testnet_25" }
-massa-execution-worker = { git = "https://github.com/massalabs/massa", package = "massa_execution_worker", branch = "testnet_25", features = ["gas_calibration"] }
+massa-sc-runtime = { git = "https://github.com/massalabs/massa-sc-runtime", branch = "varint_to_fixed", features = ["gas_calibration"] }
+massa-models = { git = "https://github.com/massalabs/massa", package = "massa_models", branch = "varint_to_fixed" }
+massa-hash = { git = "https://github.com/massalabs/massa", package = "massa_hash", branch = "varint_to_fixed" }
+massa-signature = { git = "https://github.com/massalabs/massa", package = "massa_signature", branch = "varint_to_fixed" }
+massa-execution-worker = { git = "https://github.com/massalabs/massa", package = "massa_execution_worker", branch = "varint_to_fixed", features = ["gas_calibration"] }
 rand = "0.8.5"
 which = "4.4.0"

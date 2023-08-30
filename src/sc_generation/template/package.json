@@ -17,6 +17,6 @@
   },
   "dependencies": {
     "as-proto": "^1.3.0",
-    "massa-proto-as": "github:massalabs/massa-proto-as#feature/Improve_ABI_types_in_wasmv1"
+    "massa-proto-as": "github:massalabs/massa-proto-as#varint_to_fixed"
   }
 }
