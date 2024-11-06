@@ -1,5 +1,6 @@
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::{Read, Write};
+use std::path::Path;
 use std::process::Command;
 
 use massa_models::datastore::Datastore;
@@ -117,12 +118,13 @@ export function main(_args: ArrayBuffer): ArrayBuffer {{
         calls.join("\n")
     );
     let mut output = File::create("./src/sc_generation/template/index.ts").unwrap();
+
+    let output_dir = Path::new("./src/sc_generation/template/build");
+    fs::create_dir_all(output_dir).unwrap();
+
     write!(output, "{}", template_index).unwrap();
-    let mut src = File::create(format!(
-        "./src/sc_generation/template/build/SC_{}.ts",
-        file_name
-    ))
-    .unwrap();
+    let sc_filename = format!("SC_{}.ts", file_name);
+    let mut src = File::create(output_dir.join(sc_filename)).unwrap();
     write!(src, "{}", template_index).unwrap();
 }
 

@@ -2,7 +2,7 @@ use std::{collections::HashMap, io::Read, str::FromStr, time::Duration};
 
 use massa_execution_worker::InterfaceImpl;
 use massa_models::{address::Address, datastore::Datastore};
-use massa_sc_runtime::{run_main_gc, Compiler, CondomLimits, GasCosts, Interface, RuntimeModule};
+use massa_sc_runtime::{run_main_gc, Compiler, CondomLimits, GasCosts, RuntimeModule};
 //use rand::Rng;
 use std::fs::File;
 
@@ -54,10 +54,10 @@ pub fn execute_batch_sc(
     for (preparation_bytecode, bytecode) in bytecodes {
         //let mut rng = rand::thread_rng();
         //let need_compile = rng.gen_bool(0.5);
-        let interface: Box<dyn Interface> = Box::new(InterfaceImpl::new_default(
+        let interface = InterfaceImpl::new_default(
             Address::from_str("AS12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M").unwrap(),
             Some(op_datastore.clone()),
-        ));
+        );
 
         if let Some(preparation_bytecode) = preparation_bytecode {
             run_main_gc(
