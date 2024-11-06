@@ -2,7 +2,7 @@ use std::{collections::HashMap, io::Read, str::FromStr, time::Duration};
 
 use massa_execution_worker::InterfaceImpl;
 use massa_models::{address::Address, datastore::Datastore};
-use massa_sc_runtime::{run_main_gc, Compiler, GasCosts, RuntimeModule};
+use massa_sc_runtime::{run_main_gc, Compiler, CondomLimits, GasCosts, Interface, RuntimeModule};
 //use rand::Rng;
 use std::fs::File;
 
@@ -54,31 +54,46 @@ pub fn execute_batch_sc(
     for (preparation_bytecode, bytecode) in bytecodes {
         //let mut rng = rand::thread_rng();
         //let need_compile = rng.gen_bool(0.5);
-        let interface = InterfaceImpl::new_default(
+        let interface: Box<dyn Interface> = Box::new(InterfaceImpl::new_default(
             Address::from_str("AS12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M").unwrap(),
             Some(op_datastore.clone()),
-        );
+        ));
+
         if let Some(preparation_bytecode) = preparation_bytecode {
             run_main_gc(
                 &interface,
                 RuntimeModule::new(
                     &preparation_bytecode,
-                    u64::MAX,
                     GasCosts::default(),
                     Compiler::CL,
+                    CondomLimits::default(),
                 )
                 .unwrap(),
                 &[],
                 u64::MAX,
                 GasCosts::default(),
+                CondomLimits::default(),
             )
             .unwrap();
         }
         //let (start, results) = if need_compile {
-        let module =
-            RuntimeModule::new(&bytecode, u64::MAX, GasCosts::default(), Compiler::CL).unwrap();
+        let module = RuntimeModule::new(
+            &bytecode,
+            GasCosts::default(),
+            Compiler::CL,
+            CondomLimits::default(),
+        )
+        .unwrap();
         let start = std::time::Instant::now();
-        let results = run_main_gc(&interface, module, &[], u64::MAX, GasCosts::default()).unwrap();
+        let results = run_main_gc(
+            &interface,
+            module,
+            &[],
+            u64::MAX,
+            GasCosts::default(),
+            CondomLimits::default(),
+        )
+        .unwrap();
 
         //println!("Results:");
         /*println!("");
