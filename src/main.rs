@@ -13,7 +13,8 @@ mod sc_generation;
 
 fn main() {
     let args = args::Args::parse();
-    let nb_scs_by_abi: u32 = args.nb_scs_by_abi.unwrap_or(100);
+    // let nb_scs_by_abi: u32 = args.nb_scs_by_abi.unwrap_or(100);
+    let nb_scs_by_abi: u32 = args.nb_scs_by_abi.unwrap_or(1);
     let nb_wasm_scs = 0;
 
     let npm_path = which("npm").expect("npm not found in PATH");
@@ -31,23 +32,24 @@ fn main() {
 
     let env_path = args
         .as_sdk_env_path
-        .unwrap_or(String::from("./src/sc_generation/template/env_wasmv1.ts"));
+        .unwrap_or(String::from("./src/sc_generation/template/env.ts"));
+    // .unwrap_or(String::from("./src/sc_generation/template/env_wasmv1.ts"));
     // Copy the env file to the current directory
     //TODO: Improve
     std::fs::copy(
-        "./src/sc_generation/template/env_wasmv1.ts",
-        "./src/sc_generation/template/env_wasmv1.ts.bak",
+        "./src/sc_generation/template/env.ts",
+        "./src/sc_generation/template/env.ts.bak",
     )
     .unwrap();
-    //std::fs::copy(env_path.clone(), "./src/sc_generation/template/env.ts").unwrap();
+    // std::fs::copy(env_path.clone(), "./src/sc_generation/template/env.ts").unwrap();
     let abis = sc_generation::abis::get_abis(&env_path);
     if args.only_generate {
         let datastore = sc_generation::generation::generate_op_datastore();
         //let datastore = sc_generation::read_existing_op_datastore();
         sc_generation::generate_scs(nb_scs_by_abi, 300, datastore.clone(), &env_path);
         std::fs::copy(
-            "./src/sc_generation/template/env_wasmv1.ts.bak",
-            "./src/sc_generation/template/env_wasmv1.ts",
+            "./src/sc_generation/template/env.ts.bak",
+            "./src/sc_generation/template/env.ts",
         )
         .unwrap();
         return;
@@ -64,8 +66,8 @@ fn main() {
         datastore
     };
     std::fs::copy(
-        "./src/sc_generation/template/env_wasmv1.ts.bak",
-        "./src/sc_generation/template/env_wasmv1.ts",
+        "./src/sc_generation/template/env.ts.bak",
+        "./src/sc_generation/template/env.ts",
     )
     .unwrap();
     let mut full_results: HashMap<String, Vec<f64>> = HashMap::new();

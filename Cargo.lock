@@ -1967,9 +1967,9 @@ dependencies = [
 
 [[package]]
 name = "itertools"
-version = "0.12.1"
+version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ba291022dbbd398a455acf126c1e341954079855bc60dfdda641363bd6922569"
+checksum = "413ee7dfc52ee1a4949ceeb7dbc8a33f2d6c088194d9f922fb8318faf1f01186"
 dependencies = [
  "either",
 ]
@@ -2237,7 +2237,7 @@ dependencies = [
 [[package]]
 name = "massa-proto-rs"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa-proto-rs?rev=b5267178eaf266ec724691d7de163e4c34343416#b5267178eaf266ec724691d7de163e4c34343416"
+source = "git+https://github.com/massalabs/massa-proto-rs.git?rev=b5267178eaf266ec724691d7de163e4c34343416#b5267178eaf266ec724691d7de163e4c34343416"
 dependencies = [
  "glob",
  "prost",
@@ -2286,7 +2286,7 @@ dependencies = [
 [[package]]
 name = "massa_async_pool"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "massa-proto-rs",
  "massa_db_exports",
@@ -2305,7 +2305,7 @@ dependencies = [
 [[package]]
 name = "massa_channel"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "crossbeam",
  "prometheus",
@@ -2315,7 +2315,7 @@ dependencies = [
 [[package]]
 name = "massa_cipher"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "aes-gcm",
  "displaydoc",
@@ -2327,7 +2327,7 @@ dependencies = [
 [[package]]
 name = "massa_db_exports"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "displaydoc",
  "massa_hash",
@@ -2339,7 +2339,7 @@ dependencies = [
 [[package]]
 name = "massa_db_worker"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "massa_db_exports",
  "massa_hash",
@@ -2352,7 +2352,7 @@ dependencies = [
 [[package]]
 name = "massa_deferred_calls"
 version = "2.2.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "massa-proto-rs",
  "massa_db_exports",
@@ -2368,7 +2368,7 @@ dependencies = [
 [[package]]
 name = "massa_executed_ops"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "massa_db_exports",
  "massa_models",
@@ -2379,7 +2379,7 @@ dependencies = [
 [[package]]
 name = "massa_execution_exports"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "displaydoc",
  "massa-proto-rs",
@@ -2403,7 +2403,7 @@ dependencies = [
 [[package]]
 name = "massa_execution_worker"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "anyhow",
  "blake3",
@@ -2448,7 +2448,7 @@ dependencies = [
 [[package]]
 name = "massa_final_state"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "anyhow",
  "bs58",
@@ -2481,7 +2481,7 @@ dependencies = [
 [[package]]
 name = "massa_hash"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "blake3",
  "bs58",
@@ -2495,7 +2495,7 @@ dependencies = [
 [[package]]
 name = "massa_ledger_exports"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "displaydoc",
  "massa-proto-rs",
@@ -2516,7 +2516,7 @@ dependencies = [
 [[package]]
 name = "massa_ledger_worker"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "massa_db_exports",
  "massa_db_worker",
@@ -2531,7 +2531,7 @@ dependencies = [
 [[package]]
 name = "massa_metrics"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "hyper 0.14.31",
  "lazy_static",
@@ -2543,7 +2543,7 @@ dependencies = [
 [[package]]
 name = "massa_models"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "bitvec",
  "bs58",
@@ -2570,7 +2570,7 @@ dependencies = [
 [[package]]
 name = "massa_module_cache"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "anyhow",
  "displaydoc",
@@ -2591,7 +2591,7 @@ dependencies = [
 [[package]]
 name = "massa_pos_exports"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "bitvec",
  "crossbeam-channel",
@@ -2615,7 +2615,7 @@ dependencies = [
 [[package]]
 name = "massa_pos_worker"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "massa_hash",
  "massa_models",
@@ -2630,7 +2630,7 @@ dependencies = [
 [[package]]
 name = "massa_serialization"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "displaydoc",
  "nom",
@@ -2642,7 +2642,7 @@ dependencies = [
 [[package]]
 name = "massa_signature"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "bs58",
  "displaydoc",
@@ -2659,7 +2659,7 @@ dependencies = [
 [[package]]
 name = "massa_storage"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "massa_metrics",
  "massa_models",
@@ -2669,7 +2669,7 @@ dependencies = [
 [[package]]
 name = "massa_time"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "displaydoc",
  "massa-proto-rs",
@@ -2683,7 +2683,7 @@ dependencies = [
 [[package]]
 name = "massa_versioning"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "machine",
  "massa-proto-rs",
@@ -2705,7 +2705,7 @@ dependencies = [
 [[package]]
 name = "massa_wallet"
 version = "2.3.0"
-source = "git+https://github.com/massalabs/massa?branch=deferred_calls#1ef9d71aa8f7a6fd2f658619ec10dd0fe896473c"
+source = "git+https://github.com/massalabs/massa?branch=deferred_calls#dd31e596b2d820a4fa4725aa2d384ae0c4be5d4d"
 dependencies = [
  "displaydoc",
  "massa_cipher",
@@ -3443,7 +3443,7 @@ checksum = "0c1318b19085f08681016926435853bbf7858f9c082d0999b80550ff5d9abe15"
 dependencies = [
  "bytes",
  "heck",
- "itertools 0.12.1",
+ "itertools 0.13.0",
  "log",
  "multimap",
  "once_cell",
@@ -3463,7 +3463,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e9552f850d5f0964a4e4d0bf306459ac29323ddfbae05e35a7c0d35cb0803cc5"
 dependencies = [
  "anyhow",
- "itertools 0.12.1",
+ "itertools 0.13.0",
  "proc-macro2 1.0.89",
  "quote 1.0.37",
  "syn 2.0.87",

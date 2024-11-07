@@ -4,7 +4,8 @@ use massa_models::datastore::Datastore;
 use rand::Rng;
 use std::io::Write;
 
-use super::abi_wasmv1_generation::*;
+// use super::abi_wasmv1_generation::*;
+use super::abi_generation::*;
 
 fn static_address() -> String {
     // Secret key: S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY
@@ -99,11 +100,14 @@ pub fn generate_calls(
             "abi_hash_blake3" => generate_abi_hash_blake3(&mut calls),
             "abi_get_remaining_gas" => generate_abi_get_remaining_gas(&mut calls),
             "abi_get_owned_addresses" => generate_abi_get_owned_addresses(&mut calls),
+            // "abi_get_deferred_call_quote" => generate_abi_deferred_call_quote(&mut calls),
             "abi_get_call_stack" => generate_abi_get_call_stack(&mut calls),
             "abi_address_from_public_key" => generate_abi_address_from_public_key(&mut calls),
             "abi_unsafe_random" => generate_abi_unsafe_random(&mut calls),
             "abi_get_call_coins" => generate_abi_get_call_coins(&mut calls),
-            "abi_get_native_time" => generate_abi_get_native_time(&mut calls),
+            "abi_get_native_time" => {
+                // generate_abi_get_native_time(&mut calls)
+            }
             "abi_send_async_message" => generate_abi_send_async_message(&address_sc, &mut calls),
             "abi_get_origin_operation_id" => generate_abi_get_origin_operation_id(&mut calls),
             "abi_local_execution" => {
@@ -129,16 +133,26 @@ pub fn generate_calls(
             "abi_get_address_version" => generate_abi_get_address_version(&mut calls),
             "abi_get_pubkey_version" => generate_abi_get_pubkey_version(&mut calls),
             "abi_get_signature_version" => generate_abi_get_signature_version(&mut calls),
-            "abi_checked_add_native_time" => generate_abi_checked_add_native_time(&mut calls),
-            "abi_checked_sub_native_time" => generate_abi_checked_sub_native_time(&mut calls),
-            "abi_checked_mul_native_time" => generate_abi_checked_mul_native_time(&mut calls),
-            "abi_checked_scalar_div_native_time" => {
-                generate_abi_checked_scalar_div_native_time(&mut calls)
+            "abi_checked_add_native_time" => {
+                // generate_abi_checked_add_native_time(&mut calls)
             }
-            "abi_checked_div_native_time" => generate_abi_checked_div_native_time(&mut calls),
+            "abi_checked_sub_native_time" => {
+                // generate_abi_checked_sub_native_time(&mut calls)
+            }
+            "abi_checked_mul_native_time" => {
+                //  generate_abi_checked_mul_native_time(&mut calls)
+            }
+            "abi_checked_scalar_div_native_time" => {
+                // generate_abi_checked_scalar_div_native_time(&mut calls)
+            }
+            "abi_checked_div_native_time" => {
+                // generate_abi_checked_div_native_time(&mut calls)
+            }
             "abi_compare_address" => generate_abi_compare_address(&mut calls),
             "abi_compare_native_amount" => generate_abi_compare_native_amount(&mut calls),
-            "abi_compare_native_time" => generate_abi_compare_native_time(&mut calls),
+            "abi_compare_native_time" => {
+                // generate_abi_compare_native_time(&mut calls)
+            }
             "abi_compare_pub_key" => generate_abi_compare_pub_key(&mut calls),
             "abi_verify_signature" => generate_abi_verify_signature(&mut calls),
             "abi_local_call" => generate_abi_local_call(
@@ -153,7 +167,9 @@ pub fn generate_calls(
                 &mut preparation_calls,
                 &mut call_already_prep,
             ),
-            "abi_evm_verify_signature" => generate_abi_evm_verify_signature(&mut calls),
+            "abi_evm_verify_signature" => {
+                // generate_abi_evm_verify_signature(&mut calls)
+            }
             "abi_evm_get_address_from_pubkey" => {
                 generate_abi_evm_get_address_from_pubkey(&mut calls)
             }
@@ -161,6 +177,8 @@ pub fn generate_calls(
                 generate_abi_evm_get_pubkey_from_signature(&mut calls)
             }
             "abi_is_address_eoa" => generate_abi_is_address_eoa(&mut calls),
+            "print" => {}
+            "call" => {}
             _ => {
                 panic!("ABI: {} don't have any generation function. Please add one in src/sc_generation/generation.rs", abi[0].as_str())
             }

@@ -10,7 +10,8 @@ use crate::sc_generation::generation::generate_calls;
 
 use self::generation::generate_instruction;
 
-mod abi_wasmv1_generation;
+mod abi_generation;
+// mod abi_wasmv1_generation;
 
 pub mod abis;
 pub mod generation;

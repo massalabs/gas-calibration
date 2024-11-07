@@ -1,4 +1,3 @@
-/*
 use std::str::FromStr;
 
 use massa_models::address::Address;
@@ -17,6 +16,7 @@ mod caller_has_write_access;
 mod create_sc;
 mod current_period;
 mod current_thread;
+mod deferred_call_quote;
 mod del;
 mod del_of;
 mod function_exists;
@@ -97,6 +97,8 @@ pub use transfer_coins_of::generate_abi_transfer_coins_of;
 pub use unsafe_random::generate_abi_unsafe_random;
 pub use validate_address::generate_abi_validate_address;
 
+pub use deferred_call_quote::generate_abi_deferred_call_quote;
+
 fn generate_string(length: usize) -> String {
     let mut rng = rand::thread_rng();
     let mut string = String::new();
@@ -120,4 +122,3 @@ fn static_public_key() -> String {
     // Public key: P12WKRCnYPKhVuwtk1mSEiMFSAPRfThR74bfhBEHAnT53JnBNj9T
     // Address: A12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M
 }
-*/
