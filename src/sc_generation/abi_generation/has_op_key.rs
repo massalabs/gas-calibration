@@ -17,7 +17,6 @@ pub fn generate_abi_has_op_key(
         .clone();
     let key: Vec<u16> = key
         .chunks_exact(2)
-        .into_iter()
         .map(|a| u16::from_ne_bytes([a[0], a[1]]))
         .collect();
     let key = key.as_slice();

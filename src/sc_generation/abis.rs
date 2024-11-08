@@ -1,4 +1,6 @@
-pub fn get_abis(file_path: &String) -> Vec<Vec<String>> {
+use std::path::Path;
+
+pub fn get_abis<P: AsRef<Path>>(file_path: &P) -> Vec<Vec<String>> {
     let abis_string = std::fs::read_to_string(file_path)
         .expect("Should have been able to read the file");
     let content: Vec<&str> = abis_string.lines().collect();
@@ -48,7 +50,7 @@ pub fn get_abis(file_path: &String) -> Vec<Vec<String>> {
             abi.extend(
                 function_array[1]
                     .split("): ")
-                    .map(|s| String::from(s.trim_end_matches(&[',', ' ']))),
+                    .map(|s| String::from(s.trim_end_matches([',', ' ']))),
             );
             abi
         })

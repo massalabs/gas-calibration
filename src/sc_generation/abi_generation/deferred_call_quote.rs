@@ -1,8 +1,6 @@
 use massa_models::config::THREAD_COUNT;
 use rand::{rngs::ThreadRng, Rng};
 
-use super::generate_string;
-
 pub fn generate_abi_deferred_call_quote(
     rng: &mut ThreadRng,
     calls: &mut Vec<String>,

@@ -7,6 +7,7 @@ use massa_models::datastore::Datastore;
 use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 
 use crate::sc_generation::generation::generate_calls;
+use crate::AbiType;
 
 use self::generation::generate_instruction;
 
@@ -155,10 +156,13 @@ pub fn generate_scs(
     nb_sc_per_abi: u32,
     limit_per_calls_per_sc: u64,
     op_datastore: Datastore,
-    env_path: &String,
+    abi_type: &AbiType,
+    abis: &[Vec<String>],
 ) {
-    let abis = abis::get_abis(env_path);
-    println!("Generating {} smart contracts for each abi", nb_sc_per_abi);
+    println!(
+        "Generating {} smart contracts for each `{}` abi",
+        nb_sc_per_abi, abi_type
+    );
     let mut pb = pbr::ProgressBar::new(abis.len() as u64);
     for (index_abi, abi) in abis.iter().enumerate() {
         (0..nb_sc_per_abi).into_par_iter().for_each(|i| {
@@ -167,6 +171,7 @@ pub fn generate_scs(
             // }
             let op_datastore_clone = op_datastore.clone();
             let (preparation_calls, calls) = generate_calls(
+                abi_type,
                 abi.clone(),
                 limit_per_calls_per_sc,
                 op_datastore_clone,
@@ -187,7 +192,7 @@ pub fn generate_scs(
         });
         pb.inc();
     }
-    pb.finish_print("Finish generating SCs");
+    pb.finish_print("End of SC generation");
 }
 
 pub fn build_scs(nb_sc_per_abi: u32, abis: Vec<Vec<String>>) {

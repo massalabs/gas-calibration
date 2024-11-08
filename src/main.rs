@@ -1,6 +1,14 @@
-use std::{collections::HashMap, process::Command, time::Duration};
+use std::{
+    collections::HashMap,
+    fmt,
+    path::Path,
+    process::{self, Command},
+    time::Duration,
+};
 
 use clap::Parser;
+use rand::seq::index;
+use sc_generation::abis;
 use which::which;
 
 use crate::calculation::compile_and_write_results;
@@ -11,10 +19,21 @@ mod execute_batch_sc;
 mod execution;
 mod sc_generation;
 
-enum ScType {
+enum AbiType {
     AS,
     WasmV1,
 }
+
+impl fmt::Display for AbiType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            AbiType::AS => write!(f, "assembly script"),
+            AbiType::WasmV1 => write!(f, "WasmV1"),
+        }
+    }
+}
+
+const TEMPLATE_DIR: &str = "./src/sc_generation/template";
 
 fn main() {
     let args = args::Args::parse();
@@ -25,15 +44,46 @@ fn main() {
     let npm_path = which("npm").expect("npm not found in PATH");
     Command::new(npm_path.clone())
         .arg("update")
-        .current_dir("./src/sc_generation/template")
+        .current_dir(TEMPLATE_DIR)
         .output()
         .expect("failed to execute process");
 
     Command::new(npm_path.clone())
         .arg("install")
-        .current_dir("./src/sc_generation/template")
+        .current_dir(TEMPLATE_DIR)
         .output()
         .expect("failed to execute process");
+
+    let template_dir = Path::new(TEMPLATE_DIR);
+    let as_env_path = template_dir.join("env.ts");
+    let wasmv1_env_path = template_dir.join("env_wasmv1.ts");
+
+    if !as_env_path.exists() {
+        panic!("env.ts not found in template directory");
+    }
+
+    if !wasmv1_env_path.exists() {
+        panic!("env_wasmv1.ts not found in template directory");
+    }
+
+    let as_abis = abis::get_abis(&as_env_path);
+    let wasmv1_abis = abis::get_abis(&wasmv1_env_path);
+
+    if args.only_generate {
+        for abis in [(AbiType::AS, &as_abis), (AbiType::WasmV1, &wasmv1_abis)] {
+            let datastore = sc_generation::generation::generate_op_datastore();
+            sc_generation::generate_scs(
+                nb_scs_by_abi,
+                300,
+                datastore.clone(),
+                &abis.0,
+                abis.1,
+            );
+        }
+        return;
+    }
+
+    process::exit(0);
 
     let env_path = args
         .as_sdk_env_path
@@ -56,7 +106,8 @@ fn main() {
             nb_scs_by_abi,
             300,
             datastore.clone(),
-            &env_path,
+            &AbiType::AS,
+            &abis,
         );
         std::fs::copy(
             "./src/sc_generation/template/env.ts.bak",
@@ -75,7 +126,8 @@ fn main() {
             nb_scs_by_abi,
             300,
             datastore.clone(),
-            &env_path,
+            &AbiType::AS,
+            &abis,
         );
         sc_generation::build_scs(nb_scs_by_abi, abis);
         sc_generation::generate_wasm_scs(nb_wasm_scs, 300);
