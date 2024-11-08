@@ -24,7 +24,8 @@ pub fn read_existing_op_datastore() -> Datastore {
     let mut op_datastore_json = String::new();
     file.read_to_string(&mut op_datastore_json)
         .expect("Failed to read op_datastore.json");
-    let datastore_vec: Vec<(Vec<u8>, Vec<u8>)> = serde_json::from_str(&op_datastore_json).unwrap();
+    let datastore_vec: Vec<(Vec<u8>, Vec<u8>)> =
+        serde_json::from_str(&op_datastore_json).unwrap();
     let mut datastore = Datastore::new();
     for (key, value) in datastore_vec {
         datastore.insert(key, value);
@@ -118,7 +119,8 @@ export function main(_args: ArrayBuffer): ArrayBuffer {{
 }}",
         calls.join("\n")
     );
-    let mut output = File::create("./src/sc_generation/template/index.ts").unwrap();
+    let mut output =
+        File::create("./src/sc_generation/template/index.ts").unwrap();
 
     let output_dir = Path::new("./src/sc_generation/template/build");
     fs::create_dir_all(output_dir).unwrap();
@@ -164,15 +166,24 @@ pub fn generate_scs(
             //     return;
             // }
             let op_datastore_clone = op_datastore.clone();
-            let (preparation_calls, calls) =
-                generate_calls(abi.clone(), limit_per_calls_per_sc, op_datastore_clone);
+            let (preparation_calls, calls) = generate_calls(
+                abi.clone(),
+                limit_per_calls_per_sc,
+                op_datastore_clone,
+            );
             if !preparation_calls.is_empty() {
                 write_sc(
                     preparation_calls,
-                    format!("preparation_{}", ((index_abi as u32 * nb_sc_per_abi) + i)),
+                    format!(
+                        "preparation_{}",
+                        ((index_abi as u32 * nb_sc_per_abi) + i)
+                    ),
                 );
             }
-            write_sc(calls, ((index_abi as u32 * nb_sc_per_abi) + i).to_string());
+            write_sc(
+                calls,
+                ((index_abi as u32 * nb_sc_per_abi) + i).to_string(),
+            );
         });
         pb.inc();
     }
@@ -204,7 +215,7 @@ pub fn build_scs(nb_sc_per_abi: u32, abis: Vec<Vec<String>>) {
                 .current_dir("./src/sc_generation/template")
                 .output()
                 .expect("failed to execute process");
-            //std::io::stderr().write_all(&output1.stderr).unwrap();
+            // std::io::stderr().write_all(&output1.stderr).unwrap();
             let output = Command::new(npm_path)
                 .arg("run")
                 .arg(build_script)

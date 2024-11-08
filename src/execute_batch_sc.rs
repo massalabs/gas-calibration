@@ -2,8 +2,10 @@ use std::{collections::HashMap, io::Read, str::FromStr, time::Duration};
 
 use massa_execution_worker::InterfaceImpl;
 use massa_models::{address::Address, datastore::Datastore};
-use massa_sc_runtime::{run_main_gc, Compiler, CondomLimits, GasCosts, RuntimeModule};
-//use rand::Rng;
+use massa_sc_runtime::{
+    run_main_gc, Compiler, CondomLimits, GasCosts, RuntimeModule,
+};
+// use rand::Rng;
 use std::fs::File;
 
 pub fn execute_batch_sc(
@@ -20,7 +22,7 @@ pub fn execute_batch_sc(
         } else {
             format!("./src/sc_generation/template/build/WAT_{}.wat", i)
         };
-        //let filename = format!("./src/sc_generation/template/test.wasm");
+        // let filename = format!("./src/sc_generation/template/test.wasm");
         let file = File::open(&filename);
         if file.is_err() {
             continue;
@@ -29,7 +31,7 @@ pub fn execute_batch_sc(
         let mut bytecode = if abi_mode { vec![1_u8] } else { vec![0_u8] };
         file.read_to_end(&mut bytecode)
             .unwrap_or_else(|_| panic!("Failed to read {}", filename));
-        //TODO: Change here
+        // TODO: Change here
         let preparation_bytecode = if let Ok(mut file) = File::open(format!(
             "./src/sc_generation/template/build/SC_preparation_{}.wasm",
             i
@@ -50,12 +52,15 @@ pub fn execute_batch_sc(
     let mut total_execution_stats: HashMap<String, u64> = HashMap::default();
     let mut total_execution_time = Duration::from_secs(0);
     let bytecodes_len = bytecodes.len() as u64;
-    //let mut nb_compiled = 0;
+    // let mut nb_compiled = 0;
     for (preparation_bytecode, bytecode) in bytecodes {
-        //let mut rng = rand::thread_rng();
-        //let need_compile = rng.gen_bool(0.5);
+        // let mut rng = rand::thread_rng();
+        // let need_compile = rng.gen_bool(0.5);
         let interface = InterfaceImpl::new_default(
-            Address::from_str("AS12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M").unwrap(),
+            Address::from_str(
+                "AS12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M",
+            )
+            .unwrap(),
             Some(op_datastore.clone()),
         );
 
@@ -76,7 +81,7 @@ pub fn execute_batch_sc(
             )
             .unwrap();
         }
-        //let (start, results) = if need_compile {
+        // let (start, results) = if need_compile {
         let module = RuntimeModule::new(
             &bytecode,
             GasCosts::default(),
@@ -95,54 +100,53 @@ pub fn execute_batch_sc(
         )
         .unwrap();
 
-        //println!("Results:");
-        /*println!("");
-        println!("Counters:");
-        for (key, value) in &results.counters {
-            println!("key: {:?}, value: {:?}", key, value);
-        }*/
+        // println!("Results:");
+        // println!("");
+        // println!("Counters:");
+        // for (key, value) in &results.counters {
+        // println!("key: {:?}, value: {:?}", key, value);
+        // }
         //    nb_compiled += 1;
         //    (start, results)
         // } else {
-        //    let module = RuntimeModule::new(&bytecode, u64::MAX, GasCosts::default()).unwrap();
-        //    let start = std::time::Instant::now();
-        //    let results =
-        //        run_main_gc(&interface, module, &[], u64::MAX, GasCosts::default()).unwrap();
-        //    (start, results)
+        //    let module = RuntimeModule::new(&bytecode, u64::MAX,
+        // GasCosts::default()).unwrap();    let start =
+        // std::time::Instant::now();    let results =
+        //        run_main_gc(&interface, module, &[], u64::MAX,
+        // GasCosts::default()).unwrap();    (start, results)
         // };
-        //println!("Results: {:?}", results);
+        // println!("Results: {:?}", results);
         let mut time_exec = start.elapsed();
-        //println!("Time: {:?}", time_exec);
+        // println!("Time: {:?}", time_exec);
         for (_key, value) in results.timers {
-            /*
-            println!("time_exec: {:?}", time_exec);
-            println!("key: {:?}, value: {:?}", _key, value);
-            time_exec -= Duration::from_secs_f64(value);
-            */
-            time_exec = match time_exec.checked_sub(Duration::from_secs_f64(value)) {
-                Some(new_time_exec) => new_time_exec,
-                None => {
-                    println!(
-                        "Time exec overflow: {:?}, {:?}",
-                        time_exec,
-                        Duration::from_secs_f64(value)
-                    );
-                    Duration::from_secs(0)
-                }
-            };
+            // println!("time_exec: {:?}", time_exec);
+            // println!("key: {:?}, value: {:?}", _key, value);
+            // time_exec -= Duration::from_secs_f64(value);
+            time_exec =
+                match time_exec.checked_sub(Duration::from_secs_f64(value)) {
+                    Some(new_time_exec) => new_time_exec,
+                    None => {
+                        println!(
+                            "Time exec overflow: {:?}, {:?}",
+                            time_exec,
+                            Duration::from_secs_f64(value)
+                        );
+                        Duration::from_secs(0)
+                    }
+                };
         }
         // Size ignored for now because we saw that it doesn't change a lot
         // results
         //     .counters
         //     .insert(String::from("Size"), bytecode.len() as u64);
-        //println!("Time: {:?}", time_exec);
+        // println!("Time: {:?}", time_exec);
         total_execution_time += time_exec;
         for (key, value) in results.counters {
             let entry = total_execution_stats.entry(key).or_insert(0);
             *entry += value;
         }
     }
-    //total_execution_stats.insert(String::from("Compile"), nb_compiled);
+    // total_execution_stats.insert(String::from("Compile"), nb_compiled);
     total_execution_stats.insert(String::from("Launch"), bytecodes_len);
     (total_execution_stats, total_execution_time)
 }

@@ -62,7 +62,8 @@ pub fn compile_and_write_results(
     abi_mode: bool,
 ) -> BTreeMap<String, (f64, usize, f64)> {
     // Mean, number of element, standard deviation
-    let mut final_results: BTreeMap<String, (f64, usize, f64)> = BTreeMap::new();
+    let mut final_results: BTreeMap<String, (f64, usize, f64)> =
+        BTreeMap::new();
     let mut gas_costs: BTreeMap<String, u32> = BTreeMap::new();
     for (key, value) in results.iter() {
         final_results.insert(
@@ -93,7 +94,8 @@ pub fn compile_and_write_results(
             } else {
                 key.clone()
             },
-            (max_gas as f64 / (max_execution_time.as_millis() as f64 / value.0)) as u32,
+            (max_gas as f64 / (max_execution_time.as_millis() as f64 / value.0))
+                as u32,
         );
     }
     let output_filename = if abi_mode {
@@ -125,7 +127,9 @@ fn _is_constant(key: &str, abi_names: &[String], abis: &[Vec<String>]) -> bool {
         let abi_name = format!("{}:", abi_name);
         if key.contains(&abi_name) {
             let full_abi = abis.get(idx).unwrap();
-            if let Ok(param_idx) = key.split(':').last().unwrap().parse::<usize>() {
+            if let Ok(param_idx) =
+                key.split(':').last().unwrap().parse::<usize>()
+            {
                 let param = full_abi.get(param_idx + 1).unwrap();
                 let param_type = param.split(": ").collect::<Vec<&str>>()[0];
                 if param_type == "address" {
@@ -174,13 +178,15 @@ pub fn calculate_times(
         return HashMap::new();
     }
 
-    let values: Vec<Vec<f64>> = transpose(data[1..].iter().map(|elem| elem.1.clone()).collect());
+    let values: Vec<Vec<f64>> =
+        transpose(data[1..].iter().map(|elem| elem.1.clone()).collect());
     let arr = Array2::from_shape_vec(
         (values.len(), values[0].len()),
         values.into_iter().flatten().collect(),
     )
     .unwrap();
-    let times = Array1::from_shape_vec(data[0].1.len(), data[0].1.clone()).unwrap();
+    let times =
+        Array1::from_shape_vec(data[0].1.len(), data[0].1.clone()).unwrap();
     let (alphas, _residual) = nnls(arr.view(), times.view());
     let alphas = alphas
         .iter()

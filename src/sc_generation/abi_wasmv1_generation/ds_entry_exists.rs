@@ -2,7 +2,10 @@ use rand::Rng;
 
 use super::generate_bytes;
 
-pub fn generate_abi_ds_entry_exists(calls: &mut Vec<String>, preparation_calls: &mut Vec<String>) {
+pub fn generate_abi_ds_entry_exists(
+    calls: &mut Vec<String>,
+    preparation_calls: &mut Vec<String>,
+) {
     let mut rng = rand::thread_rng();
 
     let rng_key_bytes = generate_bytes(rng.gen_range(10..64));

@@ -3,7 +3,10 @@ use rand::{rngs::ThreadRng, Rng};
 
 use super::generate_string;
 
-pub fn generate_abi_deferred_call_quote(rng: &mut ThreadRng, calls: &mut Vec<String>) {
+pub fn generate_abi_deferred_call_quote(
+    rng: &mut ThreadRng,
+    calls: &mut Vec<String>,
+) {
     calls.push(format!(
         "env.getDeferredCallQuote(\"{}\", \"{}\", \"{}\", \"{}\" );",
         rng.gen_range(100..1_000),

@@ -115,8 +115,10 @@ fn generate_address() -> String {
 }
 
 fn static_public_key() -> String {
-    let keypair =
-        KeyPair::from_str("S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY").unwrap();
+    let keypair = KeyPair::from_str(
+        "S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY",
+    )
+    .unwrap();
     keypair.get_public_key().to_string()
     // Secret key: S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY
     // Public key: P12WKRCnYPKhVuwtk1mSEiMFSAPRfThR74bfhBEHAnT53JnBNj9T

@@ -1,6 +1,6 @@
 pub fn get_abis(file_path: &String) -> Vec<Vec<String>> {
-    let abis_string =
-        std::fs::read_to_string(file_path).expect("Should have been able to read the file");
+    let abis_string = std::fs::read_to_string(file_path)
+        .expect("Should have been able to read the file");
     let content: Vec<&str> = abis_string.lines().collect();
     // Group prototypes splitted in multiple lines
     let mut abis_string_vec: Vec<String> = Vec::new();
