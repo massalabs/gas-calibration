@@ -7,7 +7,6 @@ use std::{
 };
 
 use clap::Parser;
-use rand::seq::index;
 use sc_generation::abis;
 use which::which;
 
@@ -55,8 +54,8 @@ fn main() {
         .expect("failed to execute process");
 
     let template_dir = Path::new(TEMPLATE_DIR);
-    let as_env_path = template_dir.join("env.ts");
-    let wasmv1_env_path = template_dir.join("env_wasmv1.ts");
+    let as_env_path = template_dir.join("as").join("env.ts");
+    let wasmv1_env_path = template_dir.join("wasmv1").join("env_wasmv1.ts");
 
     if !as_env_path.exists() {
         panic!("env.ts not found in template directory");
@@ -70,12 +69,12 @@ fn main() {
     let wasmv1_abis = abis::get_abis(&wasmv1_env_path);
 
     if args.only_generate {
+        let datastore = sc_generation::generation::generate_op_datastore();
         for abis in [(AbiType::AS, &as_abis), (AbiType::WasmV1, &wasmv1_abis)] {
-            let datastore = sc_generation::generation::generate_op_datastore();
             sc_generation::generate_scs(
                 nb_scs_by_abi,
                 300,
-                datastore.clone(),
+                &datastore,
                 &abis.0,
                 abis.1,
             );
@@ -83,6 +82,40 @@ fn main() {
         return;
     }
 
+    let op_datastore = if args.skip_generation_scs {
+        sc_generation::read_existing_op_datastore()
+    } else {
+        let datastore = sc_generation::generation::generate_op_datastore();
+        for abis in [(AbiType::AS, &as_abis), (AbiType::WasmV1, &wasmv1_abis)] {
+            sc_generation::generate_scs(
+                nb_scs_by_abi,
+                300,
+                &datastore,
+                &abis.0,
+                abis.1,
+            );
+            sc_generation::build_scs(nb_scs_by_abi, &abis.0, abis.1);
+            sc_generation::generate_wasm_scs(nb_wasm_scs, 300);
+        }
+        datastore
+    };
+
+    for abis in [(AbiType::AS, &as_abis), (AbiType::WasmV1, &wasmv1_abis)] {
+        let mut full_results: HashMap<String, Vec<f64>> = HashMap::new();
+        execution::execute_abi_scs(
+            &mut full_results,
+            nb_scs_by_abi,
+            &op_datastore,
+            &abis.0,
+            abis.1,
+        );
+        compile_and_write_results(
+            full_results,
+            u32::MAX,
+            Duration::from_millis(300),
+            true,
+        );
+    }
     process::exit(0);
 
     let env_path = args
@@ -105,7 +138,7 @@ fn main() {
         sc_generation::generate_scs(
             nb_scs_by_abi,
             300,
-            datastore.clone(),
+            &datastore,
             &AbiType::AS,
             &abis,
         );
@@ -125,11 +158,11 @@ fn main() {
         sc_generation::generate_scs(
             nb_scs_by_abi,
             300,
-            datastore.clone(),
+            &datastore,
             &AbiType::AS,
             &abis,
         );
-        sc_generation::build_scs(nb_scs_by_abi, abis);
+        sc_generation::build_scs(nb_scs_by_abi, &AbiType::AS, &abis);
         sc_generation::generate_wasm_scs(nb_wasm_scs, 300);
         datastore
     };
@@ -142,8 +175,9 @@ fn main() {
     execution::execute_abi_scs(
         &mut full_results,
         nb_scs_by_abi,
-        op_datastore,
-        &env_path,
+        &op_datastore,
+        &AbiType::AS,
+        &abis,
     );
     compile_and_write_results(
         full_results,

@@ -54,7 +54,7 @@ pub fn generate_calls(
     abi_type: &AbiType,
     abi: Vec<String>,
     limit_per_calls: u64,
-    op_datastore: Datastore,
+    op_datastore: &Datastore,
 ) -> (Vec<String>, Vec<String>) {
     let mut rng = rand::thread_rng();
     let mut calls = Vec::new();
@@ -68,7 +68,7 @@ pub fn generate_calls(
             AbiType::AS => {
                 generate_call_as(
                     &abi,
-                    &op_datastore,
+                    op_datastore,
                     &mut rng,
                     &mut calls,
                     &mut preparation_calls,
@@ -79,7 +79,7 @@ pub fn generate_calls(
             AbiType::WasmV1 => {
                 generate_call_wasmv1(
                     &abi,
-                    &op_datastore,
+                    op_datastore,
                     &mut calls,
                     &mut preparation_calls,
                     &address_sc,

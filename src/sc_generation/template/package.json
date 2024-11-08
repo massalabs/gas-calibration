@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "asc build/$SC_NAME.ts --use abort=build/$SC_NAME/myabort --target release --outFile build/$SC_NAME.wasm && wasmv1_transform build/$SC_NAME.wasm add",
-    "build_windows": "asc build/%SC_NAME%.ts --use abort=build/%SC_NAME%/myabort --target release --outFile build/%SC_NAME%.wasm && wasmv1_transform build/%SC_NAME%.wasm add",
+    "build": "asc build/$SC_DIR/$SC_NAME.ts --use abort=build/$SC_DIR/$SC_NAME/myabort --target release --outFile build/$SC_DIR/$SC_NAME.wasm && wasmv1_transform build/$SC_DIR/$SC_NAME.wasm add",
+    "build_windows": "asc build/%SC_DIR%/%SC_NAME%.ts --use abort=build/%SC_DIR%/%SC_NAME%/myabort --target release --outFile build/%SC_DIR%/%SC_NAME%.wasm && wasmv1_transform build/%SC_DIR%/%SC_NAME%.wasm add",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

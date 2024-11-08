@@ -8,22 +8,26 @@ use massa_sc_runtime::{
 // use rand::Rng;
 use std::fs::File;
 
+use crate::{sc_generation::output_dir, AbiType};
+
 pub fn execute_batch_sc(
     first_sc_index: u32,
     last_sc_index: u32,
     op_datastore: Datastore,
+    abi_type: &AbiType,
     abi_mode: bool,
 ) -> (HashMap<String, u64>, Duration) {
     // Optional preparation SC and SC
     let mut bytecodes: Vec<(Option<Vec<u8>>, Vec<u8>)> = Vec::new();
     for i in first_sc_index..last_sc_index {
         let filename = if abi_mode {
-            format!("./src/sc_generation/template/build/SC_{}.wasm", i)
+            format!("SC_{}.wasm", i)
         } else {
-            format!("./src/sc_generation/template/build/WAT_{}.wat", i)
+            format!("WAT_{}.wat", i)
         };
         // let filename = format!("./src/sc_generation/template/test.wasm");
-        let file = File::open(&filename);
+        let output_dir = output_dir(abi_type);
+        let file = File::open(output_dir.join(filename.clone()));
         if file.is_err() {
             continue;
         }
@@ -32,10 +36,9 @@ pub fn execute_batch_sc(
         file.read_to_end(&mut bytecode)
             .unwrap_or_else(|_| panic!("Failed to read {}", filename));
         // TODO: Change here
-        let preparation_bytecode = if let Ok(mut file) = File::open(format!(
-            "./src/sc_generation/template/build/SC_preparation_{}.wasm",
-            i
-        )) {
+        let preparation_bytecode = if let Ok(mut file) =
+            File::open(output_dir.join(format!("SC_preparation_{}.wasm", i)))
+        {
             if abi_mode {
                 let mut bytecode = vec![1_u8];
                 file.read_to_end(&mut bytecode)
