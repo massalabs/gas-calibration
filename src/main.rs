@@ -11,6 +11,11 @@ mod execute_batch_sc;
 mod execution;
 mod sc_generation;
 
+enum ScType {
+    AS,
+    WasmV1,
+}
+
 fn main() {
     let args = args::Args::parse();
     // let nb_scs_by_abi: u32 = args.nb_scs_by_abi.unwrap_or(100);
