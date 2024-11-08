@@ -12,3 +12,5 @@ target/
 **/old_build/**.ts
 **/old_build/**.wat
 **/**.bak
+src/sc_generation/template/as/src/
+src/sc_generation/template/wasmv1/src/

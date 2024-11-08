@@ -56,7 +56,6 @@ fn write_sc(calls: Vec<String>, abi_type: &AbiType, file_name: &str) {
     write!(src, "{}", template_index).unwrap();
 }
 
-
 fn write_wat(setup_calls: Vec<String>, calls: Vec<String>, file_name: String) {
     let template_index = format!(
         "(module
@@ -140,27 +139,20 @@ pub fn build_scs(nb_sc_per_abi: u32, abi_type: &AbiType, abis: &[Vec<String>]) {
                 "build"
             };
 
-            let sc_dir = match abi_type {
-                AbiType::AS => "as",
-                AbiType::WasmV1 => "wasmv1",
-            };
-
             let cur_dir = generate_dir(abi_type);
             dbg!(&cur_dir);
 
-            dbg!(Command::new(npm_path.clone())
+            Command::new(npm_path.clone())
                 .arg("run")
                 .arg(build_script)
-                .env("SC_DIR", sc_dir)
                 .env("SC_NAME", format!("SC_preparation_{}", i))
-                .current_dir(&cur_dir))
+                .current_dir(&cur_dir)
                 .output()
                 .expect("failed to execute process");
             // std::io::stderr().write_all(&output1.stderr).unwrap();
             let output = Command::new(npm_path)
                 .arg("run")
                 .arg(build_script)
-                .env("SC_DIR", sc_dir)
                 .env("SC_NAME", format!("SC_{}", i))
                 .current_dir(&cur_dir)
                 .output()
