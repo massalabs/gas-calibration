@@ -1,7 +1,7 @@
 use std::{
     collections::HashMap,
     fmt,
-    path::Path,
+    path::{Path, PathBuf},
     process::{self, Command},
     time::Duration,
 };
@@ -32,7 +32,17 @@ impl fmt::Display for AbiType {
     }
 }
 
-const TEMPLATE_DIR: &str = "./src/sc_generation/template";
+const ROOT_TEMPLATE_DIR: &str = "./src/sc_generation/template";
+
+fn output_dir(abi_type: &AbiType) -> PathBuf {
+    match abi_type {
+        AbiType::AS => Path::new(ROOT_TEMPLATE_DIR).join("as"),
+        AbiType::WasmV1 => Path::new(ROOT_TEMPLATE_DIR).join("wasmv1"),
+    }
+}
+fn generate_dir(abi_type: &AbiType) -> PathBuf {
+    output_dir(abi_type).join("src")
+}
 
 fn main() {
     let args = args::Args::parse();
@@ -41,19 +51,10 @@ fn main() {
     let nb_wasm_scs = 0;
 
     let npm_path = which("npm").expect("npm not found in PATH");
-    Command::new(npm_path.clone())
-        .arg("update")
-        .current_dir(TEMPLATE_DIR)
-        .output()
-        .expect("failed to execute process");
+    npm_install_update(&npm_path, &AbiType::AS);
+    npm_install_update(&npm_path, &AbiType::WasmV1);
 
-    Command::new(npm_path.clone())
-        .arg("install")
-        .current_dir(TEMPLATE_DIR)
-        .output()
-        .expect("failed to execute process");
-
-    let template_dir = Path::new(TEMPLATE_DIR);
+    let template_dir = Path::new(ROOT_TEMPLATE_DIR);
     let as_env_path = template_dir.join("as").join("env.ts");
     let wasmv1_env_path = template_dir.join("wasmv1").join("env_wasmv1.ts");
 
@@ -192,4 +193,18 @@ fn main() {
     // execution::execute_wasm_scs(&mut full_results, nb_wasm_scs);
     // compile_and_write_results(full_results, u32::MAX,
     // Duration::from_millis(300), false);
+}
+
+fn npm_install_update(npm_path: &Path, abi_type: &AbiType) {
+    Command::new(npm_path)
+        .arg("update")
+        .current_dir(output_dir(abi_type))
+        .output()
+        .expect("failed to execute process");
+
+    Command::new(npm_path)
+        .arg("install")
+        .current_dir(output_dir(abi_type))
+        .output()
+        .expect("failed to execute process");
 }

@@ -1,6 +1,5 @@
 use std::fs::{self, File};
 use std::io::{Read, Write};
-use std::path::Path;
 use std::process::Command;
 
 use assembly_script::write_sc_as;
@@ -9,7 +8,7 @@ use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 use wasmv1::write_sc_wasmv1;
 
 use crate::sc_generation::generation::generate_calls;
-use crate::AbiType;
+use crate::{generate_dir, AbiType};
 
 use self::generation::generate_instruction;
 
@@ -21,7 +20,6 @@ pub mod generation;
 
 mod assembly_script;
 mod wasmv1;
-
 
 use which::which;
 
@@ -48,9 +46,9 @@ fn write_sc(calls: Vec<String>, abi_type: &AbiType, file_name: &str) {
     let mut output =
         File::create("./src/sc_generation/template/index.ts").unwrap();
 
-    let output_dir = output_dir(abi_type);
+    let output_dir = generate_dir(abi_type);
 
-    fs::create_dir_all(output_dir).unwrap();
+    fs::create_dir_all(&output_dir).unwrap();
 
     write!(output, "{}", template_index).unwrap();
     let sc_filename = format!("SC_{}.ts", file_name);
@@ -58,15 +56,6 @@ fn write_sc(calls: Vec<String>, abi_type: &AbiType, file_name: &str) {
     write!(src, "{}", template_index).unwrap();
 }
 
-pub fn output_dir(abi_type: &AbiType) -> &Path {
-    let output_dir = match abi_type {
-        AbiType::AS => Path::new("./src/sc_generation/template/build/as"),
-        AbiType::WasmV1 => {
-            Path::new("./src/sc_generation/template/build/wasmv1")
-        }
-    };
-    output_dir
-}
 
 fn write_wat(setup_calls: Vec<String>, calls: Vec<String>, file_name: String) {
     let template_index = format!(
@@ -156,12 +145,15 @@ pub fn build_scs(nb_sc_per_abi: u32, abi_type: &AbiType, abis: &[Vec<String>]) {
                 AbiType::WasmV1 => "wasmv1",
             };
 
-            Command::new(npm_path.clone())
+            let cur_dir = generate_dir(abi_type);
+            dbg!(&cur_dir);
+
+            dbg!(Command::new(npm_path.clone())
                 .arg("run")
                 .arg(build_script)
                 .env("SC_DIR", sc_dir)
                 .env("SC_NAME", format!("SC_preparation_{}", i))
-                .current_dir("./src/sc_generation/template")
+                .current_dir(&cur_dir))
                 .output()
                 .expect("failed to execute process");
             // std::io::stderr().write_all(&output1.stderr).unwrap();
@@ -170,7 +162,7 @@ pub fn build_scs(nb_sc_per_abi: u32, abi_type: &AbiType, abis: &[Vec<String>]) {
                 .arg(build_script)
                 .env("SC_DIR", sc_dir)
                 .env("SC_NAME", format!("SC_{}", i))
-                .current_dir("./src/sc_generation/template")
+                .current_dir(&cur_dir)
                 .output()
                 .expect("failed to execute process");
             std::io::stderr().write_all(&output.stderr).unwrap();

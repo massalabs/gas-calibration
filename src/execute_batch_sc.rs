@@ -8,7 +8,7 @@ use massa_sc_runtime::{
 // use rand::Rng;
 use std::fs::File;
 
-use crate::{sc_generation::output_dir, AbiType};
+use crate::{generate_dir, AbiType};
 
 pub fn execute_batch_sc(
     first_sc_index: u32,
@@ -26,7 +26,7 @@ pub fn execute_batch_sc(
             format!("WAT_{}.wat", i)
         };
         // let filename = format!("./src/sc_generation/template/test.wasm");
-        let output_dir = output_dir(abi_type);
+        let output_dir = generate_dir(abi_type);
         let file = File::open(output_dir.join(filename.clone()));
         if file.is_err() {
             continue;
