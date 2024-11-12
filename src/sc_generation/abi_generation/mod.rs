@@ -17,6 +17,7 @@ mod create_sc;
 mod current_period;
 mod current_thread;
 mod deferred_call_quote;
+mod deferred_call_register;
 mod del;
 mod del_of;
 mod function_exists;
@@ -98,6 +99,7 @@ pub use unsafe_random::generate_abi_unsafe_random;
 pub use validate_address::generate_abi_validate_address;
 
 pub use deferred_call_quote::generate_abi_deferred_call_quote;
+pub use deferred_call_register::generate_abi_deferred_call_register;
 
 fn generate_string(length: usize) -> String {
     let mut rng = rand::thread_rng();

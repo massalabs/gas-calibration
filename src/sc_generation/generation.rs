@@ -192,7 +192,10 @@ fn generate_call_as(
         "hasOpKey" => generate_abi_has_op_key(op_datastore, rng, calls),
         "getOpData" => generate_abi_get_op_data(op_datastore, rng, calls),
         "seed" => calls.push("seed();".to_string()),
-        "getDeferredCallQuote" => {}
+        "getDeferredCallQuote" => generate_abi_deferred_call_quote(rng, calls),
+        "deferredCallRegister" => {
+            generate_abi_deferred_call_register(address_sc, rng, calls)
+        }
         "Date.now" => calls.push("Date.now();".to_string()),
         _ => {
             println!(

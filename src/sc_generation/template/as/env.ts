@@ -193,4 +193,15 @@ export namespace env {
 
   @external("massa", "assembly_script_get_deferred_call_quote")
   export declare function getDeferredCallQuote(period: u64, thread: u8, maxGas: u64, paramsSize: u64): StaticArray<u8>;
+
+  @external("massa", "assembly_script_deferred_call_register")
+  export declare function deferredCallRegister(
+    target_address: string,
+    target_function: string,
+    target_period: u64,
+    target_thread: u8,
+    maxGas: u64,
+    params: StaticArray<u8>,
+    raw_coins: u64,
+  ): u64;
 }
