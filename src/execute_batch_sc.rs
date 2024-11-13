@@ -15,16 +15,11 @@ pub fn execute_batch_sc(
     last_sc_index: u32,
     op_datastore: &Datastore,
     abi_type: &AbiType,
-    abi_mode: bool,
 ) -> (HashMap<String, u64>, Duration) {
     // Optional preparation SC and SC
     let mut bytecodes: Vec<(Option<Vec<u8>>, Vec<u8>)> = Vec::new();
     for i in first_sc_index..last_sc_index {
-        let filename = if abi_mode {
-            format!("SC_{}.wasm", i)
-        } else {
-            format!("WAT_{}.wat", i)
-        };
+        let filename = format!("SC_{}.wasm", i);
 
         println!("Executing {} for abi `{}`", filename, abi_type);
 
@@ -35,26 +30,31 @@ pub fn execute_batch_sc(
             continue;
         }
         let mut file = file.unwrap();
-        let mut bytecode = if abi_mode { vec![1_u8] } else { vec![0_u8] };
+        let mut bytecode = match abi_type {
+            AbiType::AS => vec![],
+            AbiType::WasmV1 => vec![1_u8],
+        };
         file.read_to_end(&mut bytecode)
             .unwrap_or_else(|_| panic!("Failed to read {}", filename));
         // TODO: Change here
         let preparation_bytecode = if let Ok(mut file) =
             File::open(output_dir.join(format!("SC_preparation_{}.wasm", i)))
         {
-            if abi_mode {
-                let mut bytecode = vec![1_u8];
-                file.read_to_end(&mut bytecode)
-                    .unwrap_or_else(|_| panic!("Failed to read {}", filename));
-                Some(bytecode)
-            } else {
-                None
-            }
+            let mut bytecode = match abi_type {
+                AbiType::AS => vec![],
+                AbiType::WasmV1 => {
+                    vec![1_u8]
+                }
+            };
+            file.read_to_end(&mut bytecode)
+                .unwrap_or_else(|_| panic!("Failed to read {}", filename));
+            Some(bytecode)
         } else {
             None
         };
         bytecodes.push((preparation_bytecode, bytecode));
     }
+
     let mut total_execution_stats: HashMap<String, u64> = HashMap::default();
     let mut total_execution_time = Duration::from_secs(0);
     let bytecodes_len = bytecodes.len() as u64;
@@ -87,7 +87,7 @@ pub fn execute_batch_sc(
             )
             .unwrap();
         }
-        // let (start, results) = if need_compile {
+
         let module = RuntimeModule::new(
             &bytecode,
             GasCosts::default(),

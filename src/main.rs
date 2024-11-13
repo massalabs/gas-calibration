@@ -105,25 +105,16 @@ fn main() {
     // Duration::from_millis(300), false);
 }
 
-fn initialize_calibration_environment(as_env_path: &Path, wasmv1_env_path: &Path) {
-    // copy templates to output directory
+// copy templates to output directory
+fn initialize_calibration_environment(
+    as_env_path: &Path,
+    wasmv1_env_path: &Path,
+) {
     println!("############################################################");
     println!("Set assemblyscript env");
     let as_output_dir = output_dir(&AbiType::AS);
     let as_env_path_output = &as_output_dir.join("env.ts");
     fs::copy(as_env_path, as_env_path_output).unwrap();
-    // package.json
-    fs::copy(
-        template_dir(&AbiType::AS).join("package.json"),
-        as_output_dir.join("package.json"),
-    )
-    .unwrap();
-    // helpers.ts
-    fs::copy(
-        template_dir(&AbiType::AS).join("helpers.ts"),
-        as_output_dir.join("helpers.ts"),
-    )
-    .unwrap();
 
     println!("############################################################");
     println!("Set wasmv1 env");
@@ -131,18 +122,14 @@ fn initialize_calibration_environment(as_env_path: &Path, wasmv1_env_path: &Path
     let wasmv1_env_path_output = &wasmv1_output_dir.join("env_wasmv1.ts");
     fs::copy(wasmv1_env_path, wasmv1_env_path_output).unwrap();
 
-    // package.json
-    fs::copy(
-        template_dir(&AbiType::WasmV1).join("package.json"),
-        wasmv1_output_dir.join("package.json"),
-    )
-    .unwrap();
-    // helpers.ts
-    fs::copy(
-        template_dir(&AbiType::WasmV1).join("helpers.ts"),
-        wasmv1_output_dir.join("helpers.ts"),
-    )
-    .unwrap();
+    let files = ["package.json", "helpers.ts"];
+    for abi_type in &[AbiType::AS, AbiType::WasmV1] {
+        let output_dir = output_dir(abi_type);
+        for file in &files {
+            fs::copy(template_dir(abi_type).join(file), output_dir.join(file))
+                .unwrap();
+        }
+    }
 
     // npm install
     let npm_path = which("npm").expect("npm not found in PATH");

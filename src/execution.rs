@@ -28,7 +28,6 @@ pub fn execute_abi_scs(
                     + (abi_index as u32 * nb_scs_per_abi),
                 op_datastore,
                 abi_type,
-                true,
             );
             executed += nb_exec;
             full_stats.push(stats);
@@ -61,7 +60,6 @@ pub fn execute_wasm_scs(
             std::cmp::min(nb_contracts, executed + nb_exec),
             &Datastore::new(),
             abi_type,
-            false,
         );
         executed += nb_exec;
         full_stats.push(stats);
