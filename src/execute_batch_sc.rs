@@ -1,4 +1,4 @@
-use std::{collections::HashMap, io::Read, str::FromStr, time::Duration};
+use std::{collections::HashMap, io::Read, process, str::FromStr, time::Duration};
 
 use massa_execution_worker::InterfaceImpl;
 use massa_models::{address::Address, datastore::Datastore};
@@ -23,11 +23,12 @@ pub fn execute_batch_sc(
 
         println!("Executing {} for abi `{}`", filename, abi_type);
 
-        let output_dir = build_dir(abi_type);
-        let file = File::open(output_dir.join(filename.clone()));
+        let build_dir = build_dir(abi_type);
+        let sc_file_path = build_dir.join(filename.clone());
+        let file = File::open(&sc_file_path);
         if file.is_err() {
-            println!("Failed to open {}", filename);
-            continue;
+            println!("Failed to open {:?}", sc_file_path);
+            process::exit(1);
         }
         let mut file = file.unwrap();
         let mut bytecode = match abi_type {
@@ -38,7 +39,7 @@ pub fn execute_batch_sc(
             .unwrap_or_else(|_| panic!("Failed to read {}", filename));
         // TODO: Change here
         let preparation_bytecode = if let Ok(mut file) =
-            File::open(output_dir.join(format!("SC_preparation_{}.wasm", i)))
+            File::open(build_dir.join(format!("SC_preparation_{}.wasm", i)))
         {
             let mut bytecode = match abi_type {
                 AbiType::AS => vec![],

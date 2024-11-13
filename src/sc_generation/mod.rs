@@ -7,7 +7,7 @@ use massa_models::datastore::Datastore;
 use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 use wasmv1::write_sc_wasmv1;
 
-use crate::config::output_dir;
+use crate::config::{output_dir, src_dir};
 use crate::sc_generation::generation::generate_calls;
 use crate::AbiType;
 
@@ -52,7 +52,7 @@ fn write_sc(calls: &[String], abi_type: &AbiType, file_name: &str) {
 
     write!(output, "{}", template_index).unwrap();
     let sc_filename = format!("SC_{}.ts", file_name);
-    let mut src = File::create(output_dir(abi_type).join(sc_filename)).unwrap();
+    let mut src = File::create(src_dir(abi_type).join(sc_filename)).unwrap();
     write!(src, "{}", template_index).unwrap();
 }
 
@@ -68,7 +68,7 @@ fn write_wat(setup_calls: Vec<String>, calls: Vec<String>, file_name: String) {
         setup_calls.join("\n"),
         calls.join("\n")
     );
-    let file_path = output_dir(&AbiType::AS).join(format!("build/WAT_{}.wat", file_name));
+    let file_path = src_dir(&AbiType::AS).join(format!("build/WAT_{}.wat", file_name));
     let mut src = File::create(file_path).unwrap();
     write!(src, "{}", template_index).unwrap();
 }
