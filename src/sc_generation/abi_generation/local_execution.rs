@@ -4,7 +4,7 @@ pub fn generate_abi_local_execution(
 ) {
     if !*call_already_prep {
         let prep_call = String::from(
-            "let bytecode = env.getOpData(toBytes(\"empty_main_sc\"));",
+            "let bytecode = env.getOpData(toBytes(\"empty_main_sc_as\"));",
         );
         calls.push(prep_call);
         *call_already_prep = true;

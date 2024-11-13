@@ -5,7 +5,7 @@ pub fn generate_abi_set_bytecode_of(
 ) {
     if !*call_already_prep {
         calls.push(
-            "let bytecode = env.getOpData(toBytes(\"empty_main_sc\"));"
+            "let bytecode = env.getOpData(toBytes(\"empty_main_sc_as\"));"
                 .to_string(),
         );
         *call_already_prep = true;

@@ -1,4 +1,4 @@
-pub fn write_sc_wasmv1(calls: Vec<String>) -> String {
+pub fn write_sc_wasmv1(calls: &[String]) -> String {
     format!(
         "import {{ decimalCount32 }} from 'util/number';
 import {{ env }} from '../../wasmv1/env_wasmv1';

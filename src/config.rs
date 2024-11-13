@@ -24,11 +24,6 @@ pub fn output_dir(abi_type: &AbiType) -> PathBuf {
     fs::create_dir_all(&path).unwrap();
     path
 }
-pub fn generate_dir(abi_type: &AbiType) -> PathBuf {
-    let path = output_dir(abi_type).join("src");
-    fs::create_dir_all(&path).unwrap();
-    path
-}
 
 pub fn build_dir(abi_type: &AbiType) -> PathBuf {
     let path = output_dir(abi_type).join("build");

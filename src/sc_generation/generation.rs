@@ -4,7 +4,7 @@ use massa_models::datastore::Datastore;
 use rand::{rngs::ThreadRng, Rng};
 use std::io::Write;
 
-use crate::AbiType;
+use crate::{config::{output_dir, template_dir}, AbiType};
 
 use super::abi_wasmv1_generation::generate_bytes;
 
@@ -20,20 +20,32 @@ pub fn generate_op_datastore() -> Datastore {
     let mut rng = rand::thread_rng();
     let mut datastore: Datastore = Datastore::new();
     let nb_entries = 100;
+
     for _ in 0..nb_entries {
         let rng_key_bytes = generate_bytes(rng.gen_range(10..64));
         let rng_value_bytes = generate_bytes(rng.gen_range(1..1000));
         datastore.insert(rng_key_bytes, rng_value_bytes);
     }
-    let key = String::from("empty_main_sc").into_bytes();
+
+    let key = String::from("empty_main_sc_as").into_bytes();
     match std::fs::read(
-        "./src/sc_generation/template/empty_main_sc_wasmv1.wasm_add",
+        template_dir(&AbiType::AS).join("empty_main_sc_as.wasm"),
     ) {
         Ok(bytes) => datastore.insert(key, bytes),
         Err(e) => panic!("{}", e),
     };
+
+    let key = String::from("empty_main_sc_wasmv1").into_bytes();
+    match std::fs::read(
+        template_dir(&AbiType::WasmV1).join("empty_main_sc_wasmv1.wasm_add"),
+    ) {
+        Ok(bytes) => datastore.insert(key, bytes),
+        Err(e) => panic!("{}", e),
+    };
+
+    // param to output_dir is useless here
     let mut output =
-        File::create("./src/sc_generation/template/op_datastore.json").unwrap();
+        File::create(output_dir(&AbiType::AS).join("op_datastore.json")).unwrap();
     write!(
         output,
         "{}",
@@ -46,6 +58,7 @@ pub fn generate_op_datastore() -> Datastore {
         .unwrap()
     )
     .unwrap();
+
     datastore
 }
 

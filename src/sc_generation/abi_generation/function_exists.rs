@@ -10,7 +10,7 @@ pub fn generate_abi_function_exists(
 
     if !*call_already_prep {
         preparation_calls.push(format!(
-            "env.setBytecodeOf(\"{}\", env.getOpData(toBytes(\"empty_main_sc\")));",
+            "env.setBytecodeOf(\"{}\", env.getOpData(toBytes(\"empty_main_sc_as\")));",
             address_sc
         ));
         preparation_calls.push(format!(
