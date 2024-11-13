@@ -1,12 +1,9 @@
 use std::{
-    collections::HashMap,
-    fmt,
-    path::{Path, PathBuf},
-    process::{self, Command},
-    time::Duration,
+    collections::HashMap, fmt, fs, path::Path, process::Command, time::Duration,
 };
 
 use clap::Parser;
+use config::{as_env_path, output_dir, template_dir, wasmv1_env_path};
 use sc_generation::abis;
 use which::which;
 
@@ -31,18 +28,7 @@ impl fmt::Display for AbiType {
         }
     }
 }
-
-const ROOT_TEMPLATE_DIR: &str = "./src/sc_generation/template";
-
-fn output_dir(abi_type: &AbiType) -> PathBuf {
-    match abi_type {
-        AbiType::AS => Path::new(ROOT_TEMPLATE_DIR).join("as"),
-        AbiType::WasmV1 => Path::new(ROOT_TEMPLATE_DIR).join("wasmv1"),
-    }
-}
-fn generate_dir(abi_type: &AbiType) -> PathBuf {
-    output_dir(abi_type).join("src")
-}
+mod config;
 
 fn main() {
     let args = args::Args::parse();
@@ -50,23 +36,16 @@ fn main() {
     let nb_scs_by_abi: u32 = args.nb_scs_by_abi.unwrap_or(1);
     let nb_wasm_scs = 0;
 
-    let npm_path = which("npm").expect("npm not found in PATH");
-    npm_install_update(&npm_path, &AbiType::AS);
-    npm_install_update(&npm_path, &AbiType::WasmV1);
+    let as_env_path = as_env_path();
+    let wasmv1_env_path = wasmv1_env_path();
 
-    let template_dir = Path::new(ROOT_TEMPLATE_DIR);
-    let as_env_path = template_dir.join("as").join("env.ts");
-    let wasmv1_env_path = template_dir.join("wasmv1").join("env_wasmv1.ts");
+    initialize_calibration_environment(&as_env_path, &wasmv1_env_path);
 
-    if !as_env_path.exists() {
-        panic!("env.ts not found in template directory");
-    }
-
-    if !wasmv1_env_path.exists() {
-        panic!("env_wasmv1.ts not found in template directory");
-    }
-
+    println!("############################################################");
+    println!("Reading ABIs from env.ts");
     let as_abis = abis::get_abis(&as_env_path);
+    println!("############################################################");
+    println!("Reading ABIs from env_wasmv1.ts");
     let wasmv1_abis = abis::get_abis(&wasmv1_env_path);
 
     if args.only_generate {
@@ -114,78 +93,9 @@ fn main() {
             full_results,
             u32::MAX,
             Duration::from_millis(300),
-            true,
+            &abis.0,
         );
     }
-    process::exit(0);
-
-    let env_path = args
-        .as_sdk_env_path
-        .unwrap_or(String::from("./src/sc_generation/template/env.ts"));
-    // .unwrap_or(String::from("./src/sc_generation/template/env_wasmv1.ts"));
-    // Copy the env file to the current directory
-    // TODO: Improve
-    std::fs::copy(
-        "./src/sc_generation/template/env.ts",
-        "./src/sc_generation/template/env.ts.bak",
-    )
-    .unwrap();
-    // std::fs::copy(env_path.clone(),
-    // "./src/sc_generation/template/env.ts").unwrap();
-    let abis = sc_generation::abis::get_abis(&env_path);
-    if args.only_generate {
-        let datastore = sc_generation::generation::generate_op_datastore();
-        // let datastore = sc_generation::read_existing_op_datastore();
-        sc_generation::generate_scs(
-            nb_scs_by_abi,
-            300,
-            &datastore,
-            &AbiType::AS,
-            &abis,
-        );
-        std::fs::copy(
-            "./src/sc_generation/template/env.ts.bak",
-            "./src/sc_generation/template/env.ts",
-        )
-        .unwrap();
-        return;
-    }
-    let op_datastore = if args.skip_generation_scs {
-        // sc_generation::generate_wasm_scs(nb_wasm_scs, 300);
-        sc_generation::read_existing_op_datastore()
-    } else {
-        let datastore = sc_generation::generation::generate_op_datastore();
-        // let datastore = sc_generation::read_existing_op_datastore();
-        sc_generation::generate_scs(
-            nb_scs_by_abi,
-            300,
-            &datastore,
-            &AbiType::AS,
-            &abis,
-        );
-        sc_generation::build_scs(nb_scs_by_abi, &AbiType::AS, &abis);
-        sc_generation::generate_wasm_scs(nb_wasm_scs, 300);
-        datastore
-    };
-    std::fs::copy(
-        "./src/sc_generation/template/env.ts.bak",
-        "./src/sc_generation/template/env.ts",
-    )
-    .unwrap();
-    let mut full_results: HashMap<String, Vec<f64>> = HashMap::new();
-    execution::execute_abi_scs(
-        &mut full_results,
-        nb_scs_by_abi,
-        &op_datastore,
-        &AbiType::AS,
-        &abis,
-    );
-    compile_and_write_results(
-        full_results,
-        u32::MAX,
-        Duration::from_millis(300),
-        true,
-    );
 
     // Not executing WAT SCs, as the new runtime does not support them out of
     // the box
@@ -193,6 +103,51 @@ fn main() {
     // execution::execute_wasm_scs(&mut full_results, nb_wasm_scs);
     // compile_and_write_results(full_results, u32::MAX,
     // Duration::from_millis(300), false);
+}
+
+fn initialize_calibration_environment(as_env_path: &Path, wasmv1_env_path: &Path) {
+    // copy templates to output directory
+    println!("############################################################");
+    println!("Set assemblyscript env");
+    let as_output_dir = output_dir(&AbiType::AS);
+    let as_env_path_output = &as_output_dir.join("env.ts");
+    fs::copy(as_env_path, as_env_path_output).unwrap();
+    // package.json
+    fs::copy(
+        template_dir(&AbiType::AS).join("package.json"),
+        as_output_dir.join("package.json"),
+    )
+    .unwrap();
+    // helpers.ts
+    fs::copy(
+        template_dir(&AbiType::AS).join("helpers.ts"),
+        as_output_dir.join("helpers.ts"),
+    )
+    .unwrap();
+
+    println!("############################################################");
+    println!("Set wasmv1 env");
+    let wasmv1_output_dir = output_dir(&AbiType::WasmV1);
+    let wasmv1_env_path_output = &wasmv1_output_dir.join("env_wasmv1.ts");
+    fs::copy(wasmv1_env_path, wasmv1_env_path_output).unwrap();
+
+    // package.json
+    fs::copy(
+        template_dir(&AbiType::WasmV1).join("package.json"),
+        wasmv1_output_dir.join("package.json"),
+    )
+    .unwrap();
+    // helpers.ts
+    fs::copy(
+        template_dir(&AbiType::WasmV1).join("helpers.ts"),
+        wasmv1_output_dir.join("helpers.ts"),
+    )
+    .unwrap();
+
+    // npm install
+    let npm_path = which("npm").expect("npm not found in PATH");
+    npm_install_update(&npm_path, &AbiType::AS);
+    npm_install_update(&npm_path, &AbiType::WasmV1);
 }
 
 fn npm_install_update(npm_path: &Path, abi_type: &AbiType) {

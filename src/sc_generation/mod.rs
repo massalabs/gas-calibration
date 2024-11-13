@@ -7,8 +7,9 @@ use massa_models::datastore::Datastore;
 use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 use wasmv1::write_sc_wasmv1;
 
+use crate::config::generate_dir;
 use crate::sc_generation::generation::generate_calls;
-use crate::{generate_dir, AbiType};
+use crate::AbiType;
 
 use self::generation::generate_instruction;
 
@@ -127,7 +128,7 @@ pub fn build_scs(nb_sc_per_abi: u32, abi_type: &AbiType, abis: &[Vec<String>]) {
         nb_sc_per_abi * abis.len() as u32
     );
     (0..(nb_sc_per_abi * abis.len() as u32))
-        // .into_par_iter()
+        .into_par_iter()
         .for_each(|i| {
             // if i < 3 * nb_sc_per_abi || i > 3 * nb_sc_per_abi {
             //     return;
@@ -140,7 +141,7 @@ pub fn build_scs(nb_sc_per_abi: u32, abi_type: &AbiType, abis: &[Vec<String>]) {
             };
 
             let cur_dir = generate_dir(abi_type);
-            dbg!(&cur_dir);
+            // dbg!(&cur_dir);
 
             Command::new(npm_path.clone())
                 .arg("run")

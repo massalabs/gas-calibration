@@ -8,12 +8,12 @@ use massa_sc_runtime::{
 // use rand::Rng;
 use std::fs::File;
 
-use crate::{generate_dir, AbiType};
+use crate::{config::build_dir, AbiType};
 
 pub fn execute_batch_sc(
     first_sc_index: u32,
     last_sc_index: u32,
-    op_datastore: Datastore,
+    op_datastore: &Datastore,
     abi_type: &AbiType,
     abi_mode: bool,
 ) -> (HashMap<String, u64>, Duration) {
@@ -25,10 +25,13 @@ pub fn execute_batch_sc(
         } else {
             format!("WAT_{}.wat", i)
         };
-        // let filename = format!("./src/sc_generation/template/test.wasm");
-        let output_dir = generate_dir(abi_type);
+
+        println!("Executing {} for abi `{}`", filename, abi_type);
+
+        let output_dir = build_dir(abi_type);
         let file = File::open(output_dir.join(filename.clone()));
         if file.is_err() {
+            println!("Failed to open {}", filename);
             continue;
         }
         let mut file = file.unwrap();
