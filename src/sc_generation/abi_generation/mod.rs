@@ -16,6 +16,8 @@ mod caller_has_write_access;
 mod create_sc;
 mod current_period;
 mod current_thread;
+mod deferred_call_cancel;
+mod deferred_call_exists;
 mod deferred_call_quote;
 mod deferred_call_register;
 mod del;
@@ -98,6 +100,8 @@ pub use transfer_coins_of::generate_abi_transfer_coins_of;
 pub use unsafe_random::generate_abi_unsafe_random;
 pub use validate_address::generate_abi_validate_address;
 
+pub use deferred_call_cancel::generate_abi_deferred_call_cancel;
+pub use deferred_call_exists::generate_abi_deferred_call_exists;
 pub use deferred_call_quote::generate_abi_deferred_call_quote;
 pub use deferred_call_register::generate_abi_deferred_call_register;
 

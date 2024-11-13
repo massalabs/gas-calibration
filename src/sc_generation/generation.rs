@@ -209,6 +209,8 @@ fn generate_call_as(
         "deferredCallRegister" => {
             generate_abi_deferred_call_register(address_sc, rng, calls)
         }
+        "deferredCallExists" => generate_abi_deferred_call_exists(rng, calls),
+        "deferredCallCancel" => generate_abi_deferred_call_cancel(rng, calls),
         "Date.now" => calls.push("Date.now();".to_string()),
         _ => {
             println!(
@@ -283,8 +285,13 @@ fn generate_call_wasmv1(
         "abi_get_remaining_gas" => generate_abi_get_remaining_gas(calls),
         "abi_get_owned_addresses" => generate_abi_get_owned_addresses(calls),
         "abi_get_deferred_call_quote" => {
-            // generate_abi_deferred_call_quote(&mut calls)
+            generate_abi_deferred_call_quote(calls);
         }
+        "abi_deferred_call_register" => {
+            generate_abi_deferred_call_register(address_sc, calls);
+        }
+        "abi_deferred_call_cancel" => generate_abi_deferred_call_cancel(calls),
+        "abi_deferred_call_exists" => generate_abi_deferred_call_exists(calls),
         "abi_get_call_stack" => generate_abi_get_call_stack(calls),
         "abi_address_from_public_key" => {
             generate_abi_address_from_public_key(calls)

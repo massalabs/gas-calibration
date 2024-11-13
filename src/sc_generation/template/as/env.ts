@@ -204,4 +204,10 @@ export namespace env {
     params: StaticArray<u8>,
     raw_coins: u64,
   ): u64;
+
+  @external("massa", "assembly_script_deferred_call_exists")
+  export declare function deferredCallExists(id: string): bool;
+
+  @external("massa", "assembly_script_deferred_call_cancel")
+  export declare function deferredCallCancel(id: string): void;
 }
