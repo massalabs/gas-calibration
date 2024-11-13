@@ -74,7 +74,7 @@ pub fn execute_batch_sc(
         );
 
         if let Some(preparation_bytecode) = preparation_bytecode {
-            run_main_gc(
+            if let Err(e) = run_main_gc(
                 &interface,
                 RuntimeModule::new(
                     &preparation_bytecode,
@@ -87,8 +87,10 @@ pub fn execute_batch_sc(
                 u64::MAX,
                 GasCosts::default(),
                 CondomLimits::default(),
-            )
-            .unwrap();
+            ) {
+                println!("Failed to execute preparation bytecode: {:?}", e);
+                continue;
+            }
         }
 
         let module = RuntimeModule::new(
@@ -99,15 +101,21 @@ pub fn execute_batch_sc(
         )
         .unwrap();
         let start = std::time::Instant::now();
-        let results = run_main_gc(
+
+        let results = match run_main_gc(
             &interface,
             module,
             &[],
             u64::MAX,
             GasCosts::default(),
             CondomLimits::default(),
-        )
-        .unwrap();
+        ) {
+            Ok(results) => results,
+            Err(e) => {
+                println!("Failed to execute bytecode: {:?}", e);
+                continue;
+            }
+        };
 
         // println!("Results:");
         // println!("");

@@ -192,7 +192,7 @@ export namespace env {
   export declare function validateAddress(address: string): bool;
 
   @external("massa", "assembly_script_get_deferred_call_quote")
-  export declare function getDeferredCallQuote(period: u64, thread: u8, maxGas: u64, paramsSize: u64): StaticArray<u8>;
+  export declare function getDeferredCallQuote(period: u64, thread: u8, maxGas: u64, paramsSize: u64): u64;
 
   @external("massa", "assembly_script_deferred_call_register")
   export declare function deferredCallRegister(
