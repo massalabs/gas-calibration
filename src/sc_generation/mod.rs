@@ -7,7 +7,7 @@ use massa_models::datastore::Datastore;
 use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 use wasmv1::write_sc_wasmv1;
 
-use crate::config::{output_dir, src_dir};
+use crate::config::{output_dir, root_dir, src_dir};
 use crate::sc_generation::generation::generate_calls;
 use crate::AbiType;
 
@@ -26,7 +26,7 @@ use which::which;
 
 pub fn read_existing_op_datastore() -> Datastore {
     // argument to output_dir is meaningless here
-    let mut file = File::open(output_dir(&AbiType::AS).join("op_datastore.json"))
+    let mut file = File::open(root_dir().join("op_datastore.json"))
         .expect("Failed to open op_datastore.json");
     let mut op_datastore_json = String::new();
     file.read_to_string(&mut op_datastore_json)
@@ -48,8 +48,6 @@ fn write_sc(calls: &[String], abi_type: &AbiType, file_name: &str) {
     let mut output =
         File::create(output_dir(abi_type).join("index.ts")).unwrap();
 
-
-
     write!(output, "{}", template_index).unwrap();
     let sc_filename = format!("SC_{}.ts", file_name);
     let mut src = File::create(src_dir(abi_type).join(sc_filename)).unwrap();
@@ -68,7 +66,8 @@ fn write_wat(setup_calls: Vec<String>, calls: Vec<String>, file_name: String) {
         setup_calls.join("\n"),
         calls.join("\n")
     );
-    let file_path = src_dir(&AbiType::AS).join(format!("build/WAT_{}.wat", file_name));
+    let file_path =
+        src_dir(&AbiType::AS).join(format!("build/WAT_{}.wat", file_name));
     let mut src = File::create(file_path).unwrap();
     write!(src, "{}", template_index).unwrap();
 }

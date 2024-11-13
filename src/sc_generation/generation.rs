@@ -4,7 +4,10 @@ use massa_models::datastore::Datastore;
 use rand::{rngs::ThreadRng, Rng};
 use std::io::Write;
 
-use crate::{config::{output_dir, template_dir}, AbiType};
+use crate::{
+    config::{root_dir, template_dir},
+    AbiType,
+};
 
 use super::abi_wasmv1_generation::generate_bytes;
 
@@ -27,7 +30,14 @@ pub fn generate_op_datastore() -> Datastore {
         datastore.insert(rng_key_bytes, rng_value_bytes);
     }
 
-    let key = String::from("empty_main_sc_as").into_bytes();
+    let key: Vec<u8> = "empty_main_sc_as"
+        .encode_utf16()
+        .map(|c| [c as u8, 0])
+        .collect::<Vec<_>>()
+        .into_iter()
+        .flatten()
+        .collect();
+    
     match std::fs::read(
         template_dir(&AbiType::AS).join("empty_main_sc_as.wasm"),
     ) {
@@ -43,9 +53,8 @@ pub fn generate_op_datastore() -> Datastore {
         Err(e) => panic!("{}", e),
     };
 
-    // param to output_dir is useless here
     let mut output =
-        File::create(output_dir(&AbiType::AS).join("op_datastore.json")).unwrap();
+        File::create(root_dir().join("op_datastore.json")).unwrap();
     write!(
         output,
         "{}",

@@ -1,4 +1,6 @@
-use std::{collections::HashMap, io::Read, process, str::FromStr, time::Duration};
+use std::{
+    collections::HashMap, io::Read, process, str::FromStr, time::Duration,
+};
 
 use massa_execution_worker::InterfaceImpl;
 use massa_models::{address::Address, datastore::Datastore};
