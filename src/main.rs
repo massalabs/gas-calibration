@@ -49,12 +49,13 @@ fn main() {
     let wasmv1_abis = abis::get_abis(&wasmv1_env_path);
 
     if args.only_generate {
-        let datastore = sc_generation::generation::generate_op_datastore();
-        for abis in [(AbiType::AS, &as_abis), (AbiType::WasmV1, &wasmv1_abis)] {
+        let datastore_as = sc_generation::generation::generate_op_datastore(&AbiType::AS);
+        let datastore_wasmv1 = sc_generation::generation::generate_op_datastore(&AbiType::WasmV1);
+        for abis in [(AbiType::AS, &as_abis, &datastore_as), (AbiType::WasmV1, &wasmv1_abis, &datastore_wasmv1)] {
             sc_generation::generate_scs(
                 nb_scs_by_abi,
                 300,
-                &datastore,
+                abis.2,
                 &abis.0,
                 abis.1,
             );
@@ -62,30 +63,32 @@ fn main() {
         return;
     }
 
-    let op_datastore = if args.skip_generation_scs {
-        sc_generation::read_existing_op_datastore()
+    let (datastore_as, datastore_wasmv1) = if args.skip_generation_scs {
+        (sc_generation::read_existing_op_datastore(&AbiType::AS), sc_generation::read_existing_op_datastore(&AbiType::WasmV1))
     } else {
-        let datastore = sc_generation::generation::generate_op_datastore();
-        for abis in [(AbiType::AS, &as_abis), (AbiType::WasmV1, &wasmv1_abis)] {
+        let datastore_as = sc_generation::generation::generate_op_datastore(&AbiType::AS);
+        let datastore_wasmv1 = sc_generation::generation::generate_op_datastore(&AbiType::WasmV1);
+
+        for abis in [(AbiType::AS, &as_abis, &datastore_as), (AbiType::WasmV1, &wasmv1_abis, &datastore_wasmv1)] {
             sc_generation::generate_scs(
                 nb_scs_by_abi,
                 300,
-                &datastore,
+                abis.2,
                 &abis.0,
                 abis.1,
             );
             sc_generation::build_scs(nb_scs_by_abi, &abis.0, abis.1);
             sc_generation::generate_wasm_scs(nb_wasm_scs, 300);
         }
-        datastore
+        (datastore_as, datastore_wasmv1)
     };
 
-    for abis in [(AbiType::AS, &as_abis), (AbiType::WasmV1, &wasmv1_abis)] {
+    for abis in [(AbiType::AS, &as_abis, &datastore_as), (AbiType::WasmV1, &wasmv1_abis, &datastore_wasmv1)] {
         let mut full_results: HashMap<String, Vec<f64>> = HashMap::new();
         execution::execute_abi_scs(
             &mut full_results,
             nb_scs_by_abi,
-            &op_datastore,
+            abis.2,
             &abis.0,
             abis.1,
         );

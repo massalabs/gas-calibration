@@ -1,11 +1,11 @@
-use std::{fs::File, process};
+use std::{fs::{self, File}, process};
 
 use massa_models::datastore::Datastore;
 use rand::{rngs::ThreadRng, Rng};
 use std::io::Write;
 
 use crate::{
-    config::{root_dir, template_dir},
+    config::{output_dir, template_dir},
     AbiType,
 };
 
@@ -19,7 +19,76 @@ fn static_address() -> String {
     String::from("AS12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M")
 }
 
-pub fn generate_op_datastore() -> Datastore {
+pub fn generate_op_datastore(abi_type: &AbiType) -> Datastore {
+    match abi_type {
+        AbiType::AS => generate_op_datastore_as(),
+        AbiType::WasmV1 => generate_op_datastore_wasmv1(),
+    }
+}
+
+fn generate_string(length: usize) -> String {
+    let mut rng = rand::thread_rng();
+    let mut string = String::new();
+    for _ in 0..length {
+        string.push(rng.gen_range('a'..='z'));
+    }
+    string
+}
+
+fn generate_op_datastore_as() -> Datastore {
+    let mut rng = rand::thread_rng();
+    let mut datastore: Datastore = Datastore::new();
+    let nb_entries = 100;
+    for _ in 0..nb_entries {
+        unsafe {
+            let key = generate_string(rng.gen_range(5..32))
+                .encode_utf16()
+                .collect::<Vec<u16>>()
+                .align_to::<u8>()
+                .1
+                .to_vec();
+            let value = generate_string(rng.gen_range(5..100))
+                .encode_utf16()
+                .collect::<Vec<u16>>()
+                .align_to::<u8>()
+                .1
+                .to_vec();
+            datastore.insert(key, value);
+        }
+    }
+    unsafe {
+        let key = String::from("empty_main_sc_as")
+            .encode_utf16()
+            .collect::<Vec<u16>>()
+            .align_to::<u8>()
+            .1
+            .to_vec();
+
+        let path = template_dir(&AbiType::AS).join("empty_main_sc_as.wasm");
+        match fs::read(&path) {
+            Ok(bytes) => datastore.insert(key, bytes),
+            Err(e) => panic!("{:?} {}", path, e),
+        }
+    };
+    let mut output =
+        File::create(output_dir(&AbiType::AS).join("op_datastore.json"))
+            .unwrap();
+    write!(
+        output,
+        "{}",
+        serde_json::to_string(
+            &datastore
+                .clone()
+                .into_iter()
+                .collect::<Vec<(Vec<u8>, Vec<u8>)>>()
+        )
+        .unwrap()
+    )
+    .unwrap();
+    datastore
+}
+
+fn generate_op_datastore_wasmv1() -> Datastore {
     let mut rng = rand::thread_rng();
     let mut datastore: Datastore = Datastore::new();
     let nb_entries = 100;
@@ -30,21 +99,6 @@ pub fn generate_op_datastore() -> Datastore {
         datastore.insert(rng_key_bytes, rng_value_bytes);
     }
 
-    let key: Vec<u8> = "empty_main_sc_as"
-        .encode_utf16()
-        .map(|c| [c as u8, 0])
-        .collect::<Vec<_>>()
-        .into_iter()
-        .flatten()
-        .collect();
-
-    match std::fs::read(
-        template_dir(&AbiType::AS).join("empty_main_sc_as.wasm"),
-    ) {
-        Ok(bytes) => datastore.insert(key, bytes),
-        Err(e) => panic!("{}", e),
-    };
-
     let key = String::from("empty_main_sc_wasmv1").into_bytes();
     match std::fs::read(
         template_dir(&AbiType::WasmV1).join("empty_main_sc_wasmv1.wasm_add"),
@@ -54,7 +108,8 @@ pub fn generate_op_datastore() -> Datastore {
     };
 
     let mut output =
-        File::create(root_dir().join("op_datastore.json")).unwrap();
+        File::create(output_dir(&AbiType::WasmV1).join("op_datastore.json"))
+            .unwrap();
     write!(
         output,
         "{}",
@@ -235,12 +290,12 @@ fn generate_call_as(
                 "Assembly script ABI: {} don't have any generation function.",
                 abi[0].as_str()
             );
-            println!(
-                "Please add one in src/sc_generation/generation.rs:{}",
-                line!()
-            );
-            println!("Calibrating process aborted.");
-            process::exit(1);
+            // println!(
+            //     "Please add one in src/sc_generation/generation.rs:{}",
+            //     line!()
+            // );
+            // println!("Calibrating process aborted.");
+            // process::exit(1);
         }
     }
 }

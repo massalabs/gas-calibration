@@ -167,3 +167,62 @@ pub fn execute_batch_sc(
     total_execution_stats.insert(String::from("Launch"), bytecodes_len);
     (total_execution_stats, total_execution_time)
 }
+
+#[cfg(test)]
+mod tests {
+    use std::path::PathBuf;
+
+    use crate::sc_generation::read_existing_op_datastore;
+
+    use super::*;
+
+    #[test]
+    fn test_run_sc() {
+        let op_datastore = read_existing_op_datastore(&AbiType::AS);
+
+        let interface = InterfaceImpl::new_default(
+            Address::from_str(
+                "AS12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M",
+            )
+            .unwrap(),
+            Some(op_datastore.clone()),
+        );
+
+        let sc_file_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            // .join("calibration/as/toto.wasm");
+            .join("calibration/as/build/SC_9.wasm");
+        // let sc_file_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        //     .join("calibration/wasmv1/build/SC_preparation_1.wasm_add");
+
+        let mut file = File::open(&sc_file_path)
+            .expect("Failed to open SC preparation file");
+
+        let mut preparation_bytecode = Vec::new();
+
+        file.read_to_end(&mut preparation_bytecode)
+            .expect("Failed to read SC preparation file");
+
+        let res = run_main_gc(
+            &interface,
+            RuntimeModule::new(
+                &preparation_bytecode,
+                GasCosts::default(),
+                Compiler::CL,
+                CondomLimits::default(),
+            )
+            .unwrap(),
+            &[],
+            u64::MAX,
+            GasCosts::default(),
+            CondomLimits::default(),
+        );
+
+        match res {
+            Ok(_) => {}
+            Err(e) => {
+                println!("Error: {:?}", e);
+                assert!(false);
+            }
+        }
+    }
+}

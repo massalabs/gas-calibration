@@ -7,7 +7,7 @@ use massa_models::datastore::Datastore;
 use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 use wasmv1::write_sc_wasmv1;
 
-use crate::config::{output_dir, root_dir, src_dir};
+use crate::config::{output_dir, src_dir};
 use crate::sc_generation::generation::generate_calls;
 use crate::AbiType;
 
@@ -24,9 +24,9 @@ mod wasmv1;
 
 use which::which;
 
-pub fn read_existing_op_datastore() -> Datastore {
+pub fn read_existing_op_datastore(abi_type: &AbiType) -> Datastore {
     // argument to output_dir is meaningless here
-    let mut file = File::open(root_dir().join("op_datastore.json"))
+    let mut file = File::open(output_dir(abi_type).join("op_datastore.json"))
         .expect("Failed to open op_datastore.json");
     let mut op_datastore_json = String::new();
     file.read_to_string(&mut op_datastore_json)

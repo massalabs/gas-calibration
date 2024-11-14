@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "asc src/$SC_NAME.ts  --target release --outFile build/$SC_NAME.wasm",
+    "build": "asc src/$SC_NAME.ts  --target release --exportRuntime --runtime stub --outFile build/$SC_NAME.wasm",
     "build_windows": "asc src/%SC_NAME%.ts --target release --outFile build/%SC_NAME%.wasm",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

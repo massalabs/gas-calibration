@@ -11,7 +11,7 @@ pub fn template_dir(abi_type: &AbiType) -> PathBuf {
     }
 }
 
-pub fn root_dir() -> PathBuf {
+fn root_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("calibration")
 }
 
