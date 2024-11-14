@@ -25,6 +25,6 @@ pub fn generate_abi_send_async_message(
         rng.gen_range(0..THREAD_COUNT),
         rng.gen_range(100_000..300_000),
         rng.gen_range(1..3),
-        rng.gen_range(100_000_000..1_000_000_000),
+        rng.gen_range(1..10000),
     ));
 }
