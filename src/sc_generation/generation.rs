@@ -1,4 +1,7 @@
-use std::{fs::{self, File}, process};
+use std::{
+    fs::{self, File},
+    process,
+};
 
 use massa_models::datastore::Datastore;
 use rand::{rngs::ThreadRng, Rng};
@@ -6,7 +9,7 @@ use std::io::Write;
 
 use crate::{
     config::{output_dir, template_dir},
-    AbiType,
+    AbisType,
 };
 
 use super::abi_wasmv1_generation::generate_bytes;
@@ -19,10 +22,10 @@ fn static_address() -> String {
     String::from("AS12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M")
 }
 
-pub fn generate_op_datastore(abi_type: &AbiType) -> Datastore {
+pub fn generate_op_datastore(abi_type: &AbisType) -> Datastore {
     match abi_type {
-        AbiType::AS => generate_op_datastore_as(),
-        AbiType::WasmV1 => generate_op_datastore_wasmv1(),
+        AbisType::AS => generate_op_datastore_as(),
+        AbisType::WasmV1 => generate_op_datastore_wasmv1(),
     }
 }
 
@@ -64,14 +67,14 @@ fn generate_op_datastore_as() -> Datastore {
             .1
             .to_vec();
 
-        let path = template_dir(&AbiType::AS).join("empty_main_sc_as.wasm");
+        let path = template_dir(&AbisType::AS).join("empty_main_sc_as.wasm");
         match fs::read(&path) {
             Ok(bytes) => datastore.insert(key, bytes),
             Err(e) => panic!("{:?} {}", path, e),
         }
     };
     let mut output =
-        File::create(output_dir(&AbiType::AS).join("op_datastore.json"))
+        File::create(output_dir(&AbisType::AS).join("op_datastore.json"))
             .unwrap();
     write!(
         output,
@@ -101,14 +104,14 @@ fn generate_op_datastore_wasmv1() -> Datastore {
 
     let key = String::from("empty_main_sc_wasmv1").into_bytes();
     match std::fs::read(
-        template_dir(&AbiType::WasmV1).join("empty_main_sc_wasmv1.wasm_add"),
+        template_dir(&AbisType::WasmV1).join("empty_main_sc_wasmv1.wasm_add"),
     ) {
         Ok(bytes) => datastore.insert(key, bytes),
         Err(e) => panic!("{}", e),
     };
 
     let mut output =
-        File::create(output_dir(&AbiType::WasmV1).join("op_datastore.json"))
+        File::create(output_dir(&AbisType::WasmV1).join("op_datastore.json"))
             .unwrap();
     write!(
         output,
@@ -128,7 +131,7 @@ fn generate_op_datastore_wasmv1() -> Datastore {
 
 // Return type: preparation calls, calls
 pub fn generate_calls(
-    abi_type: &AbiType,
+    abi_type: &AbisType,
     abi: Vec<String>,
     limit_per_calls: u64,
     op_datastore: &Datastore,
@@ -143,7 +146,7 @@ pub fn generate_calls(
 
     for _ in 0..nb_calls {
         match abi_type {
-            AbiType::AS => {
+            AbisType::AS => {
                 generate_call_as(
                     &abi,
                     op_datastore,
@@ -155,7 +158,7 @@ pub fn generate_calls(
                     &mut def_call_already_prep,
                 );
             }
-            AbiType::WasmV1 => {
+            AbisType::WasmV1 => {
                 generate_call_wasmv1(
                     &abi,
                     op_datastore,

@@ -9,7 +9,7 @@ use wasmv1::write_sc_wasmv1;
 
 use crate::config::{output_dir, src_dir};
 use crate::sc_generation::generation::generate_calls;
-use crate::AbiType;
+use crate::AbisType;
 
 use self::generation::generate_instruction;
 
@@ -24,7 +24,7 @@ mod wasmv1;
 
 use which::which;
 
-pub fn read_existing_op_datastore(abi_type: &AbiType) -> Datastore {
+pub fn read_existing_op_datastore(abi_type: &AbisType) -> Datastore {
     // argument to output_dir is meaningless here
     let mut file = File::open(output_dir(abi_type).join("op_datastore.json"))
         .expect("Failed to open op_datastore.json");
@@ -40,10 +40,10 @@ pub fn read_existing_op_datastore(abi_type: &AbiType) -> Datastore {
     datastore
 }
 
-fn write_sc(calls: &[String], abi_type: &AbiType, file_name: &str) {
+fn write_sc(calls: &[String], abi_type: &AbisType, file_name: &str) {
     let template_index = match abi_type {
-        AbiType::AS => write_sc_as(calls),
-        AbiType::WasmV1 => write_sc_wasmv1(calls),
+        AbisType::AS => write_sc_as(calls),
+        AbisType::WasmV1 => write_sc_wasmv1(calls),
     };
     let mut output =
         File::create(output_dir(abi_type).join("index.ts")).unwrap();
@@ -67,7 +67,7 @@ fn write_wat(setup_calls: Vec<String>, calls: Vec<String>, file_name: String) {
         calls.join("\n")
     );
     let file_path =
-        src_dir(&AbiType::AS).join(format!("build/WAT_{}.wat", file_name));
+        src_dir(&AbisType::AS).join(format!("build/WAT_{}.wat", file_name));
     let mut src = File::create(file_path).unwrap();
     write!(src, "{}", template_index).unwrap();
 }
@@ -76,7 +76,7 @@ pub fn generate_scs(
     nb_sc_per_abi: u32,
     limit_per_calls_per_sc: u64,
     op_datastore: &Datastore,
-    abi_type: &AbiType,
+    abi_type: &AbisType,
     abis: &[Vec<String>],
 ) {
     println!(
@@ -117,7 +117,11 @@ pub fn generate_scs(
     pb.finish_print("End of SC generation");
 }
 
-pub fn build_scs(nb_sc_per_abi: u32, abi_type: &AbiType, abis: &[Vec<String>]) {
+pub fn build_scs(
+    nb_sc_per_abi: u32,
+    abi_type: &AbisType,
+    abis: &[Vec<String>],
+) {
     println!(
         "building {} smart contracts...",
         nb_sc_per_abi * abis.len() as u32

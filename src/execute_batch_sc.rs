@@ -10,13 +10,13 @@ use massa_sc_runtime::{
 // use rand::Rng;
 use std::fs::File;
 
-use crate::{config::build_dir, AbiType};
+use crate::{config::build_dir, AbisType};
 
 pub fn execute_batch_sc(
     first_sc_index: u32,
     last_sc_index: u32,
     op_datastore: &Datastore,
-    abi_type: &AbiType,
+    abi_type: &AbisType,
 ) -> (HashMap<String, u64>, Duration) {
     // Optional preparation SC and SC
     let mut bytecodes: Vec<(Option<Vec<u8>>, Vec<u8>)> = Vec::new();
@@ -34,8 +34,8 @@ pub fn execute_batch_sc(
         }
         let mut file = file.unwrap();
         let mut bytecode = match abi_type {
-            AbiType::AS => vec![],
-            AbiType::WasmV1 => vec![1_u8],
+            AbisType::AS => vec![],
+            AbisType::WasmV1 => vec![1_u8],
         };
         file.read_to_end(&mut bytecode)
             .unwrap_or_else(|_| panic!("Failed to read {}", filename));
@@ -44,8 +44,8 @@ pub fn execute_batch_sc(
             File::open(build_dir.join(format!("SC_preparation_{}.wasm", i)))
         {
             let mut bytecode = match abi_type {
-                AbiType::AS => vec![],
-                AbiType::WasmV1 => {
+                AbisType::AS => vec![],
+                AbisType::WasmV1 => {
                     vec![1_u8]
                 }
             };
@@ -178,7 +178,7 @@ mod tests {
 
     #[test]
     fn test_run_sc() {
-        let op_datastore = read_existing_op_datastore(&AbiType::AS);
+        let op_datastore = read_existing_op_datastore(&AbisType::AS);
 
         let interface = InterfaceImpl::new_default(
             Address::from_str(

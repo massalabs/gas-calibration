@@ -4,7 +4,7 @@ use std::collections::BTreeMap;
 use std::io::Write;
 use std::{collections::HashMap, fs::File, time::Duration};
 
-use crate::AbiType;
+use crate::AbisType;
 
 fn transpose<T>(v: Vec<Vec<T>>) -> Vec<Vec<T>> {
     assert!(!v.is_empty());
@@ -61,7 +61,7 @@ pub fn compile_and_write_results(
     results: HashMap<String, Vec<f64>>,
     max_gas: u32,
     max_execution_time: Duration,
-    abi_type: &AbiType,
+    abi_type: &AbisType,
 ) -> BTreeMap<String, (f64, usize, f64)> {
     // Mean, number of element, standard deviation
     let mut final_results: BTreeMap<String, (f64, usize, f64)> =
@@ -78,30 +78,33 @@ pub fn compile_and_write_results(
         );
     }
     let result_filename = match abi_type {
-        AbiType::AS => "./results/abi_results.json".to_string(),
-        AbiType::WasmV1 => "./results/wasm_results.json".to_string(),
+        AbisType::AS => "./results/abi_results.json".to_string(),
+        AbisType::WasmV1 => "./results/wasm_results.json".to_string(),
     };
 
-    let mut output = File::create(result_filename).unwrap();
+    let mut output = File::create(&result_filename).unwrap_or_else(|_| {
+        panic!("Failed to create file {}", result_filename)
+    });
     write!(
         output,
         "{}",
         serde_json::to_string_pretty(&final_results).unwrap()
     )
     .unwrap();
+
     for (key, value) in final_results.iter() {
         gas_costs.insert(
             match abi_type {
-                AbiType::AS => format_key(key),
-                AbiType::WasmV1 => key.clone(),
+                AbisType::AS => format_key(key),
+                AbisType::WasmV1 => key.clone(),
             },
             (max_gas as f64 / (max_execution_time.as_millis() as f64 / value.0))
                 as u32,
         );
     }
     let output_filename = match abi_type {
-        AbiType::AS => "./results/abi_gas_costs.json".to_string(),
-        AbiType::WasmV1 => "./results/wasm_gas_costs.json".to_string(),
+        AbisType::AS => "./results/abi_gas_costs.json".to_string(),
+        AbisType::WasmV1 => "./results/wasm_gas_costs.json".to_string(),
     };
 
     let mut output = File::create(output_filename).unwrap();

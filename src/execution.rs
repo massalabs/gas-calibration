@@ -3,13 +3,13 @@ use std::collections::HashMap;
 use massa_models::datastore::Datastore;
 use rand::Rng;
 
-use crate::{calculation, execute_batch_sc, AbiType};
+use crate::{calculation, execute_batch_sc, AbisType};
 
 pub fn execute_abi_scs(
     full_results: &mut HashMap<String, Vec<f64>>,
     nb_scs_per_abi: u32,
     op_datastore: &Datastore,
-    abi_type: &AbiType,
+    abi_type: &AbisType,
     abis: &[Vec<String>],
 ) {
     println!("Executing {} SCs per abis", nb_scs_per_abi);
@@ -45,7 +45,7 @@ pub fn execute_abi_scs(
 pub fn execute_wasm_scs(
     full_results: &mut HashMap<String, Vec<f64>>,
     nb_contracts: u32,
-    abi_type: &AbiType,
+    abi_type: &AbisType,
 ) {
     println!("Executing {} SCs WASM", nb_contracts);
     let mut rng = rand::thread_rng();

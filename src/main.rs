@@ -1,39 +1,29 @@
 use std::{
-    collections::HashMap, fmt, fs, path::Path, process::Command, time::Duration,
+    fs, path::Path, process::Command, time::Duration,
 };
 
 use clap::Parser;
 use config::{as_env_path, output_dir, template_dir, wasmv1_env_path};
-use sc_generation::abis;
+use sc_generation::{
+    abis::{self, AbisType},
+    generate_wasm_scs,
+};
 use which::which;
 
 use crate::calculation::compile_and_write_results;
 
 mod args;
 mod calculation;
+mod config;
 mod execute_batch_sc;
 mod execution;
 mod sc_generation;
-
-enum AbiType {
-    AS,
-    WasmV1,
-}
-
-impl fmt::Display for AbiType {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            AbiType::AS => write!(f, "assembly script"),
-            AbiType::WasmV1 => write!(f, "WasmV1"),
-        }
-    }
-}
-mod config;
 
 fn main() {
     let args = args::Args::parse();
     // let nb_scs_by_abi: u32 = args.nb_scs_by_abi.unwrap_or(100);
     let nb_scs_by_abi: u32 = args.nb_scs_by_abi.unwrap_or(1);
+    let nb_instructions = 300;
     let nb_wasm_scs = 0;
 
     let as_env_path = as_env_path();
@@ -41,62 +31,40 @@ fn main() {
 
     initialize_calibration_environment(&as_env_path, &wasmv1_env_path);
 
-    println!("############################################################");
-    println!("Reading ABIs from env.ts");
-    let as_abis = abis::get_abis(&as_env_path);
-    println!("############################################################");
-    println!("Reading ABIs from env_wasmv1.ts");
-    let wasmv1_abis = abis::get_abis(&wasmv1_env_path);
+    let mut abis_list = [
+        abis::get_as_abis(&as_env_path),
+        abis::get_wasmv1_abis(&wasmv1_env_path),
+    ];
 
     if args.only_generate {
-        let datastore_as = sc_generation::generation::generate_op_datastore(&AbiType::AS);
-        let datastore_wasmv1 = sc_generation::generation::generate_op_datastore(&AbiType::WasmV1);
-        for abis in [(AbiType::AS, &as_abis, &datastore_as), (AbiType::WasmV1, &wasmv1_abis, &datastore_wasmv1)] {
-            sc_generation::generate_scs(
-                nb_scs_by_abi,
-                300,
-                abis.2,
-                &abis.0,
-                abis.1,
-            );
+        for abis in abis_list.iter_mut() {
+            abis.read_existing_op_datastore();
+            abis.generate_scs(nb_scs_by_abi, nb_instructions);
         }
         return;
     }
 
-    let (datastore_as, datastore_wasmv1) = if args.skip_generation_scs {
-        (sc_generation::read_existing_op_datastore(&AbiType::AS), sc_generation::read_existing_op_datastore(&AbiType::WasmV1))
-    } else {
-        let datastore_as = sc_generation::generation::generate_op_datastore(&AbiType::AS);
-        let datastore_wasmv1 = sc_generation::generation::generate_op_datastore(&AbiType::WasmV1);
-
-        for abis in [(AbiType::AS, &as_abis, &datastore_as), (AbiType::WasmV1, &wasmv1_abis, &datastore_wasmv1)] {
-            sc_generation::generate_scs(
-                nb_scs_by_abi,
-                300,
-                abis.2,
-                &abis.0,
-                abis.1,
-            );
-            sc_generation::build_scs(nb_scs_by_abi, &abis.0, abis.1);
-            sc_generation::generate_wasm_scs(nb_wasm_scs, 300);
+    if args.skip_generation_scs {
+        for abis in abis_list.iter_mut() {
+            abis.read_existing_op_datastore();
         }
-        (datastore_as, datastore_wasmv1)
-    };
+    } else {
+        for abis in abis_list.iter_mut() {
+            abis.generate_op_datastore();
+            abis.generate_scs(nb_scs_by_abi, nb_instructions);
+            abis.build_scs(nb_scs_by_abi);
 
-    for abis in [(AbiType::AS, &as_abis, &datastore_as), (AbiType::WasmV1, &wasmv1_abis, &datastore_wasmv1)] {
-        let mut full_results: HashMap<String, Vec<f64>> = HashMap::new();
-        execution::execute_abi_scs(
-            &mut full_results,
-            nb_scs_by_abi,
-            abis.2,
-            &abis.0,
-            abis.1,
-        );
+            generate_wasm_scs(nb_wasm_scs, 300);
+        }
+    }
+
+    for abi in abis_list {
+        let full_results = abi.execute_abi_scs(nb_scs_by_abi);
         compile_and_write_results(
             full_results,
             u32::MAX,
             Duration::from_millis(300),
-            &abis.0,
+            &abi.abis_type,
         );
     }
 
@@ -115,18 +83,18 @@ fn initialize_calibration_environment(
 ) {
     println!("############################################################");
     println!("Set assemblyscript env");
-    let as_output_dir = output_dir(&AbiType::AS);
+    let as_output_dir = output_dir(&AbisType::AS);
     let as_env_path_output = &as_output_dir.join("env.ts");
     fs::copy(as_env_path, as_env_path_output).unwrap();
 
     println!("############################################################");
     println!("Set wasmv1 env");
-    let wasmv1_output_dir = output_dir(&AbiType::WasmV1);
+    let wasmv1_output_dir = output_dir(&AbisType::WasmV1);
     let wasmv1_env_path_output = &wasmv1_output_dir.join("env_wasmv1.ts");
     fs::copy(wasmv1_env_path, wasmv1_env_path_output).unwrap();
 
     let files = ["package.json", "helpers.ts"];
-    for abi_type in &[AbiType::AS, AbiType::WasmV1] {
+    for abi_type in &[AbisType::AS, AbisType::WasmV1] {
         let output_dir = output_dir(abi_type);
         for file in &files {
             fs::copy(template_dir(abi_type).join(file), output_dir.join(file))
@@ -136,11 +104,11 @@ fn initialize_calibration_environment(
 
     // npm install
     let npm_path = which("npm").expect("npm not found in PATH");
-    npm_install_update(&npm_path, &AbiType::AS);
-    npm_install_update(&npm_path, &AbiType::WasmV1);
+    npm_install_update(&npm_path, &AbisType::AS);
+    npm_install_update(&npm_path, &AbisType::WasmV1);
 }
 
-fn npm_install_update(npm_path: &Path, abi_type: &AbiType) {
+fn npm_install_update(npm_path: &Path, abi_type: &AbisType) {
     Command::new(npm_path)
         .arg("update")
         .current_dir(output_dir(abi_type))
