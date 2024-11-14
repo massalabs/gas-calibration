@@ -166,6 +166,7 @@ pub fn generate_calls(
                     &mut preparation_calls,
                     &address_sc,
                     &mut call_already_prep,
+                    &mut def_call_already_prep,
                 );
             }
         }
@@ -275,7 +276,7 @@ fn generate_call_as(
         "hasOpKey" => generate_abi_has_op_key(op_datastore, rng, calls),
         "getOpData" => generate_abi_get_op_data(op_datastore, rng, calls),
         "seed" => calls.push("seed();".to_string()),
-        "getDeferredCallQuote" => generate_abi_deferred_call_quote(rng, calls),
+        "deferredCallQuote" => generate_abi_deferred_call_quote(rng, calls),
         "deferredCallRegister" => {
             generate_abi_deferred_call_register(address_sc, rng, calls)
         }
@@ -310,6 +311,7 @@ fn generate_call_wasmv1(
     preparation_calls: &mut Vec<String>,
     address_sc: &str,
     call_already_prep: &mut bool,
+    def_call_already_prep: &mut bool,
 ) {
     use super::abi_wasmv1_generation::*;
     match abi[0].as_str() {
@@ -366,7 +368,12 @@ fn generate_call_wasmv1(
         "abi_deferred_call_register" => {
             generate_abi_deferred_call_register(address_sc, calls);
         }
-        "abi_deferred_call_cancel" => generate_abi_deferred_call_cancel(calls),
+        "abi_deferred_call_cancel" => generate_abi_deferred_call_cancel(
+            address_sc,
+            calls,
+            preparation_calls,
+            def_call_already_prep,
+        ),
         "abi_deferred_call_exists" => generate_abi_deferred_call_exists(calls),
         "abi_get_call_stack" => generate_abi_get_call_stack(calls),
         "abi_address_from_public_key" => {
