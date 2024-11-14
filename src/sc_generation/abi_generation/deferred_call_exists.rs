@@ -1,13 +1,9 @@
-use rand::{rngs::ThreadRng, Rng};
-
-use super::generate_string;
+use rand::rngs::ThreadRng;
 
 pub fn generate_abi_deferred_call_exists(
-    rng: &mut ThreadRng,
+    _rng: &mut ThreadRng,
     calls: &mut Vec<String>,
 ) {
-    calls.push(format!(
-        "env.deferredCallExists(\"{}\");",
-        generate_string(rng.gen_range(5..25))
-    ));
+    calls.push(
+        "env.deferredCallExists(\"D17MpSPsmYL3eDj7x3uSE1KUNJf49JtTgzqMLxsxLWF6wLZbNoRtFPNp5uRWaCZA\");".to_string());
 }

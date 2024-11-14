@@ -37,7 +37,7 @@ pub fn generate_op_datastore() -> Datastore {
         .into_iter()
         .flatten()
         .collect();
-    
+
     match std::fs::read(
         template_dir(&AbiType::AS).join("empty_main_sc_as.wasm"),
     ) {
@@ -84,6 +84,7 @@ pub fn generate_calls(
     let address_sc = static_address();
     let nb_calls = rng.gen_range(1..limit_per_calls);
     let mut call_already_prep = false;
+    let mut def_call_already_prep = false;
 
     for _ in 0..nb_calls {
         match abi_type {
@@ -96,6 +97,7 @@ pub fn generate_calls(
                     &mut preparation_calls,
                     &address_sc,
                     &mut call_already_prep,
+                    &mut def_call_already_prep,
                 );
             }
             AbiType::WasmV1 => {
@@ -126,6 +128,7 @@ fn generate_call_as(
     preparation_calls: &mut Vec<String>,
     address_sc: &str,
     call_already_prep: &mut bool,
+    def_call_already_prep: &mut bool,
 ) {
     use super::abi_generation::*;
     match abi[0].as_str() {
@@ -219,7 +222,13 @@ fn generate_call_as(
             generate_abi_deferred_call_register(address_sc, rng, calls)
         }
         "deferredCallExists" => generate_abi_deferred_call_exists(rng, calls),
-        "deferredCallCancel" => generate_abi_deferred_call_cancel(rng, calls),
+        "deferredCallCancel" => generate_abi_deferred_call_cancel(
+            address_sc,
+            rng,
+            calls,
+            preparation_calls,
+            def_call_already_prep,
+        ),
         "Date.now" => calls.push("Date.now();".to_string()),
         _ => {
             println!(
