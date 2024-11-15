@@ -1,6 +1,4 @@
-use std::{
-    fs, path::Path, process::Command, time::Duration,
-};
+use std::{fs, path::Path, process::Command, time::Duration};
 
 use clap::Parser;
 use config::{as_env_path, output_dir, template_dir, wasmv1_env_path};
@@ -22,7 +20,7 @@ mod sc_generation;
 fn main() {
     let args = args::Args::parse();
     // let nb_scs_by_abi: u32 = args.nb_scs_by_abi.unwrap_or(100);
-    let nb_scs_by_abi: u32 = args.nb_scs_by_abi.unwrap_or(1);
+    let nb_scs_per_abi: u32 = args.nb_scs_by_abi.unwrap_or(1);
     let nb_instructions = 300;
     let nb_wasm_scs = 0;
 
@@ -39,7 +37,7 @@ fn main() {
     if args.only_generate {
         for abis in abis_list.iter_mut() {
             abis.read_existing_op_datastore();
-            abis.generate_scs(nb_scs_by_abi, nb_instructions);
+            abis.generate_scs(nb_scs_per_abi, nb_instructions);
         }
         return;
     }
@@ -51,22 +49,22 @@ fn main() {
     } else {
         for abis in abis_list.iter_mut() {
             abis.generate_op_datastore();
-            abis.generate_scs(nb_scs_by_abi, nb_instructions);
-            abis.build_scs(nb_scs_by_abi);
+            abis.generate_scs(nb_scs_per_abi, nb_instructions);
+            abis.build_scs(nb_scs_per_abi);
 
             generate_wasm_scs(nb_wasm_scs, 300);
         }
     }
 
-    for abi in abis_list {
-        let full_results = abi.execute_abi_scs(nb_scs_by_abi);
-        compile_and_write_results(
-            full_results,
-            u32::MAX,
-            Duration::from_millis(300),
-            &abi.abis_type,
-        );
-    }
+    let results = abis_list
+        .iter()
+        .map(|abis| abis.execute_abi_scs(nb_scs_per_abi))
+        .fold(std::collections::HashMap::new(), |mut acc, map| {
+            acc.extend(map);
+            acc
+        });
+
+    compile_and_write_results(results, u32::MAX, Duration::from_millis(300));
 
     // Not executing WAT SCs, as the new runtime does not support them out of
     // the box

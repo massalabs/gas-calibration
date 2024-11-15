@@ -30,7 +30,8 @@ pub fn execute_batch_sc(
         let file = File::open(&sc_file_path);
         if file.is_err() {
             println!("Failed to open {:?}", sc_file_path);
-            process::exit(1);
+            // process::exit(1);
+            continue;
         }
         let mut file = file.unwrap();
         let mut bytecode = match abi_type {

@@ -2,6 +2,7 @@ use ndarray::{Array1, Array2};
 use nnls::nnls;
 use std::collections::BTreeMap;
 use std::io::Write;
+use std::path::Path;
 use std::{collections::HashMap, fs::File, time::Duration};
 
 use crate::AbisType;
@@ -61,7 +62,6 @@ pub fn compile_and_write_results(
     results: HashMap<String, Vec<f64>>,
     max_gas: u32,
     max_execution_time: Duration,
-    abi_type: &AbisType,
 ) -> BTreeMap<String, (f64, usize, f64)> {
     // Mean, number of element, standard deviation
     let mut final_results: BTreeMap<String, (f64, usize, f64)> =
@@ -77,13 +77,10 @@ pub fn compile_and_write_results(
             ),
         );
     }
-    let result_filename = match abi_type {
-        AbisType::AS => "./results/abi_results.json".to_string(),
-        AbisType::WasmV1 => "./results/wasm_results.json".to_string(),
-    };
 
-    let mut output = File::create(&result_filename).unwrap_or_else(|_| {
-        panic!("Failed to create file {}", result_filename)
+    let result_filename = Path::new("./results/abi_results.json");
+    let mut output = File::create(result_filename).unwrap_or_else(|_| {
+        panic!("Failed to create file {:?}", result_filename)
     });
     write!(
         output,
@@ -94,18 +91,17 @@ pub fn compile_and_write_results(
 
     for (key, value) in final_results.iter() {
         gas_costs.insert(
-            match abi_type {
-                AbisType::AS => format_key(key),
-                AbisType::WasmV1 => key.clone(),
-            },
+            // match abi_type {
+            //     AbisType::AS => format_key(key),
+            //     AbisType::WasmV1 => key.clone(),
+            // }
+            format_key(key),
             (max_gas as f64 / (max_execution_time.as_millis() as f64 / value.0))
                 as u32,
         );
     }
-    let output_filename = match abi_type {
-        AbisType::AS => "./results/abi_gas_costs.json".to_string(),
-        AbisType::WasmV1 => "./results/wasm_gas_costs.json".to_string(),
-    };
+
+    let output_filename = Path::new("./results/abi_gas_costs.json");
 
     let mut output = File::create(output_filename).unwrap();
     write!(
