@@ -5,7 +5,6 @@ use std::io::Write;
 use std::path::Path;
 use std::{collections::HashMap, fs::File, time::Duration};
 
-use crate::AbisType;
 
 fn transpose<T>(v: Vec<Vec<T>>) -> Vec<Vec<T>> {
     assert!(!v.is_empty());

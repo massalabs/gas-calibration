@@ -1,5 +1,5 @@
 use std::{
-    collections::HashMap, io::Read, process, str::FromStr, time::Duration,
+    collections::HashMap, io::Read, str::FromStr, time::Duration,
 };
 
 use massa_execution_worker::InterfaceImpl;
