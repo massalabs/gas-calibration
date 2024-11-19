@@ -75,6 +75,7 @@ pub fn execute_batch_sc(
         );
 
         if let Some(preparation_bytecode) = preparation_bytecode {
+            println!("Executing preparation bytecode");
             if let Err(e) = run_main_gc(
                 &interface,
                 RuntimeModule::new(
