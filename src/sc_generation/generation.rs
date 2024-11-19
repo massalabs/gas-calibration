@@ -142,7 +142,7 @@ pub fn generate_calls(
     let address_sc = static_address();
     let nb_calls = rng.gen_range(1..limit_per_calls);
     let mut call_already_prep = false;
-    let mut def_call_already_prep = false;
+    let mut def_call_already_prep = 0;
 
     for _ in 0..nb_calls {
         match abi_type {
@@ -187,7 +187,7 @@ fn generate_call_as(
     preparation_calls: &mut Vec<String>,
     address_sc: &str,
     call_already_prep: &mut bool,
-    def_call_already_prep: &mut bool,
+    def_call_cancel_counter: &mut u64,
 ) {
     use super::abi_generation::*;
     match abi[0].as_str() {
@@ -286,7 +286,7 @@ fn generate_call_as(
             rng,
             calls,
             preparation_calls,
-            def_call_already_prep,
+            def_call_cancel_counter,
         ),
         "Date.now" => calls.push("Date.now();".to_string()),
         _ => {
@@ -311,7 +311,7 @@ fn generate_call_wasmv1(
     preparation_calls: &mut Vec<String>,
     address_sc: &str,
     call_already_prep: &mut bool,
-    def_call_already_prep: &mut bool,
+    def_call_already_prep: &mut u64,
 ) {
     use super::abi_wasmv1_generation::*;
     match abi[0].as_str() {

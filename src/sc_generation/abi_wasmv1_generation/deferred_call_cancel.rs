@@ -7,30 +7,39 @@ pub fn generate_abi_deferred_call_cancel(
     address_sc: &str,
     calls: &mut Vec<String>,
     preparation_calls: &mut Vec<String>,
-    call_already_prep: &mut bool,
+    call_already_prep: &mut u64,
 ) {
     let mut rng = rand::thread_rng();
 
-    if !*call_already_prep {
-        preparation_calls.push(format!(
-            "let call_id = env.deferred_call_register(\"{}\", \"{}\", {}, {}, {} ,toBytes(\"{}\"), {});
-            env.set(toBytes(\"CALL_ID\"), toBytes(call_id));
+    preparation_calls.push(format!(
+            "let call_id_{} = 
+            env.deferred_call_register(\"{}\", \"{}\", {}, {}, {} ,toBytes(\"{}\"), {});
+            env.set_ds_value(toBytes(\"CALL_ID_{}\"), toBytes(call_id_{}), null);
             ",
+            call_already_prep,
             address_sc,
             generate_string(rng.gen_range(5..25)),
             rng.gen_range(100..1_000),
             rng.gen_range(0..THREAD_COUNT),
-            rng.gen_range(100_000_000..1_000_000_000),
+            rng.gen_range(100_000_000..200_000_000),
             rng.gen_range(0..2000),
-            rng.gen_range(0..1000)
+            rng.gen_range(0..1000),
+            call_already_prep,
+            call_already_prep,
         ));
-        calls.push(
-            "let call_id = fromBytes(env.get(toBytes(\"CALL_ID\")));"
-                .to_string(),
-        );
-        calls.push("env.deferred_call_cancel(call_id);".to_string());
-        *call_already_prep = true;
-    } else {
-        calls.push("env.deferred_call_cancel(call_id);".to_string());
-    }
+
+    calls.push(format!(
+        "
+        let val_{} = new Uint8Array(11);
+        val_{}.set(toBytes(\"CALL_ID_{}\"));
+        let call_id_{} =  String.UTF8.decode(env.get_ds_value(val_{}, null).buffer);
+        env.deferred_call_cancel(call_id_{});",
+        call_already_prep,
+        call_already_prep,
+        call_already_prep,
+        call_already_prep,
+        call_already_prep,
+        call_already_prep
+    ));
+    *call_already_prep = *call_already_prep + 1;
 }

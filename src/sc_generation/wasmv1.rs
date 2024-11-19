@@ -2,7 +2,7 @@ pub fn write_sc_wasmv1(calls: &[String]) -> String {
     format!(
         "import {{ decimalCount32 }} from 'util/number';
 import {{ env }} from '../../wasmv1/env_wasmv1';
-import {{ toBytes }} from '../../wasmv1/helpers';
+import {{ toBytes, fromBytes }} from '../../wasmv1/helpers';
 
 let shared_mem: ArrayBuffer = new ArrayBuffer(0);
 

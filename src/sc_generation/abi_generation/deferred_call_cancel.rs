@@ -8,14 +8,14 @@ pub fn generate_abi_deferred_call_cancel(
     rng: &mut ThreadRng,
     calls: &mut Vec<String>,
     preparation_calls: &mut Vec<String>,
-    call_already_prep: &mut bool,
+    call_already_prep: &mut u64,
 ) {
-    if !*call_already_prep {
-        preparation_calls.push(format!(
-            "let call_id = 
+    preparation_calls.push(format!(
+            "let call_id_{} = 
             env.deferredCallRegister(\"{}\", \"{}\", {}, {}, {} ,toBytes(\"{}\"), {});
-            env.set(toBytes(\"CALL_ID\"), toBytes(call_id));
+            env.set(toBytes(\"CALL_ID_{}\"), toBytes(call_id_{}));
             ",
+            call_already_prep,
             address_sc,
             generate_string(rng.gen_range(5..25)),
             rng.gen_range(100..1_000),
@@ -23,14 +23,15 @@ pub fn generate_abi_deferred_call_cancel(
             rng.gen_range(100_000_000..200_000_000),
             rng.gen_range(0..2000),
             rng.gen_range(0..1000),
+            call_already_prep,
+            call_already_prep,
         ));
-        calls.push(
-            "let call_id = fromBytes(env.get(toBytes(\"CALL_ID\")));"
-                .to_string(),
-        );
-        calls.push("env.deferredCallCancel(call_id);".to_string());
-        *call_already_prep = true;
-    } else {
-        calls.push("env.deferredCallCancel(call_id);".to_string());
-    }
+
+    calls.push(format!(
+        "let call_id_{} = fromBytes(env.get(toBytes(\"CALL_ID_{}\")));
+        env.deferredCallCancel(call_id_{});",
+        call_already_prep, call_already_prep, call_already_prep,
+    ));
+
+    *call_already_prep = *call_already_prep + 1;
 }
