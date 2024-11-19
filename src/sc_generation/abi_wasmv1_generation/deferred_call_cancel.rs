@@ -30,16 +30,11 @@ pub fn generate_abi_deferred_call_cancel(
 
     calls.push(format!(
         "
-        let val_{} = new Uint8Array(11);
-        val_{}.set(toBytes(\"CALL_ID_{}\"));
-        let call_id_{} =  String.UTF8.decode(env.get_ds_value(val_{}, null).buffer);
+        let call_id_{} =  String.UTF8.decode(env.get_ds_value(toBytes(\"CALL_ID_{}\"), null).buffer);
         env.deferred_call_cancel(call_id_{});",
         call_already_prep,
         call_already_prep,
         call_already_prep,
-        call_already_prep,
-        call_already_prep,
-        call_already_prep
     ));
     *call_already_prep = *call_already_prep + 1;
 }
