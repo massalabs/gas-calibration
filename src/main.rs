@@ -19,9 +19,9 @@ mod sc_generation;
 
 fn main() {
     let args = args::Args::parse();
-    let nb_scs_per_abi: u32 = args.nb_scs_by_abi.unwrap_or(100);
-    // let nb_scs_per_abi: u32 = args.nb_scs_by_abi.unwrap_or(1);
-    let nb_instructions = 300;
+    // let nb_scs_per_abi: u32 = args.nb_scs_by_abi.unwrap_or(100);
+    let nb_scs_per_abi: u32 = args.nb_scs_by_abi.unwrap_or(10);
+    let nb_instructions = 100;
     let nb_wasm_scs = 0;
 
     let as_env_path = as_env_path();
@@ -52,7 +52,7 @@ fn main() {
             abis.generate_scs(nb_scs_per_abi, nb_instructions);
             abis.build_scs(nb_scs_per_abi);
 
-            generate_wasm_scs(nb_wasm_scs, 300);
+            generate_wasm_scs(nb_wasm_scs, 1);
         }
     }
 
@@ -64,7 +64,7 @@ fn main() {
             acc
         });
 
-    compile_and_write_results(results, u32::MAX, Duration::from_millis(300));
+    compile_and_write_results(results, u32::MAX, Duration::from_millis(3000));
 
     // Not executing WAT SCs, as the new runtime does not support them out of
     // the box
