@@ -2245,7 +2245,7 @@ dependencies = [
 [[package]]
 name = "massa-proto-rs"
 version = "0.1.0"
-source = "git+https://github.com/massalabs/massa-proto-rs?rev=dad2ccf785c14d2a9015f87cf7db1dab8b0cf996#dad2ccf785c14d2a9015f87cf7db1dab8b0cf996"
+source = "git+https://github.com/massalabs/massa-proto-rs.git?rev=9bfbbe1b5dc62815aa2b9f9c5b827b0198da65e3#9bfbbe1b5dc62815aa2b9f9c5b827b0198da65e3"
 dependencies = [
  "glob",
  "prost",
@@ -2259,7 +2259,7 @@ dependencies = [
 [[package]]
 name = "massa-sc-runtime"
 version = "0.10.0"
-source = "git+https://github.com/massalabs/massa-sc-runtime?rev=8b1e66c6116bf477078e6bd51b60d61e87dabcab#8b1e66c6116bf477078e6bd51b60d61e87dabcab"
+source = "git+https://github.com/massalabs/massa-sc-runtime?rev=a356943983c274436e6092399667f8ea505d3388#a356943983c274436e6092399667f8ea505d3388"
 dependencies = [
  "anyhow",
  "as-ffi-bindings",
@@ -2293,8 +2293,8 @@ dependencies = [
 
 [[package]]
 name = "massa_async_pool"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "massa-proto-rs",
  "massa_db_exports",
@@ -2312,8 +2312,8 @@ dependencies = [
 
 [[package]]
 name = "massa_channel"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "crossbeam",
  "prometheus",
@@ -2322,8 +2322,8 @@ dependencies = [
 
 [[package]]
 name = "massa_cipher"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "aes-gcm",
  "displaydoc",
@@ -2334,8 +2334,8 @@ dependencies = [
 
 [[package]]
 name = "massa_db_exports"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "displaydoc",
  "massa_hash",
@@ -2346,8 +2346,8 @@ dependencies = [
 
 [[package]]
 name = "massa_db_worker"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "massa_db_exports",
  "massa_hash",
@@ -2359,8 +2359,8 @@ dependencies = [
 
 [[package]]
 name = "massa_deferred_calls"
-version = "2.2.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "massa-proto-rs",
  "massa_db_exports",
@@ -2376,8 +2376,8 @@ dependencies = [
 
 [[package]]
 name = "massa_event_cache"
-version = "0.1.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "massa_metrics",
  "massa_models",
@@ -2392,8 +2392,8 @@ dependencies = [
 
 [[package]]
 name = "massa_executed_ops"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "massa_db_exports",
  "massa_models",
@@ -2403,8 +2403,8 @@ dependencies = [
 
 [[package]]
 name = "massa_execution_exports"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "displaydoc",
  "massa-proto-rs",
@@ -2415,6 +2415,7 @@ dependencies = [
  "massa_models",
  "massa_module_cache",
  "massa_pos_exports",
+ "massa_serialization",
  "massa_storage",
  "massa_time",
  "massa_versioning",
@@ -2423,14 +2424,14 @@ dependencies = [
  "tempfile",
  "thiserror",
  "tokio",
+ "tracing",
 ]
 
 [[package]]
 name = "massa_execution_worker"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
- "anyhow",
  "blake3",
  "bs58",
  "cfg-if",
@@ -2463,7 +2464,6 @@ dependencies = [
  "rand",
  "rand_xoshiro",
  "rust-rocksdb",
- "schnellru",
  "serde_json",
  "sha2 0.10.8",
  "sha3",
@@ -2473,8 +2473,8 @@ dependencies = [
 
 [[package]]
 name = "massa_final_state"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "anyhow",
  "bs58",
@@ -2506,8 +2506,8 @@ dependencies = [
 
 [[package]]
 name = "massa_hash"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "blake3",
  "bs58",
@@ -2520,8 +2520,8 @@ dependencies = [
 
 [[package]]
 name = "massa_ledger_exports"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "displaydoc",
  "massa-proto-rs",
@@ -2541,8 +2541,8 @@ dependencies = [
 
 [[package]]
 name = "massa_ledger_worker"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "massa_db_exports",
  "massa_db_worker",
@@ -2556,8 +2556,8 @@ dependencies = [
 
 [[package]]
 name = "massa_metrics"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "hyper 0.14.31",
  "lazy_static",
@@ -2568,8 +2568,8 @@ dependencies = [
 
 [[package]]
 name = "massa_models"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "bitvec",
  "bs58",
@@ -2596,8 +2596,8 @@ dependencies = [
 
 [[package]]
 name = "massa_module_cache"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "anyhow",
  "displaydoc",
@@ -2616,8 +2616,8 @@ dependencies = [
 
 [[package]]
 name = "massa_pos_exports"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "bitvec",
  "crossbeam-channel",
@@ -2640,8 +2640,8 @@ dependencies = [
 
 [[package]]
 name = "massa_pos_worker"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "massa_hash",
  "massa_models",
@@ -2655,8 +2655,8 @@ dependencies = [
 
 [[package]]
 name = "massa_serialization"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "displaydoc",
  "nom",
@@ -2667,8 +2667,8 @@ dependencies = [
 
 [[package]]
 name = "massa_signature"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "bs58",
  "displaydoc",
@@ -2684,8 +2684,8 @@ dependencies = [
 
 [[package]]
 name = "massa_storage"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "massa_metrics",
  "massa_models",
@@ -2694,8 +2694,8 @@ dependencies = [
 
 [[package]]
 name = "massa_time"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "displaydoc",
  "massa-proto-rs",
@@ -2708,8 +2708,8 @@ dependencies = [
 
 [[package]]
 name = "massa_versioning"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "machine",
  "massa-proto-rs",
@@ -2730,8 +2730,8 @@ dependencies = [
 
 [[package]]
 name = "massa_wallet"
-version = "2.5.0"
-source = "git+https://github.com/massalabs/massa?tag=MAIN.2.5#acc4541c7742190b5d9789c107ed9e79417945a4"
+version = "3.0.0"
+source = "git+https://github.com/massalabs/massa?tag=MAIN.3.0#a29f1cb588ad48237db232453747dd1aec96abe7"
 dependencies = [
  "displaydoc",
  "massa_cipher",
