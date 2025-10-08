@@ -3,7 +3,10 @@ use rand::Rng;
 
 use super::{generate_bytes, generate_string};
 
-pub fn generate_abi_send_async_message(address_sc: &str, calls: &mut Vec<String>) {
+pub fn generate_abi_send_async_message(
+    address_sc: &str,
+    calls: &mut Vec<String>,
+) {
     let mut rng = rand::thread_rng();
 
     let rng_bytes = generate_bytes(rng.gen_range(1..1000));
@@ -22,6 +25,6 @@ pub fn generate_abi_send_async_message(address_sc: &str, calls: &mut Vec<String>
         rng.gen_range(0..THREAD_COUNT),
         rng.gen_range(100_000..300_000),
         rng.gen_range(1..3),
-        rng.gen_range(100_000_000..1_000_000_000),
+        rng.gen_range(1..10000),
     ));
 }

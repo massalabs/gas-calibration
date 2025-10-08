@@ -1,79 +1,121 @@
-use std::{collections::HashMap, process::Command, time::Duration};
+use std::{fs, path::Path, process::Command, time::Duration};
 
 use clap::Parser;
+use config::{as_env_path, output_dir, template_dir, wasmv1_env_path};
+use sc_generation::{
+    abis::{self, AbisType},
+    generate_wasm_scs,
+};
 use which::which;
 
 use crate::calculation::compile_and_write_results;
 
 mod args;
 mod calculation;
+mod config;
 mod execute_batch_sc;
 mod execution;
 mod sc_generation;
 
 fn main() {
     let args = args::Args::parse();
-    let nb_scs_by_abi: u32 = args.nb_scs_by_abi.unwrap_or(100);
+    let nb_scs_per_abi: u32 = args.nb_scs_by_abi.unwrap_or(100);
+    // let nb_scs_per_abi: u32 = args.nb_scs_by_abi.unwrap_or(1);
+    let nb_instructions = 300;
     let nb_wasm_scs = 0;
 
-    let npm_path = which("npm").expect("npm not found in PATH");
-    Command::new(npm_path.clone())
-        .arg("update")
-        .current_dir("./src/sc_generation/template")
-        .output()
-        .expect("failed to execute process");
+    let as_env_path = as_env_path();
+    let wasmv1_env_path = wasmv1_env_path();
 
-    Command::new(npm_path.clone())
-        .arg("install")
-        .current_dir("./src/sc_generation/template")
-        .output()
-        .expect("failed to execute process");
+    initialize_calibration_environment(&as_env_path, &wasmv1_env_path);
 
-    let env_path = args
-        .as_sdk_env_path
-        .unwrap_or(String::from("./src/sc_generation/template/env_wasmv1.ts"));
-    // Copy the env file to the current directory
-    //TODO: Improve
-    std::fs::copy(
-        "./src/sc_generation/template/env_wasmv1.ts",
-        "./src/sc_generation/template/env_wasmv1.ts.bak",
-    )
-    .unwrap();
-    //std::fs::copy(env_path.clone(), "./src/sc_generation/template/env.ts").unwrap();
-    let abis = sc_generation::abis::get_abis(&env_path);
+    let mut abis_list = [
+        abis::get_as_abis(&as_env_path),
+        abis::get_wasmv1_abis(&wasmv1_env_path),
+    ];
+
     if args.only_generate {
-        let datastore = sc_generation::generation::generate_op_datastore();
-        //let datastore = sc_generation::read_existing_op_datastore();
-        sc_generation::generate_scs(nb_scs_by_abi, 300, datastore.clone(), &env_path);
-        std::fs::copy(
-            "./src/sc_generation/template/env_wasmv1.ts.bak",
-            "./src/sc_generation/template/env_wasmv1.ts",
-        )
-        .unwrap();
+        for abis in abis_list.iter_mut() {
+            abis.read_existing_op_datastore();
+            abis.generate_scs(nb_scs_per_abi, nb_instructions);
+        }
         return;
     }
-    let op_datastore = if args.skip_generation_scs {
-        //sc_generation::generate_wasm_scs(nb_wasm_scs, 300);
-        sc_generation::read_existing_op_datastore()
-    } else {
-        let datastore = sc_generation::generation::generate_op_datastore();
-        //let datastore = sc_generation::read_existing_op_datastore();
-        sc_generation::generate_scs(nb_scs_by_abi, 300, datastore.clone(), &env_path);
-        sc_generation::build_scs(nb_scs_by_abi, abis);
-        sc_generation::generate_wasm_scs(nb_wasm_scs, 300);
-        datastore
-    };
-    std::fs::copy(
-        "./src/sc_generation/template/env_wasmv1.ts.bak",
-        "./src/sc_generation/template/env_wasmv1.ts",
-    )
-    .unwrap();
-    let mut full_results: HashMap<String, Vec<f64>> = HashMap::new();
-    execution::execute_abi_scs(&mut full_results, nb_scs_by_abi, op_datastore, &env_path);
-    compile_and_write_results(full_results, u32::MAX, Duration::from_millis(300), true);
 
-    // Not executing WAT SCs, as the new runtime does not support them out of the box
-    /*let mut full_results: HashMap<String, Vec<f64>> = HashMap::new();
-    execution::execute_wasm_scs(&mut full_results, nb_wasm_scs);
-    compile_and_write_results(full_results, u32::MAX, Duration::from_millis(300), false);*/
+    if args.skip_generation_scs {
+        for abis in abis_list.iter_mut() {
+            abis.read_existing_op_datastore();
+        }
+    } else {
+        for abis in abis_list.iter_mut() {
+            abis.generate_op_datastore();
+            abis.generate_scs(nb_scs_per_abi, nb_instructions);
+            abis.build_scs(nb_scs_per_abi);
+
+            generate_wasm_scs(nb_wasm_scs, 300);
+        }
+    }
+
+    let results = abis_list
+        .iter()
+        .map(|abis| abis.execute_abi_scs(nb_scs_per_abi))
+        .fold(std::collections::HashMap::new(), |mut acc, map| {
+            acc.extend(map);
+            acc
+        });
+
+    compile_and_write_results(results, u32::MAX, Duration::from_millis(300));
+
+    // Not executing WAT SCs, as the new runtime does not support them out of
+    // the box
+    // let mut full_results: HashMap<String, Vec<f64>> = HashMap::new();
+    // execution::execute_wasm_scs(&mut full_results, nb_wasm_scs);
+    // compile_and_write_results(full_results, u32::MAX,
+    // Duration::from_millis(300), false);
+}
+
+// copy templates to output directory
+fn initialize_calibration_environment(
+    as_env_path: &Path,
+    wasmv1_env_path: &Path,
+) {
+    println!("############################################################");
+    println!("Set assemblyscript env");
+    let as_output_dir = output_dir(&AbisType::AS);
+    let as_env_path_output = &as_output_dir.join("env.ts");
+    fs::copy(as_env_path, as_env_path_output).unwrap();
+
+    println!("############################################################");
+    println!("Set wasmv1 env");
+    let wasmv1_output_dir = output_dir(&AbisType::WasmV1);
+    let wasmv1_env_path_output = &wasmv1_output_dir.join("env_wasmv1.ts");
+    fs::copy(wasmv1_env_path, wasmv1_env_path_output).unwrap();
+
+    let files = ["package.json", "helpers.ts"];
+    for abi_type in &[AbisType::AS, AbisType::WasmV1] {
+        let output_dir = output_dir(abi_type);
+        for file in &files {
+            fs::copy(template_dir(abi_type).join(file), output_dir.join(file))
+                .unwrap();
+        }
+    }
+
+    // npm install
+    let npm_path = which("npm").expect("npm not found in PATH");
+    npm_install_update(&npm_path, &AbisType::AS);
+    npm_install_update(&npm_path, &AbisType::WasmV1);
+}
+
+fn npm_install_update(npm_path: &Path, abi_type: &AbisType) {
+    Command::new(npm_path)
+        .arg("update")
+        .current_dir(output_dir(abi_type))
+        .output()
+        .expect("failed to execute process");
+
+    Command::new(npm_path)
+        .arg("install")
+        .current_dir(output_dir(abi_type))
+        .output()
+        .expect("failed to execute process");
 }

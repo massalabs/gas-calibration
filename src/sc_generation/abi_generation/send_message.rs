@@ -3,7 +3,11 @@ use rand::{rngs::ThreadRng, Rng};
 
 use super::generate_string;
 
-pub fn generate_abi_send_message(address_sc: &str, rng: &mut ThreadRng, calls: &mut Vec<String>) {
+pub fn generate_abi_send_message(
+    address_sc: &str,
+    rng: &mut ThreadRng,
+    calls: &mut Vec<String>,
+) {
     calls.push(format!(
         "env.sendMessage(\"{}\", \"{}\", {}, {}, {}, {}, {}, {}, {}, toBytes(\"{}\"), \"\", new StaticArray<u8>(0));",
         address_sc,
@@ -12,9 +16,9 @@ pub fn generate_abi_send_message(address_sc: &str, rng: &mut ThreadRng, calls: &
         rng.gen_range(0..THREAD_COUNT),
         rng.gen_range(1_000..10_000),
         rng.gen_range(0..THREAD_COUNT),
-        rng.gen_range(100_000..300_000),
+        rng.gen_range(2_300_000..4_000_000),
         rng.gen_range(1..3),
         rng.gen_range(100_000_000..1_000_000_000),
-        generate_string(rng.gen_range(0..1000))
+        generate_string(rng.gen_range(0..50))
     ));
 }

@@ -1,6 +1,9 @@
 use super::get_bytecode;
 
-pub fn generate_abi_set_bytecode(calls: &mut Vec<String>, call_already_prep: &mut bool) {
+pub fn generate_abi_set_bytecode(
+    calls: &mut Vec<String>,
+    call_already_prep: &mut bool,
+) {
     if !*call_already_prep {
         let bytecode_bytes = get_bytecode();
         calls.push(format!(

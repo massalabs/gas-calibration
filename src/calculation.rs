@@ -2,7 +2,9 @@ use ndarray::{Array1, Array2};
 use nnls::nnls;
 use std::collections::BTreeMap;
 use std::io::Write;
+use std::path::Path;
 use std::{collections::HashMap, fs::File, time::Duration};
+
 
 fn transpose<T>(v: Vec<Vec<T>>) -> Vec<Vec<T>> {
     assert!(!v.is_empty());
@@ -59,10 +61,10 @@ pub fn compile_and_write_results(
     results: HashMap<String, Vec<f64>>,
     max_gas: u32,
     max_execution_time: Duration,
-    abi_mode: bool,
 ) -> BTreeMap<String, (f64, usize, f64)> {
     // Mean, number of element, standard deviation
-    let mut final_results: BTreeMap<String, (f64, usize, f64)> = BTreeMap::new();
+    let mut final_results: BTreeMap<String, (f64, usize, f64)> =
+        BTreeMap::new();
     let mut gas_costs: BTreeMap<String, u32> = BTreeMap::new();
     for (key, value) in results.iter() {
         final_results.insert(
@@ -74,33 +76,32 @@ pub fn compile_and_write_results(
             ),
         );
     }
-    let result_filename = if abi_mode {
-        "./results/abi_results.json".to_string()
-    } else {
-        "./results/wasm_results.json".to_string()
-    };
-    let mut output = File::create(result_filename).unwrap();
+
+    let result_filename = Path::new("./results/abi_results.json");
+    let mut output = File::create(result_filename).unwrap_or_else(|_| {
+        panic!("Failed to create file {:?}", result_filename)
+    });
     write!(
         output,
         "{}",
         serde_json::to_string_pretty(&final_results).unwrap()
     )
     .unwrap();
+
     for (key, value) in final_results.iter() {
         gas_costs.insert(
-            if abi_mode {
-                format_key(key)
-            } else {
-                key.clone()
-            },
-            (max_gas as f64 / (max_execution_time.as_millis() as f64 / value.0)) as u32,
+            // match abi_type {
+            //     AbisType::AS => format_key(key),
+            //     AbisType::WasmV1 => key.clone(),
+            // }
+            format_key(key),
+            (max_gas as f64 / (max_execution_time.as_millis() as f64 / value.0))
+                as u32,
         );
     }
-    let output_filename = if abi_mode {
-        "./results/abi_gas_costs.json".to_string()
-    } else {
-        "./results/wasm_gas_costs.json".to_string()
-    };
+
+    let output_filename = Path::new("./results/abi_gas_costs.json");
+
     let mut output = File::create(output_filename).unwrap();
     write!(
         output,
@@ -125,7 +126,9 @@ fn _is_constant(key: &str, abi_names: &[String], abis: &[Vec<String>]) -> bool {
         let abi_name = format!("{}:", abi_name);
         if key.contains(&abi_name) {
             let full_abi = abis.get(idx).unwrap();
-            if let Ok(param_idx) = key.split(':').last().unwrap().parse::<usize>() {
+            if let Ok(param_idx) =
+                key.split(':').last().unwrap().parse::<usize>()
+            {
                 let param = full_abi.get(param_idx + 1).unwrap();
                 let param_type = param.split(": ").collect::<Vec<&str>>()[0];
                 if param_type == "address" {
@@ -174,13 +177,15 @@ pub fn calculate_times(
         return HashMap::new();
     }
 
-    let values: Vec<Vec<f64>> = transpose(data[1..].iter().map(|elem| elem.1.clone()).collect());
+    let values: Vec<Vec<f64>> =
+        transpose(data[1..].iter().map(|elem| elem.1.clone()).collect());
     let arr = Array2::from_shape_vec(
         (values.len(), values[0].len()),
         values.into_iter().flatten().collect(),
     )
     .unwrap();
-    let times = Array1::from_shape_vec(data[0].1.len(), data[0].1.clone()).unwrap();
+    let times =
+        Array1::from_shape_vec(data[0].1.len(), data[0].1.clone()).unwrap();
     let (alphas, _residual) = nnls(arr.view(), times.view());
     let alphas = alphas
         .iter()

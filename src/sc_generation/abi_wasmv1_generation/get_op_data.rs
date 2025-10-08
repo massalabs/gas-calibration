@@ -11,7 +11,7 @@ pub fn generate_abi_get_op_data(
     if !*call_already_prep {
         while let Some((key_bytes, _)) = op_datastore.iter().choose(&mut rng) {
             let key = String::from_utf8_lossy(key_bytes);
-            if key != "empty_main_sc" {
+            if key != "empty_main_sc_wasmv1" {
                 calls.push(format!(
                     "let key_bytes = new Uint8Array({});
                     key_bytes.set({:?});",

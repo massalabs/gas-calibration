@@ -131,10 +131,31 @@ export namespace env {
 
   @external("massa", "assembly_script_signature_verify")
   export declare function isSignatureValid(
-    digest: string,
+    data: string,
     signature: string,
     publicKey: string,
   ): bool;
+
+  @external("massa", "assembly_script_evm_signature_verify")
+  export declare function isEvmSignatureValid(
+    data: StaticArray<u8>,
+    signature: StaticArray<u8>,
+    publicKey: StaticArray<u8>,
+  ): bool;
+
+  @external("massa", "assembly_script_evm_get_address_from_pubkey")
+  export declare function evmGetAddressFromPubkey(
+    publicKey: StaticArray<u8>,
+  ): StaticArray<u8>;
+
+  @external("massa", "assembly_script_evm_get_pubkey_from_signature")
+  export declare function evmGetPubkeyFromSignature(
+    hash: StaticArray<u8>,
+    signature: StaticArray<u8>,
+  ): StaticArray<u8>;
+
+  @external("massa", "assembly_script_is_address_eoa")
+  export declare function isAddressEoa(address: string): bool;
 
   @external("massa", "assembly_script_address_from_public_key")
   export declare function publicKeyToAddress(publicKey: string): string;
@@ -148,7 +169,7 @@ export namespace env {
   @external("massa", "assembly_script_send_message")
   export declare function sendMessage(
     address: string,
-    handler: string,
+    functionName: string,
     validityStartPeriod: u64,
     validityStartThread: u8,
     validityEndPeriod: u64,
@@ -156,10 +177,13 @@ export namespace env {
     maxGas: u64,
     rawFee: u64,
     coins: u64,
-    data: StaticArray<u8>,
-    filter_address: string,
-    filter_key: StaticArray<u8>,
+    functionParams: StaticArray<u8>,
+    filterAddress: string,
+    filterKey: StaticArray<u8>,
   ): void;
+
+  @external("massa", "assembly_script_get_origin_operation_id")
+  export declare function getOriginOperationId(): string;
 
   @external("massa", "assembly_script_get_current_period")
   export declare function currentPeriod(): u64;
@@ -179,6 +203,11 @@ export namespace env {
   @external("massa", "assembly_script_get_op_keys")
   export declare function getOpKeys(): StaticArray<u8>;
 
+  @external("massa", "assembly_script_get_op_keys_prefix")
+  export declare function getOpKeysPrefix(
+    prefix: StaticArray<u8>,
+  ): StaticArray<u8>;
+
   @external("massa", "assembly_script_has_op_key")
   export declare function hasOpKey(key: StaticArray<u8>): StaticArray<u8>;
 
@@ -188,6 +217,37 @@ export namespace env {
   @external("massa", "assembly_script_hash_sha256")
   export declare function sha256(bytecode: StaticArray<u8>): StaticArray<u8>;
 
+  @external("massa", "assembly_script_keccak256_hash")
+  export declare function keccak256(data: StaticArray<u8>): StaticArray<u8>;
+
   @external("massa", "assembly_script_validate_address")
   export declare function validateAddress(address: string): bool;
+
+  @external("massa", "assembly_script_chain_id")
+  export declare function chainId(): u64;
+
+  @external("massa", "assembly_script_get_deferred_call_quote")
+  export declare function deferredCallQuote(
+    ascPeriod: u64,
+    ascThread: u8,
+    maxGas: u64,
+    paramsSize: u64,
+  ): u64;
+
+  @external("massa", "assembly_script_deferred_call_register")
+  export declare function deferredCallRegister(
+    targetAddress: string,
+    targetFunction: string,
+    targetPeriod: u64,
+    targetThread: u8,
+    maxGas: u64,
+    params: StaticArray<u8>,
+    rawCoins: u64,
+  ): string;
+
+  @external("massa", "assembly_script_deferred_call_exists")
+  export declare function deferredCallExists(callId: string): bool;
+
+  @external("massa", "assembly_script_deferred_call_cancel")
+  export declare function deferredCallCancel(callId: string): void;
 }

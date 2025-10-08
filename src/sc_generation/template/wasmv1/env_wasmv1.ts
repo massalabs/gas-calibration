@@ -10,269 +10,285 @@ export namespace env {
   // @ts-ignore: decorator
   @external("massa", "abi_set_ds_value")
   export declare function abi_set_ds_value(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_ds_value")
   export declare function abi_get_ds_value(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_delete_ds_entry")
   export declare function abi_delete_ds_entry(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_append_ds_value")
   export declare function abi_append_ds_value(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_ds_entry_exists")
   export declare function abi_ds_entry_exists(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_balance")
   export declare function abi_get_balance(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_bytecode")
   export declare function abi_get_bytecode(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_set_bytecode")
   export declare function abi_set_bytecode(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_ds_keys")
   export declare function abi_get_ds_keys(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_op_keys")
   export declare function abi_get_op_keys(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_op_entry_exists")
   export declare function abi_op_entry_exists(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_op_data")
   export declare function abi_get_op_data(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_call")
   export declare function abi_call(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_create_sc")
   export declare function abi_create_sc(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_transfer_coins")
   export declare function abi_transfer_coins(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_generate_event")
   export declare function abi_generate_event(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_abort")
   export declare function abi_abort(arg: i32): i32;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_current_slot")
   export declare function abi_get_current_slot(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_hash_sha256")
   export declare function abi_hash_sha256(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_hash_keccak256")
   export declare function abi_hash_keccak256(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_hash_blake3")
   export declare function abi_hash_blake3(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_evm_verify_signature")
   export declare function abi_evm_verify_signature(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_evm_get_address_from_pubkey")
   export declare function abi_evm_get_address_from_pubkey(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_evm_get_pubkey_from_signature")
   export declare function abi_evm_get_pubkey_from_signature(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_is_address_eoa")
   export declare function abi_is_address_eoa(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_remaining_gas")
   export declare function abi_get_remaining_gas(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_owned_addresses")
   export declare function abi_get_owned_addresses(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_call_stack")
   export declare function abi_get_call_stack(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_address_from_public_key")
   export declare function abi_address_from_public_key(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_unsafe_random")
   export declare function abi_unsafe_random(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_call_coins")
   export declare function abi_get_call_coins(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_native_time")
   export declare function abi_get_native_time(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_send_async_message")
   export declare function abi_send_async_message(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_origin_operation_id")
   export declare function abi_get_origin_operation_id(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_local_execution")
   export declare function abi_local_execution(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_caller_has_write_access")
   export declare function abi_caller_has_write_access(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_check_native_amount")
   export declare function abi_check_native_amount(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_add_native_amount")
   export declare function abi_add_native_amount(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_sub_native_amount")
   export declare function abi_sub_native_amount(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_scalar_mul_native_amount")
   export declare function abi_scalar_mul_native_amount(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_scalar_div_rem_native_amount")
   export declare function abi_scalar_div_rem_native_amount(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_div_rem_native_amount")
   export declare function abi_div_rem_native_amount(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_native_amount_to_string")
   export declare function abi_native_amount_to_string(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_native_amount_from_string")
   export declare function abi_native_amount_from_string(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_base58_check_to_bytes")
   export declare function abi_base58_check_to_bytes(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_bytes_to_base58_check")
   export declare function abi_bytes_to_base58_check(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_check_address")
   export declare function abi_check_address(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_check_pubkey")
   export declare function abi_check_pubkey(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_check_signature")
   export declare function abi_check_signature(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_address_category")
   export declare function abi_get_address_category(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_address_version")
   export declare function abi_get_address_version(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_pubkey_version")
   export declare function abi_get_pubkey_version(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_get_signature_version")
   export declare function abi_get_signature_version(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_checked_add_native_time")
   export declare function abi_checked_add_native_time(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_checked_sub_native_time")
   export declare function abi_checked_sub_native_time(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_checked_mul_native_time")
   export declare function abi_checked_mul_native_time(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_checked_scalar_div_native_time")
   export declare function abi_checked_scalar_div_native_time(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_checked_div_native_time")
   export declare function abi_checked_div_native_time(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_compare_address")
   export declare function abi_compare_address(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_compare_native_amount")
   export declare function abi_compare_native_amount(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_compare_native_time")
   export declare function abi_compare_native_time(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_compare_pub_key")
   export declare function abi_compare_pub_key(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_verify_signature")
   export declare function abi_verify_signature(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_local_call")
   export declare function abi_local_call(arg: ArrayBuffer): ArrayBuffer;
-  
+
   // @ts-ignore: decorator
   @external("massa", "abi_function_exists")
   export declare function abi_function_exists(arg: ArrayBuffer): ArrayBuffer;
 
+  // @ts-ignore: decorator
+  @external("massa", "abi_get_deferred_call_quote")
+  export declare function abi_get_deferred_call_quote(arg: ArrayBuffer): ArrayBuffer;
+
+  // @ts-ignore: decorator
+  @external("massa", "abi_deferred_call_register")
+  export declare function abi_deferred_call_register(arg: ArrayBuffer): ArrayBuffer;
+
+  // @ts-ignore: decorator
+  @external("massa", "abi_deferred_call_cancel")
+  export declare function abi_deferred_call_cancel(arg: ArrayBuffer): ArrayBuffer;
+
+  // @ts-ignore: decorator
+  @external("massa", "abi_deferred_call_exists")
+  export declare function abi_deferred_call_exists(arg: ArrayBuffer): ArrayBuffer;
+
   // */
-  
+
   // ***************************************************************************
   // utility functions
   // ***************************************************************************
-  
+
   /// Creates a Uint8Array from an existing Uint8Array by prepending a little-endian i32 length prefix.
   export function encode_length_prefixed(data: Uint8Array): Uint8Array {
     const len: i32 = data.length;
@@ -284,7 +300,7 @@ export namespace env {
     result.set(data, 4);
     return result;
   }
-  
+
   // abort() implementation adapted from https://github.com/AssemblyScript/wasi-shim.git
   export function myabort(
     message: string | null,
@@ -297,10 +313,10 @@ export namespace env {
     const lenPtr: usize = 0;
     const bufPtr: usize = lenPtr + sizeof<usize>();
     var ptr = bufPtr;
-  
+
     store<u64>(ptr, 0x203a74726f6261);
     ptr += 7; // 'abort: '
-  
+
     if (message != null) {
       ptr += String.UTF8.encodeUnsafe(
         changetype<usize>(message),
@@ -317,9 +333,9 @@ export namespace env {
         ptr
       );
     }
-  
+
     store<u8>(ptr++, 0x28); // (
-  
+
     var len = decimalCount32(lineNumber);
     ptr += len;
     do {
@@ -328,9 +344,9 @@ export namespace env {
       lineNumber = t;
     } while (lineNumber);
     ptr += len;
-  
+
     store<u8>(ptr++, 0x3a); // :
-  
+
     len = decimalCount32(columnNumber);
     ptr += len;
     do {
@@ -339,42 +355,42 @@ export namespace env {
       columnNumber = t;
     } while (columnNumber);
     ptr += len;
-  
+
     store<u8>(ptr, 0x29);
     ptr++; // )
-  
+
     const msgLen = ptr - bufPtr;
     store<u8>(lenPtr, msgLen & 0xff);
     store<u8>(lenPtr + 1, (msgLen >> 8) & 0xff);
     store<u8>(lenPtr + 2, (msgLen >> 16) & 0xff);
     store<u8>(lenPtr + 3, (msgLen >> 24) & 0xff);
-  
+
     abi_abort(changetype<i32>(lenPtr));
-  
+
     unreachable();
   }
   // end of abort() implementation
-  
+
   function stringToUint8Array(str: string): Uint8Array {
     return Uint8Array.wrap(String.UTF8.encode(str));
   }
-  
+
   function makeStringValue(
     optional_sender_address: string | null
   ): StringValue | null {
     let sender_address: StringValue | null = null;
-  
+
     if (optional_sender_address !== null) {
       sender_address = new StringValue(optional_sender_address);
     }
-  
+
     return sender_address;
   }
-  
+
   // ***************************************************************************
   // abi wrapper implementations
   // ***************************************************************************
-  
+
   // ABI to call another SC
   export function call(
     address: string,
@@ -390,7 +406,7 @@ export namespace env {
     const resp = proto.decodeCallResponse(resp_bytes);
     return resp.data;
   }
-  
+
   // ABI to local call another SC
   export function localCall(
     address: string,
@@ -406,7 +422,7 @@ export namespace env {
     const resp = proto.decodeCallResponse(resp_bytes);
     return resp.data;
   }
-  
+
   export function functionExists(address: string, func: string): bool {
     const req = new proto.FunctionExistsRequest(address, func);
     const req_bytes = proto.encodeFunctionExistsRequest(req);
@@ -417,10 +433,10 @@ export namespace env {
     assert(resp.error === null, resp.error!.message);
     assert(resp.res !== null);
     assert(resp.res!.functionExistsResult !== null);
-  
+
     return resp.res!.functionExistsResult!.exists;
   }
-  
+
   // ABI to create a new SC
   export function create_sc(bytecode: Uint8Array): string {
     const req = new proto.CreateScRequest(bytecode);
@@ -429,12 +445,12 @@ export namespace env {
       abi_create_sc(encode_length_prefixed(req_bytes).buffer)
     );
     const resp = proto.decodeAbiResponse(resp_bytes);
-  
+
     assert(resp.error === null, resp.error!.message);
     assert(resp.res !== null);
     assert(resp.res!.createScResult !== null);
     assert(resp.res!.createScResult!.scAddress !== "");
-  
+
     return resp.res!.createScResult!.scAddress;
   }
 
@@ -454,7 +470,7 @@ export namespace env {
     assert(resp.res!.evmVerifySigResult !== null);
     return resp.res!.evmVerifySigResult!.isVerified;
   }
-  
+
   export function evm_get_address_from_pubkey(
     pub_key: Uint8Array
   ): Uint8Array {
@@ -469,7 +485,7 @@ export namespace env {
     assert(resp.res!.evmGetAddressFromPubkeyResult !== null);
     return resp.res!.evmGetAddressFromPubkeyResult!.address;
   }
-  
+
   export function evm_get_pubkey_from_signature(
     hash: Uint8Array,
     sig: Uint8Array
@@ -485,8 +501,8 @@ export namespace env {
     assert(resp.res!.evmGetPubkeyFromSignatureResult !== null);
     return resp.res!.evmGetPubkeyFromSignatureResult!.pubKey;
   }
-  
-  
+
+
   export function is_address_eoa(
     address: string,
   ): bool {
@@ -501,7 +517,7 @@ export namespace env {
     assert(resp.res!.isAddressEoaResult !== null);
     return resp.res!.isAddressEoaResult!.isEoa;
   }
-  
+
   export function get_remaining_gas(): u64 {
     const req = new proto.GetRemainingGasRequest();
     const req_bytes = proto.encodeGetRemainingGasRequest(req);
@@ -514,7 +530,7 @@ export namespace env {
     assert(resp.res!.getRemainingGasResult !== null);
     return resp.res!.getRemainingGasResult!.remainingGas;
   }
-  
+
   export function get_owned_addresses(): string[] {
     const req = new proto.GetOwnedAddressesRequest();
     const req_bytes = proto.encodeGetOwnedAddressesRequest(req);
@@ -527,7 +543,7 @@ export namespace env {
     assert(resp.res!.getOwnedAddressesResult !== null);
     return resp.res!.getOwnedAddressesResult!.addresses;
   }
-  
+
   export function get_call_stack(): string[] {
     const req = new proto.GetCallStackRequest();
     const req_bytes = proto.encodeGetCallStackRequest(req);
@@ -540,7 +556,7 @@ export namespace env {
     assert(resp.res!.getCallStackResult !== null);
     return resp.res!.getCallStackResult!.calls;
   }
-  
+
   export function address_from_public_key(public_key: string): string {
     const req = new proto.AddressFromPubKeyRequest(public_key);
     const req_bytes = proto.encodeAddressFromPubKeyRequest(req);
@@ -553,7 +569,7 @@ export namespace env {
     assert(resp.res!.addressFromPubKeyResult !== null);
     return resp.res!.addressFromPubKeyResult!.address;
   }
-  
+
   export function unsafe_random(num_bytes: u32): Uint8Array {
     const req = new proto.UnsafeRandomRequest(num_bytes);
     const req_bytes = proto.encodeUnsafeRandomRequest(req);
@@ -566,7 +582,7 @@ export namespace env {
     assert(resp.res!.unsafeRandomResult !== null);
     return resp.res!.unsafeRandomResult!.randomBytes;
   }
-  
+
   export function get_call_coins(): proto.NativeAmount {
     const req = new proto.GetCallCoinsRequest();
     const req_bytes = proto.encodeGetCallCoinsRequest(req);
@@ -582,7 +598,7 @@ export namespace env {
       "Could not get call coins"
     );
   }
-  
+
   export function get_native_time(): proto.NativeTime {
     const req = new proto.GetNativeTimeRequest();
     const req_bytes = proto.encodeGetNativeTimeRequest(req);
@@ -598,7 +614,7 @@ export namespace env {
       "Could not get native time"
     );
   }
-  
+
   export function send_async_message(
     target_address: string,
     target_handler: string,
@@ -624,7 +640,7 @@ export namespace env {
     const req_bytes = proto.encodeSendAsyncMessageRequest(req);
     abi_send_async_message(encode_length_prefixed(req_bytes).buffer);
   }
-  
+
   export function get_origin_operation_id(): string | null {
     const req = new proto.GetOriginOperationIdRequest();
     const req_bytes = proto.encodeGetOriginOperationIdRequest(req);
@@ -640,7 +656,7 @@ export namespace env {
     }
     return resp.res!.getOriginOperationIdResult!.operationId!.value;
   }
-  
+
   export function local_execution(
     bytecode: Uint8Array,
     target_function: string,
@@ -657,7 +673,7 @@ export namespace env {
     assert(resp.res!.localExecutionResponse !== null);
     return resp.res!.localExecutionResponse!.data;
   }
-  
+
   export function caller_has_write_access(): bool {
     const req = new proto.CallerHasWriteAccessRequest();
     const req_bytes = proto.encodeCallerHasWriteAccessRequest(req);
@@ -670,7 +686,7 @@ export namespace env {
     assert(resp.res!.callerHasWriteAccessResult !== null);
     return resp.res!.callerHasWriteAccessResult!.hasWriteAccess;
   }
-  
+
   // ABI to transfer coins to another address
   export function transfer_coins(
     to_address: string,
@@ -687,10 +703,10 @@ export namespace env {
       abi_transfer_coins(encode_length_prefixed(req_bytes).buffer)
     );
     const resp = proto.decodeAbiResponse(resp_bytes);
-  
+
     assert(resp.error === null, resp.error!.message);
   }
-  
+
   // ABI to generate an event
   export function generate_event(event: string): void {
     const message = stringToUint8Array(event);
@@ -699,12 +715,12 @@ export namespace env {
     const resp_bytes = Uint8Array.wrap(
       abi_generate_event(encode_length_prefixed(req_bytes).buffer)
     );
-  
+
     const resp = proto.decodeAbiResponse(resp_bytes);
-  
+
     assert(resp.error === null, "Error generating event" + resp.error!.message);
   }
-  
+
   export function set_ds_value(
     key: Uint8Array,
     data: Uint8Array,
@@ -718,7 +734,7 @@ export namespace env {
     const req_bytes = proto.encodeSetDsValueRequest(req);
     abi_set_ds_value(encode_length_prefixed(req_bytes).buffer);
   }
-  
+
   export function get_ds_value(
     key: Uint8Array,
     optional_address: string | null
@@ -731,16 +747,16 @@ export namespace env {
     const resp_bytes = Uint8Array.wrap(
       abi_get_ds_value(encode_length_prefixed(req_bytes).buffer)
     );
-  
+
     const resp = proto.decodeAbiResponse(resp_bytes);
-  
+
     assert(resp.error === null);
     assert(resp.res !== null);
     assert(resp.res!.getDsValueResult !== null);
-  
+
     return resp.res!.getDsValueResult!.value;
   }
-  
+
   export function delete_ds_entry(
     key: Uint8Array,
     optional_address: string | null
@@ -752,7 +768,7 @@ export namespace env {
     const req_bytes = proto.encodeDeleteDsEntryRequest(req);
     abi_delete_ds_entry(encode_length_prefixed(req_bytes).buffer);
   }
-  
+
   export function append_ds_value(
     key: Uint8Array,
     data: Uint8Array,
@@ -766,7 +782,7 @@ export namespace env {
     const req_bytes = proto.encodeAppendDsValueRequest(req);
     abi_append_ds_value(encode_length_prefixed(req_bytes).buffer);
   }
-  
+
   export function ds_entry_exists(
     key: Uint8Array,
     optional_address: string | null
@@ -779,16 +795,16 @@ export namespace env {
     const resp_bytes = Uint8Array.wrap(
       abi_ds_entry_exists(encode_length_prefixed(req_bytes).buffer)
     );
-  
+
     const resp = proto.decodeAbiResponse(resp_bytes);
-  
+
     assert(resp.error === null);
     assert(resp.res !== null);
     assert(resp.res!.dsEntryExistsResult !== null);
-  
+
     return resp.res!.dsEntryExistsResult!.hasData;
   }
-  
+
   export function get_balance(
     optional_address: string | null
   ): proto.NativeAmount {
@@ -798,14 +814,14 @@ export namespace env {
       abi_get_balance(encode_length_prefixed(req_bytes).buffer)
     );
     const resp = proto.decodeAbiResponse(resp_bytes);
-  
+
     assert(resp.error === null);
     assert(resp.res !== null);
     assert(resp.res!.getBalanceResult !== null);
-  
+
     return assert(resp.res!.getBalanceResult!.balance, "Could not get balance");
   }
-  
+
   export function get_bytecode(optional_address: string | null): Uint8Array {
     const req = new proto.GetBytecodeRequest(makeStringValue(optional_address));
     const req_bytes = proto.encodeGetBytecodeRequest(req);
@@ -813,14 +829,14 @@ export namespace env {
       abi_get_bytecode(encode_length_prefixed(req_bytes).buffer)
     );
     const resp = proto.decodeAbiResponse(resp_bytes);
-  
+
     assert(resp.error === null);
     assert(resp.res !== null);
     assert(resp.res!.getBytecodeResult !== null);
-  
+
     return resp.res!.getBytecodeResult!.bytecode;
   }
-  
+
   export function set_bytecode(
     bytecode: Uint8Array,
     optional_address: string | null
@@ -832,7 +848,7 @@ export namespace env {
     const req_bytes = proto.encodeSetBytecodeRequest(req);
     abi_set_bytecode(encode_length_prefixed(req_bytes).buffer);
   }
-  
+
   export function get_ds_keys(
     prefix: Uint8Array,
     optional_address: string | null
@@ -846,14 +862,14 @@ export namespace env {
       abi_get_ds_keys(encode_length_prefixed(req_bytes).buffer)
     );
     const resp = proto.decodeAbiResponse(resp_bytes);
-  
+
     assert(resp.error === null);
     assert(resp.res !== null);
     assert(resp.res!.getDsKeysResult !== null);
-  
+
     return resp.res!.getDsKeysResult!.keys;
   }
-  
+
   export function get_op_keys(prefix: Uint8Array): Uint8Array[] {
     const req = new proto.GetOpKeysRequest(prefix);
     const req_bytes = proto.encodeGetOpKeysRequest(req);
@@ -861,14 +877,14 @@ export namespace env {
       abi_get_op_keys(encode_length_prefixed(req_bytes).buffer)
     );
     const resp = proto.decodeAbiResponse(resp_bytes);
-  
+
     assert(resp.error === null);
     assert(resp.res !== null);
     assert(resp.res!.getOpKeysResult !== null);
-  
+
     return resp.res!.getOpKeysResult!.keys;
   }
-  
+
   export function op_entry_exists(key: Uint8Array): bool {
     const req = new proto.OpEntryExistsRequest(key);
     const req_bytes = proto.encodeOpEntryExistsRequest(req);
@@ -876,14 +892,14 @@ export namespace env {
       abi_op_entry_exists(encode_length_prefixed(req_bytes).buffer)
     );
     const resp = proto.decodeAbiResponse(resp_bytes);
-  
+
     assert(resp.error === null);
     assert(resp.res !== null);
     assert(resp.res!.opEntryExistsResult !== null);
-  
+
     return resp.res!.opEntryExistsResult!.hasKey;
   }
-  
+
   export function get_op_data(key: Uint8Array): Uint8Array {
     const req = new proto.GetOpDataRequest(key);
     const req_bytes = proto.encodeGetOpDataRequest(req);
@@ -891,14 +907,14 @@ export namespace env {
       abi_get_op_data(encode_length_prefixed(req_bytes).buffer)
     );
     const resp = proto.decodeAbiResponse(resp_bytes);
-  
+
     assert(resp.error === null);
     assert(resp.res !== null);
     assert(resp.res!.getOpDataResult !== null);
-  
+
     return resp.res!.getOpDataResult!.value;
   }
-  
+
   /// performs a keccak256 hash on byte array and returns the hash as byte array
   export function hash_keccak256(data: Uint8Array): Uint8Array {
     const req = new proto.Keccak256Request(data);
@@ -913,7 +929,7 @@ export namespace env {
     assert(abi_resp.res!.keccak256Result!.hash !== null);
     return abi_resp.res!.keccak256Result!.hash;
   }
-  
+
   /// performs a sha256 hash on byte array and returns the hash as byte array
   export function hash_sha256(data: Uint8Array): Uint8Array {
     const req = new proto.HashSha256Request(data);
@@ -928,7 +944,7 @@ export namespace env {
     assert(abi_resp.res!.hashSha256Result!.hash !== null);
     return abi_resp.res!.hashSha256Result!.hash;
   }
-  
+
   /// performs a hash on byte array and returns the NativeHash
   export function hash_blake3(data: Uint8Array): Uint8Array {
     const req = new proto.HashBlake3Request(data);
@@ -946,7 +962,7 @@ export namespace env {
       "NativeHash computation failed"
     );
   }
-  
+
   /// gets the current execution slot
   export function get_current_slot(): proto.Slot {
     const req = new proto.GetCurrentSlotRequest();
@@ -963,31 +979,31 @@ export namespace env {
       "Could not get current slot"
     );
   }
-  
+
   export function make_native_amount(
     mantissa: i64,
     scale: i32
   ): proto.NativeAmount {
     return new proto.NativeAmount(mantissa, scale);
   }
-  
+
   export function make_native_time(
     time: i64,
   ): proto.NativeTime {
     return new proto.NativeTime(time);
   }
-  
+
   export function make_slot(
     period: i64,
     thread: i32,
   ): proto.Slot {
     return new proto.Slot(period, thread);
   }
-  
+
   export function make_send_async_message_filter_null(): proto.SendAsyncMessageFilter {
     return new proto.SendAsyncMessageFilter("", null);
   }
-  
+
   export function check_native_amount(to_check: proto.NativeAmount): bool {
     const req = new proto.CheckNativeAmountRequest(to_check);
     const req_bytes = proto.encodeCheckNativeAmountRequest(req);
@@ -1003,7 +1019,7 @@ export namespace env {
     );
     return resp.res!.checkNativeAmountResult!.isValid;
   }
-  
+
   export function add_native_amount(
     amount1: proto.NativeAmount,
     amount2: proto.NativeAmount
@@ -1023,7 +1039,7 @@ export namespace env {
     assert(resp.res!.addNativeAmountResult!.sum !== null, "sum null");
     return resp.res!.addNativeAmountResult!.sum!;
   }
-  
+
   export function sub_native_amount(
     left: proto.NativeAmount,
     right: proto.NativeAmount
@@ -1046,7 +1062,7 @@ export namespace env {
     );
     return resp.res!.subNativeAmountResult!.difference!;
   }
-  
+
   export function scalar_mul_native_amount(
     amount: proto.NativeAmount,
     coefficient: i64 = 0
@@ -1066,20 +1082,20 @@ export namespace env {
     );
     return resp.res!.scalarMulNativeAmountResult!.product!;
   }
-  
+
   // return quotient and remainder
   // int64 quotient;
   // NativeAmount remainder;
   export class DivRemNativeAmount {
     public quotient: i64;
     public remainder: proto.NativeAmount;
-  
+
     constructor(quotient: i64, remainder: proto.NativeAmount) {
       this.quotient = quotient;
       this.remainder = remainder;
     }
   }
-  
+
   export function div_rem_native_amount(
     dividend: proto.NativeAmount,
     divisor: proto.NativeAmount
@@ -1105,7 +1121,7 @@ export namespace env {
       resp.res!.divRemNativeAmountResult!.remainder!
     );
   }
-  
+
   // return quotient and remainder
   // NativeAmount quotient;
   // NativeAmount remainder;
@@ -1139,7 +1155,7 @@ export namespace env {
       resp.res!.scalarDivRemNativeAmountResult!.remainder!,
     ];
   }
-  
+
   export function native_amount_to_string(
     to_convert: proto.NativeAmount
   ): string {
@@ -1160,7 +1176,7 @@ export namespace env {
     );
     return resp.res!.nativeAmountToStringResult!.convertedAmount;
   }
-  
+
   export function native_amount_from_string(
     to_convert: string
   ): proto.NativeAmount {
@@ -1185,7 +1201,7 @@ export namespace env {
     );
     return resp.res!.nativeAmountFromStringResult!.convertedAmount!;
   }
-  
+
   export function base58_check_to_bytes(to_decode: string): Uint8Array {
     const req = new proto.Base58CheckToBytesRequest(to_decode);
     const req_bytes = proto.encodeBase58CheckToBytesRequest(req);
@@ -1198,14 +1214,14 @@ export namespace env {
       "base58_check_to_bytes error: " + resp.error!.message
     );
     assert(resp.res !== null, "base58_check_to_bytes res null");
-  
+
     assert(
       resp.res!.base58CheckToBytesResult !== null,
       "base58CheckToBytesResult null"
     );
     return resp.res!.base58CheckToBytesResult!.bytes;
   }
-  
+
   export function bytes_to_base58_check(to_encode: Uint8Array): string {
     const req = new proto.BytesToBase58CheckRequest(to_encode);
     const req_bytes = proto.encodeBytesToBase58CheckRequest(req);
@@ -1218,14 +1234,14 @@ export namespace env {
       "bytes_to_base58_check error: " + resp.error!.message
     );
     assert(resp.res !== null, "bytes_to_base58_check res null");
-  
+
     assert(
       resp.res!.bytesToBase58CheckResult !== null,
       "bytesToBase58CheckResult null"
     );
     return resp.res!.bytesToBase58CheckResult!.base58Check;
   }
-  
+
   export function check_address(to_check: string): bool {
     const req = new proto.CheckAddressRequest(to_check);
     const req_bytes = proto.encodeCheckAddressRequest(req);
@@ -1238,7 +1254,7 @@ export namespace env {
     assert(resp.res!.checkAddressResult !== null, "checkAddressResult null");
     return resp.res!.checkAddressResult!.isValid;
   }
-  
+
   export function check_pubkey(to_check: string): bool {
     const req = new proto.CheckPubKeyRequest(to_check);
     const req_bytes = proto.encodeCheckPubKeyRequest(req);
@@ -1251,7 +1267,7 @@ export namespace env {
     assert(resp.res!.checkPubKeyResult !== null, "checkPubKeyResult null");
     return resp.res!.checkPubKeyResult!.isValid;
   }
-  
+
   export function check_signature(to_check: string): bool {
     const req = new proto.CheckSigRequest(to_check);
     const req_bytes = proto.encodeCheckSigRequest(req);
@@ -1264,7 +1280,7 @@ export namespace env {
     assert(resp.res!.checkSigResult !== null, "checkSigResult null");
     return resp.res!.checkSigResult!.isValid;
   }
-  
+
   export function get_address_category(address: string): proto.AddressCategory {
     const req = new proto.GetAddressCategoryRequest(address);
     const req_bytes = proto.encodeGetAddressCategoryRequest(req);
@@ -1280,7 +1296,7 @@ export namespace env {
     );
     return resp.res!.getAddressCategoryResult!.category;
   }
-  
+
   export function get_address_version(address: string): u64 {
     const req = new proto.GetAddressVersionRequest(address);
     const req_bytes = proto.encodeGetAddressVersionRequest(req);
@@ -1296,7 +1312,7 @@ export namespace env {
     );
     return resp.res!.getAddressVersionResult!.version;
   }
-  
+
   export function get_pubkey_version(address: string): u64 {
     const req = new proto.GetPubKeyVersionRequest(address);
     const req_bytes = proto.encodeGetPubKeyVersionRequest(req);
@@ -1312,7 +1328,7 @@ export namespace env {
     );
     return resp.res!.getPubKeyVersionResult!.version;
   }
-  
+
   export function get_signature_version(address: string): u64 {
     const req = new proto.GetSignatureVersionRequest(address);
     const req_bytes = proto.encodeGetSignatureVersionRequest(req);
@@ -1328,7 +1344,7 @@ export namespace env {
     );
     return resp.res!.getSignatureVersionResult!.version;
   }
-  
+
   export function checked_add_native_time(
     time1: proto.NativeTime,
     time2: proto.NativeTime
@@ -1350,7 +1366,7 @@ export namespace env {
       "checkedAddNativeTimeResult.sum null"
     );
   }
-  
+
   export function checked_sub_native_time(
     left: proto.NativeTime,
     right: proto.NativeTime
@@ -1372,7 +1388,7 @@ export namespace env {
       "checkedSubNativeTimeResult.difference null"
     );
   }
-  
+
   export function checked_mul_native_time(
     time: proto.NativeTime,
     coefficient: u64
@@ -1394,7 +1410,7 @@ export namespace env {
       "checkedMulNativeTimeResult.product null"
     );
   }
-  
+
   // return quotient and remainder
   // NativeTime quotient;
   // NativeTime remainder;
@@ -1431,20 +1447,20 @@ export namespace env {
       resp.res!.checkedScalarDivRemNativeTimeResult!.remainder!,
     ];
   }
-  
+
   // return quotient and remainder
   // int64 quotient;
   // NativeTime remainder;
   export class DivRemNativeTime {
     public quotient: i64;
     public remainder: proto.NativeTime;
-  
+
     constructor(quotient: i64, remainder: proto.NativeTime) {
       this.quotient = quotient;
       this.remainder = remainder;
     }
   }
-  
+
   export function checked_div_native_time(
     dividend: proto.NativeTime,
     divisor: proto.NativeTime
@@ -1470,7 +1486,7 @@ export namespace env {
       resp.res!.checkedDivRemNativeTimeResult!.remainder!
     );
   }
-  
+
   export function compare_address(
     left: string,
     right: string
@@ -1489,7 +1505,7 @@ export namespace env {
     assert(resp.res!.compareAddressResult !== null, "compareAddressResult null");
     return resp.res!.compareAddressResult!.result;
   }
-  
+
   export function compare_native_amount(
     left: proto.NativeAmount,
     right: proto.NativeAmount
@@ -1511,7 +1527,7 @@ export namespace env {
     );
     return resp.res!.compareNativeAmountResult!.result;
   }
-  
+
   export function compare_native_time(
     left: proto.NativeTime,
     right: proto.NativeTime
@@ -1533,7 +1549,7 @@ export namespace env {
     );
     return resp.res!.compareNativeTimeResult!.result;
   }
-  
+
   export function compare_pub_key(
     left: string,
     right: string
@@ -1552,13 +1568,13 @@ export namespace env {
     assert(resp.res!.comparePubKeyResult !== null, "comparePubKeyResult null");
     return resp.res!.comparePubKeyResult!.result;
   }
-  
+
   export function myseed(): f64 {
     const random_bytes = unsafe_random(8);
     const seed_f64 = new DataView(random_bytes.buffer).getFloat64(0);
     return seed_f64;
   }
-  
+
   export function verify_signature(
     sig: string,
     message: Uint8Array,
@@ -1577,5 +1593,51 @@ export namespace env {
     assert(resp.res !== null, "abi_verify_signature res null");
     assert(resp.res!.verifySigResult !== null, "verifySigResult null");
     return resp.res!.verifySigResult!.isVerified;
+  }
+
+  export function get_deferred_call_quote(period: u64, thread: u8, max_gas: u64, params_size: u64): u64 {
+    let slot = new proto.Slot(period, thread);
+    const req = new proto.DeferredCallQuoteRequest(slot, max_gas, params_size);
+    let req_bytes = proto.encodeDeferredCallQuoteRequest(req);
+    const resp_bytes = Uint8Array.wrap(
+      abi_get_deferred_call_quote(encode_length_prefixed(req_bytes).buffer)
+    );
+    const resp = proto.decodeAbiResponse(resp_bytes);
+
+    return resp.res!.deferredCallQuoteResult!.cost;
+  }
+
+  export function deferred_call_register(target_address: string, target_function: string, period: u64, thread: u8, max_gas: u64, params: Uint8Array, coins: u64): string {
+    let slot = new proto.Slot(period, thread);
+    const req = new proto.DeferredCallRegisterRequest(target_address, target_function, slot, max_gas, params, coins);
+    let req_bytes = proto.encodeDeferredCallRegisterRequest(req);
+    const resp_bytes = Uint8Array.wrap(
+      abi_deferred_call_register(encode_length_prefixed(req_bytes).buffer)
+    );
+    const resp = proto.decodeAbiResponse(resp_bytes);
+
+    return resp.res!.deferredCallRegisterResult!.callId!.value;
+  }
+
+  export function deferred_call_cancel(call_id: string): void {
+    const req = new proto.DeferredCallCancelRequest(makeStringValue(call_id));
+    let req_bytes = proto.encodeDeferredCallCancelRequest(req);
+    const resp_bytes = Uint8Array.wrap(
+      abi_deferred_call_cancel(encode_length_prefixed(req_bytes).buffer)
+    );
+    const resp = proto.decodeAbiResponse(resp_bytes);
+
+    assert(resp.error === null, resp.error!.message);
+  }
+
+  export function deferred_call_exists(call_id: string): bool {
+    const req = new proto.DeferredCallExistsRequest(makeStringValue(call_id));
+    let req_bytes = proto.encodeDeferredCallExistsRequest(req);
+    const resp_bytes = Uint8Array.wrap(
+      abi_deferred_call_exists(encode_length_prefixed(req_bytes).buffer)
+    );
+    const resp = proto.decodeAbiResponse(resp_bytes);
+
+    return resp.res!.deferredCallExistsResult!.callExists;
   }
 }

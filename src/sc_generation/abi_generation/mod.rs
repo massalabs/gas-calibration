@@ -1,4 +1,3 @@
-/*
 use std::str::FromStr;
 
 use massa_models::address::Address;
@@ -17,6 +16,10 @@ mod caller_has_write_access;
 mod create_sc;
 mod current_period;
 mod current_thread;
+mod deferred_call_cancel;
+mod deferred_call_exists;
+mod deferred_call_quote;
+mod deferred_call_register;
 mod del;
 mod del_of;
 mod function_exists;
@@ -97,6 +100,11 @@ pub use transfer_coins_of::generate_abi_transfer_coins_of;
 pub use unsafe_random::generate_abi_unsafe_random;
 pub use validate_address::generate_abi_validate_address;
 
+pub use deferred_call_cancel::generate_abi_deferred_call_cancel;
+pub use deferred_call_exists::generate_abi_deferred_call_exists;
+pub use deferred_call_quote::generate_abi_deferred_call_quote;
+pub use deferred_call_register::generate_abi_deferred_call_register;
+
 fn generate_string(length: usize) -> String {
     let mut rng = rand::thread_rng();
     let mut string = String::new();
@@ -113,11 +121,12 @@ fn generate_address() -> String {
 }
 
 fn static_public_key() -> String {
-    let keypair =
-        KeyPair::from_str("S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY").unwrap();
+    let keypair = KeyPair::from_str(
+        "S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY",
+    )
+    .unwrap();
     keypair.get_public_key().to_string()
     // Secret key: S12mhS7vUJen4g3VssogCDmbFp9mBqLU4PmavdaXPbpw7jyt9GXY
     // Public key: P12WKRCnYPKhVuwtk1mSEiMFSAPRfThR74bfhBEHAnT53JnBNj9T
     // Address: A12cMW9zRKFDS43Z2W88VCmdQFxmHjAo54XvuVV34UzJeXRLXW9M
 }
-*/
