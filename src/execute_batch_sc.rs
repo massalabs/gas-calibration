@@ -5,7 +5,7 @@ use std::{
 use massa_execution_worker::InterfaceImpl;
 use massa_models::{address::Address, datastore::Datastore};
 use massa_sc_runtime::{
-    run_main_gc, Compiler, /* CondomLimits, */ GasCosts, RuntimeModule,
+    run_main_gc, Compiler, CondomLimits, GasCosts, RuntimeModule,
 };
 // use rand::Rng;
 use std::fs::File;
@@ -72,6 +72,7 @@ pub fn execute_batch_sc(
             )
             .unwrap(),
             Some(op_datastore.clone()),
+            None,
         );
 
         if let Some(preparation_bytecode) = preparation_bytecode {
@@ -82,13 +83,13 @@ pub fn execute_batch_sc(
                     &preparation_bytecode,
                     GasCosts::default(),
                     Compiler::CL,
-                    // CondomLimits::default(),
+                    CondomLimits::default(),
                 )
                 .unwrap(),
                 &[],
                 u64::MAX,
                 GasCosts::default(),
-                // CondomLimits::default(),
+                CondomLimits::default(),
             ) {
                 println!("Failed to execute preparation bytecode: {:?}", e);
                 continue;
@@ -99,7 +100,7 @@ pub fn execute_batch_sc(
             &bytecode,
             GasCosts::default(),
             Compiler::CL,
-            // CondomLimits::default(),
+            CondomLimits::default(),
         )
         .unwrap();
         let start = std::time::Instant::now();
@@ -110,7 +111,7 @@ pub fn execute_batch_sc(
             &[],
             u64::MAX,
             GasCosts::default(),
-            // CondomLimits::default(),
+            CondomLimits::default(),
         ) {
             Ok(results) => results,
             Err(e) => {
@@ -210,13 +211,13 @@ mod tests {
                 &preparation_bytecode,
                 GasCosts::default(),
                 Compiler::CL,
-                // CondomLimits::default(),
+                CondomLimits::default(),
             )
             .unwrap(),
             &[],
             u64::MAX,
             GasCosts::default(),
-            // CondomLimits::default(),
+            CondomLimits::default(),
         );
 
         match res {
